@@ -17,6 +17,12 @@ La guida verrà pubblicata gratuitamente su questo sito.
   <span class="status-pill">Versione in lavorazione — disponibile prossimamente</span>
 </div>
 
+## Risorse
+
+Nella pagina Risorse sono raccolti i video di formazione docenti in cui Alberto Montresor e Michael Lodi presentano il libro, insieme ad altre risorse per l'insegnamento dell'informatica nella scuola primaria.
+
+[Vai alle risorse](risorse.md)
+
 ## Origine del progetto
 
 Il libro nasce dal lavoro realizzato per [*Sulle orme di Milù* di Mondadori Education](https://www.mondadorieducation.it/catalogo/sulle-orme-di-milu-0074279/), progetto per la scuola primaria.
