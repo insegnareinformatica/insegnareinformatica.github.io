@@ -1,0 +1,40 @@
+site_name: "Insegnare Informatica"
+site_url: "https://insegnareinformatica.github.io/"
+site_description: "Un percorso per insegnare informatica nella scuola primaria."
+
+theme:
+  name: material
+  language: it
+  features:
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - search.suggest
+    - toc.follow
+  palette:
+    primary: teal
+    accent: deep orange
+
+plugins:
+  - search:
+      lang: it
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.superfences
+  - toc:
+      permalink: true
+
+extra_css:
+  - assets/stylesheets/site.css
+
+copyright: "Cookie: questo sito non usa cookie di profilazione, statistiche o servizi incorporati di tracciamento. La ricerca è interna al sito e non invia dati a servizi esterni."
+
+nav:
+  - Home: index.md
+  - Contenuti: contenuti.md
+  - Risorse: risorse.md
+  - Contatti: contatti.md
