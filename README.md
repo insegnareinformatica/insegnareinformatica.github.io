@@ -1,41 +1,20 @@
 # Insegnare Informatica
 
-Sito pubblico del libro *Insegnare Informatica*, una guida per docenti del primo ciclo dedicata all'informatica nella scuola primaria.
+Questo sito raccoglie materiali, attività e risorse per l'insegnamento dell'informatica a scuola, con particolare attenzione al primo ciclo.
 
-Il sito è pubblicato con MkDocs Material all'indirizzo:
+Nasce dal lavoro sviluppato per il libro "libero" (CC BY-NC-SA) *Insegnare Informatica*, dedicato principalmente alla scuola primaria, ma è pensato come uno spazio più ampio, da estendere nel tempo con nuovi contenuti e materiali per docenti di diversi ordini scolastici.
 
-<https://insegnareinformatica.github.io/>
+Il sito è disponibile all'indirizzo:
 
-## Contenuti del sito
+<https://informaticainclasse.it/>
 
-- presentazione del libro;
-- origine del progetto editoriale;
-- sintesi dei principali contenuti didattici;
-- risorse e collegamenti utili;
-- contatti degli autori.
+## Contenuti
 
-## Sviluppo locale
+Il sito raccoglie e raccoglierà progressivamente:
 
-Installare le dipendenze:
-
-```bash
-python -m pip install -r requirements.txt
-```
-
-Avviare l'anteprima locale:
-
-```bash
-mkdocs serve
-```
-
-Verificare la build:
-
-```bash
-mkdocs build --strict
-```
-
-## Pubblicazione
-
-La pubblicazione del sito avviene tramite GitHub Pages a ogni push sul branch `main`.
-
-Il repository contiene solo il sito statico. Il libro completo e i materiali non ancora pubblici non sono inclusi.
+- attività didattiche;
+- materiali per docenti;
+- approfondimenti sui contenuti di informatica;
+- risorse collegate alle Indicazioni nazionali;
+- materiali collegati al libro *Insegnare Informatica*, oltre che il libro stesso liberamente scaricabile;
+- collegamenti ad altre risorse utili.
