@@ -9,3 +9,27 @@ __pycache__/
 *.pdf
 immagini che puoi usare/
 archive/
+
+# File locali, credenziali e risultati delle compilazioni.
+.env
+.env.*
+!.env.example
+dist/
+counter.txt
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.idx
+*.ilg
+*.ind
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.xdv
+book/.cache/
+book/.texmf-var/

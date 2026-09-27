@@ -1,0 +1,114 @@
+name: Libro - verifica o pubblica
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "book/**"
+      - "config/book.json"
+      - "scripts/book.py"
+      - ".github/workflows/publish-book.yml"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Operazione"
+        type: choice
+        options: [verifica, in-lavorazione, consigliata]
+        default: verifica
+        required: true
+      version:
+        description: "Numero della versione consigliata, ad esempio 1.0.0"
+        type: string
+      notes:
+        description: "Novita della versione consigliata"
+        type: string
+      confirm_publication:
+        description: "Confermo che questo PDF puo essere reso pubblico"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: book-publication
+  cancel-in-progress: false
+
+env:
+  BOOK_PUBLICATION_ENABLED: ${{ vars.BOOK_PUBLICATION_ENABLED }}
+  BOOK_MODE: ${{ inputs.mode }}
+  BOOK_VERSION: ${{ inputs.version }}
+  BOOK_NOTES: ${{ inputs.notes }}
+  CONFIRM_PUBLICATION: ${{ inputs.confirm_publication }}
+
+jobs:
+  prepare:
+    if: github.event_name == 'workflow_dispatch' || vars.BOOK_PUBLICATION_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      mode: ${{ steps.plan.outputs.mode }}
+      directory: ${{ steps.plan.outputs.directory }}
+      tex_file: ${{ steps.plan.outputs.tex_file }}
+      engine_flag: ${{ steps.plan.outputs.engine_flag }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - id: plan
+        name: Check source and publication approval
+        run: python scripts/book.py prepare
+
+  build:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Set PDF version when supported by the sources
+        run: python scripts/book.py stamp
+      - name: Compile LaTeX
+        uses: xu-cheng/latex-action@v4
+        with:
+          root_file: ${{ needs.prepare.outputs.tex_file }}
+          working_directory: ${{ needs.prepare.outputs.directory }}
+          args: ${{ needs.prepare.outputs.engine_flag }} -interaction=nonstopmode -halt-on-error -file-line-error
+          os: debian
+          texlive_version: "2026"
+          extra_system_packages: fonts-noto-cjk fonts-noto-color-emoji
+      - name: Validate the generated PDF
+        run: python scripts/book.py package
+      - name: Transfer the explicitly approved PDF to the publishing job
+        if: needs.prepare.outputs.mode != 'verifica'
+        uses: actions/upload-artifact@v4
+        with:
+          name: book-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dist/insegnare-informatica.pdf
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    needs: [prepare, build]
+    if: needs.prepare.outputs.mode != 'verifica'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/download-artifact@v4
+        with:
+          name: book-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dist
+      - name: Publish the version and refresh the website
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/book.py publish

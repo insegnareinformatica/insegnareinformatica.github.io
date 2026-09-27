@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {{ super() }}
+  {% if page.is_homepage and config.extra.home_counter_url %}
+    <p class="home-views" id="home-views"
+       data-counter-url="{{ config.extra.home_counter_url | e }}"
+       aria-live="polite" hidden></p>
+    <script src="{{ 'assets/javascripts/home-counter.js' | url }}" defer></script>
+  {% endif %}
+{% endblock %}

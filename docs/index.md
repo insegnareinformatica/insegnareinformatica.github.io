@@ -10,12 +10,11 @@
 
 Il libro propone un percorso per avvicinare bambine e bambini al pensiero informatico, in linea con le Nuove Indicazioni Nazionali per il primo ciclo.
 
-La guida verrà pubblicata gratuitamente su questo sito.
+La guida sarà disponibile gratuitamente. La versione consigliata raccoglierà
+i contenuti approvati dagli autori; quella in lavorazione potrà includere
+modifiche ancora da verificare.
 
-<div class="status-list">
-  <span class="status-pill">Versione consigliata — disponibile prossimamente</span>
-  <span class="status-pill">Versione in lavorazione — disponibile prossimamente</span>
-</div>
+<!-- BOOK_DOWNLOADS -->
 
 ## Risorse
 
