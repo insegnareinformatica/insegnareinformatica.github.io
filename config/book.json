@@ -1,0 +1,6 @@
+{
+  "source": "book/main.tex",
+  "engine": "lualatex",
+  "version_file": "book/version.tex",
+  "asset_name": "insegnare-informatica.pdf"
+}

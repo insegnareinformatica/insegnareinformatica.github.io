@@ -61,3 +61,26 @@
   border-left: 0.18rem solid var(--md-primary-fg-color);
   background: var(--md-code-bg-color);
 }
+
+.md-typeset .book-downloads {
+  margin: 1rem 0 1.6rem;
+  padding: 0;
+  list-style: none;
+}
+
+.md-typeset .book-downloads li {
+  margin: 0;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.md-typeset .book-downloads small {
+  display: block;
+  margin-top: 0.3rem;
+}
+
+.md-typeset .home-views {
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  color: var(--md-default-fg-color--light);
+}

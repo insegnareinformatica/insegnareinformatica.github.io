@@ -1,10 +1,12 @@
 site_name: "Insegnare Informatica"
-site_url: "https://insegnareinformatica.github.io/"
+site_url: "https://informaticainclasse.it/"
 site_description: "Un percorso per insegnare informatica nella scuola primaria."
 
 theme:
   name: material
   language: it
+  custom_dir: overrides
+  font: false
   features:
     - navigation.sections
     - navigation.top
@@ -31,7 +33,14 @@ markdown_extensions:
 extra_css:
   - assets/stylesheets/site.css
 
-copyright: "Cookie: questo sito non usa cookie di profilazione, statistiche o servizi incorporati di tracciamento. La ricerca è interna al sito e non invia dati a servizi esterni."
+hooks:
+  - hooks/book_downloads.py
+
+extra:
+  generator: false
+  home_counter_url: !ENV [HOME_COUNTER_URL, ""]
+
+copyright: "Insegnare Informatica"
 
 nav:
   - Home: index.md

@@ -18,3 +18,35 @@ Il sito raccoglie e raccoglierà progressivamente:
 - risorse collegate alle Indicazioni nazionali;
 - materiali collegati al libro *Insegnare Informatica*, oltre che il libro stesso liberamente scaricabile;
 - collegamenti ad altre risorse utili.
+
+## Manutenzione del sito e del libro
+
+Il sito rimane in Markdown con MkDocs Material. I sorgenti del libro, quando
+pronti, andranno in book/. I vecchi sorgenti e PDF riservati non sono stati importati.
+
+- [Pubblicazione, versioni e conteggi dei download](maintenance/PUBBLICAZIONE.md)
+- [Installazione del contatore della sola home](maintenance/CONTATORE.md)
+- [Decisioni concordate e verifiche ancora necessarie](maintenance/DECISIONI.md)
+- [Elenco delle modifiche e verifiche locali](maintenance/STATO.md)
+
+La pubblicazione del libro e il contatore sono inizialmente disabilitati.
+Le istruzioni operative sono fuori da docs/ e non vengono pubblicate sul sito.
+
+## Anteprima locale
+
+    python3 -m venv .venv
+    .venv/bin/python -m pip install -r requirements.txt
+    .venv/bin/mkdocs serve
+
+Aprire http://127.0.0.1:8000/. Le anteprime locali non chiamano il contatore.
+
+## Verifica
+
+    .venv/bin/python -m unittest discover -s tests -v
+    node --test tests/home-counter.test.cjs
+    .venv/bin/mkdocs build --strict
+    .venv/bin/python scripts/check_site.py
+
+I test del PHP richiedono PHP CLI 8 a 64 bit; se non e' disponibile localmente,
+vengono saltati. Il controllo su GitHub verifica anche PHP. Il libro non viene
+compilato da questi test.

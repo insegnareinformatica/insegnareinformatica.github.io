@@ -32,8 +32,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Collect public book versions and download counts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BOOK_PUBLICATION_ENABLED: ${{ vars.BOOK_PUBLICATION_ENABLED }}
+        run: python scripts/book.py catalog
+
       - name: Build site
+        env:
+          HOME_COUNTER_URL: ${{ vars.HOME_COUNTER_URL }}
         run: mkdocs build --strict
+
+      - name: Check published files
+        run: python scripts/check_site.py
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
