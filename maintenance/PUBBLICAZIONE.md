@@ -14,6 +14,21 @@ o documenti di lavoro: il controllo scripts/check_site.py blocca questi casi.
 Le dipendenze restano su MkDocs 1.x e Material 9.x, le versioni compatibili con
 il progetto. Il tema usa font di sistema, senza richieste a Google Fonts.
 
+## Modificare i testi del sito
+
+Titoli, paragrafi, etichette e destinazioni dei collegamenti si modificano nei
+file Markdown di docs/, anche direttamente da GitHub. I test non richiedono
+formulazioni o titoli precisi: verificano la separazione delle risorse in
+sottosezioni, il collegamento esterno alla playlist, il contatto email e le
+protezioni della pubblicazione. Restano necessari il marcatore BOOK_DOWNLOADS
+e la classe video-link per le rispettive funzionalita'.
+
+A ogni push su main, Deploy site esegue prima Check site and publication helpers
+sullo stesso commit. Soltanto se tutti i controlli riescono costruisce e
+pubblica il sito. Se un controllo fallisce, rimane online la versione precedente.
+Gli stessi controlli partono sulle proposte di modifica (pull request) e possono
+essere avviati manualmente, senza pubblicare nulla. Non compilano il libro.
+
 ## Sorgenti futuri
 
 Inserire in book/ soltanto i sorgenti e le immagini approvati per la diffusione.
