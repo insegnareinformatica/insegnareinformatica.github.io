@@ -84,3 +84,47 @@
   font-size: 0.75rem;
   color: var(--md-default-fg-color--light);
 }
+
+.md-typeset .video-link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.md-typeset .video-link img {
+  grid-area: 1 / 1;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1600 / 714;
+  height: auto;
+  margin: 0;
+  border-radius: 6px;
+}
+
+.md-typeset .video-link .twemoji {
+  grid-area: 1 / 1;
+  align-self: center;
+  justify-self: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  color: #b32026;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 6px #0003;
+}
+
+.md-typeset .video-link strong {
+  grid-area: 2 / 1;
+}
+
+.md-typeset .video-link .twemoji svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.md-typeset .video-link:focus-visible {
+  outline: 3px solid var(--md-primary-fg-color);
+  outline-offset: 4px;
+}

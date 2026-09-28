@@ -29,7 +29,10 @@ pronti, andranno in book/. I vecchi sorgenti e PDF riservati non sono stati impo
 - [Decisioni concordate e verifiche ancora necessarie](maintenance/DECISIONI.md)
 - [Elenco delle modifiche e verifiche locali](maintenance/STATO.md)
 
-La pubblicazione del libro e il contatore sono inizialmente disabilitati.
+La pubblicazione del libro resta disabilitata fino al via libera esplicito.
+Il contatore della home si attiva tramite la variabile HOME_COUNTER_URL su GitHub;
+in locale rimane disattivato. La home raccoglie anche risorse e contatti,
+mentre Contenuti resta l'unica pagina aggiuntiva.
 Le istruzioni operative sono fuori da docs/ e non vengono pubblicate sul sito.
 
 ## Anteprima locale

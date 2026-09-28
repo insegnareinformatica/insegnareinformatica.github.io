@@ -61,13 +61,21 @@ Il primo push avvia anche i test PHP su GitHub; gli esiti aggiornati sono
 consultabili nella [pagina dei controlli](https://github.com/insegnareinformatica/insegnareinformatica.github.io/actions/workflows/check-site.yml).
 La compatibilita' dei sorgenti finali LaTeX non e' ancora verificabile.
 
-## Dopo il primo invio
+## Aggiornamento del 28 settembre 2026
 
-1. Controllare su GitHub che test e pubblicazione del sito siano riusciti.
-2. Verificare DNS e HTTPS del dominio principale.
-3. Attivare il contatore sul sito tramite HOME_COUNTER_URL e ripubblicare:
-   il PHP su lodi.ml e' gia' caricato e collaudato.
-4. Aggiungere esclusivamente i sorgenti approvati, verificare il PDF e dare
+- La prima pubblicazione e tutti i 26 test su GitHub sono riusciti, inclusi i test PHP.
+- Il dominio e' operativo, il certificato e' approvato e HTTPS e' obbligatorio.
+- Su richiesta di Michael, restano soltanto Home e Contenuti. Risorse e contatti
+  sono incorporati nella home, con il nuovo testo fornito dall'autore.
+- Il collegamento a YouTube usa un'immagine gia' locale e l'icona di riproduzione.
+  Non ci sono player incorporati ne' richieste automatiche a YouTube.
+- HOME_COUNTER_URL e' impostata per attivare il contatore nel prossimo Deploy site.
+  La pubblicazione del libro rimane disabilitata.
+
+## Prossimi passi
+
+1. Controllare la nuova pubblicazione e l'incremento del contatore sul sito reale.
+2. Aggiungere esclusivamente i sorgenti approvati, verificare il PDF e dare
    il via libera esplicito alla pubblicazione del libro.
 
 La conservazione delle versioni precedenti in lavorazione, mostrando soltanto

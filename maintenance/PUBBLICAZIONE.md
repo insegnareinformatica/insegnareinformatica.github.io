@@ -3,7 +3,7 @@
 ## Prima di iniziare
 
 Il repository pubblico e' insegnareinformatica/insegnareinformatica.github.io.
-Il sito conserva le pagine Home, Contenuti, Risorse e Contatti.
+Il sito conserva le pagine Home e Contenuti; risorse e contatti sono nella home.
 Il dominio principale configurato e' https://informaticainclasse.it/.
 I DNS e il certificato HTTPS devono essere operativi prima dell'attivazione
 del contatore. Nessuna modifica ai DNS e' richiesta dal PHP.

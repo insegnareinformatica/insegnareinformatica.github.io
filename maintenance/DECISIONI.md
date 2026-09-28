@@ -1,6 +1,7 @@
 # Decisioni concordate
 
-- Conservare il sito Markdown e la navigazione attuali.
+- Conservare il sito Markdown. Dal 28 settembre 2026 la navigazione richiesta
+  comprende soltanto Home e Contenuti; risorse e contatti sono nella home.
 - I sorgenti finali saranno LaTeX, nello stesso repository del sito.
 - Non importare i vecchi manoscritti, PDF o versioni sperimentali riservate.
 - Versione in lavorazione pubblica e automatica dopo il primo via libera.
@@ -10,6 +11,8 @@
 - PDF distribuiti attraverso GitHub Releases e conteggi GitHub visibili sul sito.
 - Conservare i PDF in lavorazione precedenti e mostrare sulla home solo l'ultimo.
 - Nessun GoatCounter o altro servizio di analisi delle visite.
+- Collegamento esterno alla playlist YouTube con immagine locale e icona di
+  riproduzione; nessun player, miniatura o script caricato dai server YouTube.
 - Solo aperture della home, incluse le ripetute; nessun riconoscimento di sessione.
 - PHP sul proprio hosting, al percorso lodi.ml/insegnareinformatica/counter.php.
 - CORS impostato nel PHP, senza modifiche ai DNS.
@@ -22,10 +25,13 @@
 - Verificare l'eventuale integrazione delle macro guideversion e guideversiondate.
 - Compilare e controllare visivamente il PDF prima del via libera.
 - Controllare che i soli materiali autorizzati entrino nel repository pubblico.
-- Verificare DNS e HTTPS di informaticainclasse.it.
-- Abilitare HOME_COUNTER_URL: il PHP e' stato caricato e collaudato su lodi.ml
-  il 27 settembre 2026, con quattro aperture di prova.
-- Eseguire i workflow sul repository dopo aver inviato le modifiche.
+
+## Sito e contatore
+
+- DNS e HTTPS operativi dal 28 settembre 2026, con HTTPS obbligatorio su Pages.
+- Contatore autorizzato e HOME_COUNTER_URL impostata il 28 settembre 2026.
+  Il PHP era stato caricato e collaudato su lodi.ml il giorno precedente.
+- Verificare il conteggio nella home pubblicata dopo il nuovo Deploy site.
 
 ## Scelte tecniche esplicite
 

@@ -1,8 +1,8 @@
 # Insegnare Informatica
 
- *Insegnare Informatica* è una guida per insegnanti del primo ciclo dedicata all'informatica nella scuola.
+*Insegnare Informatica* è una guida per insegnanti del primo ciclo dedicata all'informatica nella scuola.
 
- Il libro nasce originariamente per la scuola primaria, ma è adatto a docenti e studenti di scuola primaria e secondaria di primo grado, anche (e soprattutto) se non hanno basi di Informatica.
+Il libro nasce originariamente per la scuola primaria, ma è adatto a docenti e studenti di scuola primaria e secondaria di primo grado, anche (e soprattutto) se non hanno basi di Informatica.
 
 ![Illustrazione introduttiva del percorso](assets/images/chapter-01-introduzione.jpg){ .wide-image }
 
@@ -10,29 +10,31 @@
 
 Il libro propone un percorso per avvicinare bambine e bambini al pensiero informatico, in linea con le Nuove Indicazioni Nazionali per il primo ciclo.
 
-La guida sarà disponibile gratuitamente. La versione consigliata raccoglierà
-i contenuti approvati dagli autori; quella in lavorazione potrà includere
-modifiche ancora da verificare.
+La guida è disponibile gratuitamente.
 
 <!-- BOOK_DOWNLOADS -->
 
-## Risorse
+## Ulteriori risorse
 
-Nella pagina Risorse sono raccolti i video di formazione docenti in cui Alberto Montresor e Michael Lodi presentano il libro, insieme ad altre risorse per l'insegnamento dell'informatica nella scuola primaria.
+Percorso di formazione per insegnanti in cui Alberto Montresor e Michael Lodi presentano i contenuti del libro. Liberamente visualizzabile.
 
-[Vai alle risorse](risorse.md)
+[![Materiali e attività per la formazione dei docenti](assets/images/chapter-06-strategie-problemi.jpg) :material-play-circle: **Guarda la playlist su YouTube**](https://www.youtube.com/playlist?list=PLKu-4ZHSUrc_LzPgufMbVN_hYd86JkSK1){ .video-link rel="noreferrer" }
+
+[Raccolta di ulteriori materiali per l'insegnamento dell'Informatica nel primo ciclo](https://lodi.ml/infonin/)
 
 ## Origine del progetto
 
-Il libro nasce dal lavoro realizzato per [*Sulle orme di Milù* di Mondadori Education](https://www.mondadorieducation.it/catalogo/sulle-orme-di-milu-0074279/), progetto per la scuola primaria.
+Il libro nasce dal lavoro realizzato per [*Sulle orme di Milù* di Mondadori Education](https://www.mondadorieducation.it/catalogo/sulle-orme-di-milu-0074279/), progetto per la scuola primaria che comprende - per quel che riguarda l'Informatica - un fascicolo studenti e una guida docenti.
 
 Gli autori hanno mantenuto i diritti necessari per pubblicare una versione derivata della guida in questo spazio.
 
-## Autori e licenza
+## Autori, licenza e contatti
 
-Autori della guida: Michael Lodi, Agnese Del Zozzo, Alberto Montresor, Giorgia Bissoli
+Autori: Michael Lodi, Agnese Del Zozzo, Alberto Montresor, Giorgia Bissoli
 
-Licenza prevista per la versione pubblicata in questo sito: [Creative Commons Attribuzione - Non commerciale - Condividi allo stesso modo 4.0 Internazionale](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.it).
+Licenza: [Creative Commons Attribuzione - Non commerciale - Condividi allo stesso modo 4.0 Internazionale](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.it).
+
+Contatti: [michael.lodi@unibo.it](mailto:michael.lodi@unibo.it)
 
 ## Idea didattica
 

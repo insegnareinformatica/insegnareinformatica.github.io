@@ -8,12 +8,13 @@ usato per lodi.ml/infonin, in una cartella separata.
 Stato al 27 settembre 2026: file caricato da Michael e collaudo remoto riuscito.
 Entrambi i domini autorizzati funzionano; quattro aperture di prova hanno
 portato il totale a 4. Le richieste respinte e OPTIONS non lo incrementano.
-Il contatore non e' ancora attivato sul sito.
+Il 28 settembre 2026 Michael ne ha autorizzato l'attivazione sul sito.
+HOME_COUNTER_URL e' stata impostata; il successivo Deploy site pubblica il contatore.
 
 ## Cosa conta
 
 Ogni apertura della home, incluse riaperture e ricaricamenti, aggiunge uno.
-Passare a Contenuti, Risorse o Contatti non aggiunge nulla.
+Passare a Contenuti o a una sezione della stessa home non aggiunge nulla.
 Non si tratta di sessioni o visitatori unici. I browser che bloccano la richiesta
 non vengono contati; anche richieste automatiche possono aumentare il totale.
 
