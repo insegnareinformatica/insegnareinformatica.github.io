@@ -38,7 +38,7 @@ test("home makes one request, without credentials or referrer", async () => {
   assert.equal(calls[0][1].credentials, "omit");
   assert.equal(calls[0][1].referrerPolicy, "no-referrer");
   assert.equal(calls[0][1].cache, "no-store");
-  assert.equal(element.textContent, "815 visualizzazioni della home");
+  assert.equal(element.textContent, "815 visualizzazioni");
   assert.equal(element.hidden, false);
   listeners.pageshow({ persisted: false });
   assert.equal(calls.length, 1);
@@ -67,5 +67,5 @@ test("unavailable or invalid counters stay hidden, without fake totals", async (
   for (const value of [-1, "815", null, 1.5, Number.MAX_SAFE_INTEGER + 1]) {
     assert.equal((await run({ data: { value } })).element.hidden, true);
   }
-  assert.equal((await run({ data: { value: 1 } })).element.textContent, "1 visualizzazione della home");
+  assert.equal((await run({ data: { value: 1 } })).element.textContent, "1 visualizzazione");
 });

@@ -28,7 +28,7 @@ Percorso di formazione per insegnanti in cui Alberto Montresor e Michael Lodi pr
 
 ## Origine del progetto
 
-Il libro nasce dal lavoro realizzato per [*Sulle orme di Milù* di Mondadori Education](https://www.mondadorieducation.it/catalogo/sulle-orme-di-milu-0074279/), progetto per la scuola primaria che comprende - per quel che riguarda l'Informatica - un fascicolo studenti e una guida docenti.
+Il libro nasce dal lavoro realizzato per [*Sulle orme di Milù* di Mondadori Education](https://www.mondadorieducation.it/catalogo/sulle-orme-di-milu-0074279/), progetto per la scuola primaria che comprende - per quel che riguarda l'Informatica - un **fascicolo studenti** e una **guida docenti**.
 
 Gli autori hanno mantenuto i diritti necessari per pubblicare una versione derivata della guida in questo spazio.
 
