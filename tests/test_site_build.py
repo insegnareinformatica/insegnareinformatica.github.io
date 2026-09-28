@@ -47,6 +47,8 @@ class SiteBuildTests(unittest.TestCase):
             self.assertIn('href="mailto:michael.lodi@unibo.it"', home)
             self.assertIn('href="https://www.youtube.com/playlist?list=PLKu-4ZHSUrc_LzPgufMbVN_hYd86JkSK1"', home)
             self.assertIn("Ulteriori risorse", home)
+            self.assertIn('<h3 id="formazione-video">', home)
+            self.assertIn('<h3 id="materiali-per-la-classe">', home)
             self.assertIn("Autori, licenza e contatti", home)
             self.assertIn('class="video-link"', home)
             self.assertIn("Guarda la playlist su YouTube", home)

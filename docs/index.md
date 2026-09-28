@@ -16,9 +16,13 @@ La guida è disponibile gratuitamente.
 
 ## Ulteriori risorse
 
+### Formazione video
+
 Percorso di formazione per insegnanti in cui Alberto Montresor e Michael Lodi presentano i contenuti del libro. Liberamente visualizzabile.
 
 [![Materiali e attività per la formazione dei docenti](assets/images/chapter-06-strategie-problemi.jpg) :material-play-circle: **Guarda la playlist su YouTube**](https://www.youtube.com/playlist?list=PLKu-4ZHSUrc_LzPgufMbVN_hYd86JkSK1){ .video-link rel="noreferrer" }
+
+### Materiali per la classe
 
 [Raccolta di ulteriori materiali per l'insegnamento dell'Informatica nel primo ciclo](https://lodi.ml/infonin/)
 
