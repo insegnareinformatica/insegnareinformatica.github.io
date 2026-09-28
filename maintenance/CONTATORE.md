@@ -17,6 +17,7 @@ totali 5, 6 e 7. Passare a Contenuti non incrementa il contatore.
 
 Ogni apertura della home, incluse riaperture e ricaricamenti, aggiunge uno.
 Passare a Contenuti o a una sezione della stessa home non aggiunge nulla.
+Il totale compare nel footer della home, con la dicitura "visualizzazioni".
 Non si tratta di sessioni o visitatori unici. I browser che bloccano la richiesta
 non vengono contati; anche richieste automatiche possono aumentare il totale.
 

@@ -79,14 +79,15 @@
   margin-top: 0.3rem;
 }
 
-.md-typeset .home-views {
-  margin-top: 2rem;
-  font-size: 0.75rem;
-  color: var(--md-default-fg-color--light);
+.md-footer .home-views {
+  margin-top: 0.2rem;
+  font-size: inherit;
+  color: var(--md-footer-fg-color--light);
 }
 
 .md-typeset .video-link {
   display: grid;
+  width: min(100%, 320px);
   grid-template-columns: minmax(0, 1fr);
   gap: 0.5rem;
   margin: 1rem 0;

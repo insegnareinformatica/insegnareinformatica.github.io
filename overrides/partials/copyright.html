@@ -1,0 +1,13 @@
+<div class="md-copyright">
+  {% if config.copyright %}
+    <div class="md-copyright__highlight">
+      {{ config.copyright }}
+    </div>
+  {% endif %}
+  {% if page and page.is_homepage and config.extra.home_counter_url %}
+    <div class="home-views" id="home-views"
+         data-counter-url="{{ config.extra.home_counter_url | e }}"
+         aria-live="polite" hidden></div>
+    <script src="{{ 'assets/javascripts/home-counter.js' | url }}" defer></script>
+  {% endif %}
+</div>

@@ -32,7 +32,7 @@
         throw new Error("Invalid count");
       }
       element.textContent = data.value.toLocaleString("it-IT") +
-        (data.value === 1 ? " visualizzazione della home" : " visualizzazioni della home");
+        (data.value === 1 ? " visualizzazione" : " visualizzazioni");
       element.hidden = false;
     } catch (_) {
       // Il contatore non deve ostacolare la lettura se il server non risponde.
