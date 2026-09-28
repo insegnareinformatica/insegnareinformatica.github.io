@@ -22,7 +22,7 @@ Percorso di formazione per insegnanti in cui Alberto Montresor e Michael Lodi pr
 
 [![Materiali e attività per la formazione dei docenti](assets/images/chapter-06-strategie-problemi.jpg) :material-play-circle: **Guarda la playlist su YouTube**](https://www.youtube.com/playlist?list=PLIMMvYX7T1nQ){ .video-link rel="noreferrer" }
 
-### Materiali per la classe
+### Ulteriori materiali, corsi, libri, riferimenti
 
 [Raccolta di ulteriori materiali per l'insegnamento dell'Informatica nel primo ciclo](https://lodi.ml/infonin/)
 
