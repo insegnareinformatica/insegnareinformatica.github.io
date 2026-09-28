@@ -45,7 +45,7 @@ class SiteBuildTests(unittest.TestCase):
             home = self.build(root)
             self.assertIn('href="https://lodi.ml/infonin/"', home)
             self.assertIn('href="mailto:michael.lodi@unibo.it"', home)
-            self.assertIn('href="https://www.youtube.com/playlist?list=PLKu-4ZHSUrc_LzPgufMbVN_hYd86JkSK1"', home)
+            self.assertIn('href="https://www.youtube.com/playlist?list=PLIMMvYX7T1nQ"', home)
             self.assertIn("Ulteriori risorse", home)
             self.assertIn('<h3 id="formazione-video">', home)
             self.assertIn('<h3 id="materiali-per-la-classe">', home)
