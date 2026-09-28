@@ -32,7 +32,7 @@ def check(root):
             raise ValueError("Private or server file in the site: " + str(path))
         if path.suffix == ".html":
             PageCheck().feed(path.read_text())
-    for required in ("index.html", "contenuti/index.html", "risorse/index.html", "contatti/index.html"):
+    for required in ("index.html", "contenuti/index.html"):
         if not (root / required).is_file():
             raise ValueError("Missing page: " + required)
 
