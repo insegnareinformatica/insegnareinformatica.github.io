@@ -31,7 +31,8 @@
 - DNS e HTTPS operativi dal 28 settembre 2026, con HTTPS obbligatorio su Pages.
 - Contatore autorizzato e HOME_COUNTER_URL impostata il 28 settembre 2026.
   Il PHP era stato caricato e collaudato su lodi.ml il giorno precedente.
-- Verificare il conteggio nella home pubblicata dopo il nuovo Deploy site.
+- Conteggio verificato nella home pubblicata il 28 settembre: tre aperture
+  reali di prova (totali 5, 6, 7), nessun incremento passando a Contenuti.
 
 ## Scelte tecniche esplicite
 

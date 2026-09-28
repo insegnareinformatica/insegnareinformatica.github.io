@@ -9,7 +9,9 @@ Stato al 27 settembre 2026: file caricato da Michael e collaudo remoto riuscito.
 Entrambi i domini autorizzati funzionano; quattro aperture di prova hanno
 portato il totale a 4. Le richieste respinte e OPTIONS non lo incrementano.
 Il 28 settembre 2026 Michael ne ha autorizzato l'attivazione sul sito.
-HOME_COUNTER_URL e' stata impostata; il successivo Deploy site pubblica il contatore.
+HOME_COUNTER_URL e' impostata e il contatore e' pubblicato nella home.
+Il collaudo dal sito reale, su desktop e telefono, ha aggiunto tre aperture:
+totali 5, 6 e 7. Passare a Contenuti non incrementa il contatore.
 
 ## Cosa conta
 

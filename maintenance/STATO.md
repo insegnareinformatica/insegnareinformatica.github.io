@@ -69,14 +69,17 @@ La compatibilita' dei sorgenti finali LaTeX non e' ancora verificabile.
   sono incorporati nella home, con il nuovo testo fornito dall'autore.
 - Il collegamento a YouTube usa un'immagine gia' locale e l'icona di riproduzione.
   Non ci sono player incorporati ne' richieste automatiche a YouTube.
-- HOME_COUNTER_URL e' impostata per attivare il contatore nel prossimo Deploy site.
+- HOME_COUNTER_URL e' impostata e il contatore e' pubblicato nella home.
   La pubblicazione del libro rimane disabilitata.
+- Nuova pubblicazione e controlli su GitHub riusciti (23 test Python, 4 JavaScript).
+- Prova reale a 1440x900 e 375x812 riuscita: tre aperture della home (5, 6, 7),
+  nessun incremento passando a Contenuti, nessun cookie impostato, nessuna
+  richiesta automatica a YouTube, nessuna immagine mancante o eccedenza orizzontale.
 
 ## Prossimi passi
 
-1. Controllare la nuova pubblicazione e l'incremento del contatore sul sito reale.
-2. Aggiungere esclusivamente i sorgenti approvati, verificare il PDF e dare
-   il via libera esplicito alla pubblicazione del libro.
+Aggiungere esclusivamente i sorgenti approvati, verificare il PDF e dare
+il via libera esplicito alla pubblicazione del libro.
 
 La conservazione delle versioni precedenti in lavorazione, mostrando soltanto
 l'ultima sulla home, e' confermata.
