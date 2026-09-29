@@ -20,6 +20,9 @@ theme:
 plugins:
   - search:
       lang: it
+  - redirects:
+      redirect_maps:
+        'codeA.md': 'https://studio.code.org/it/courses/coursea-2021/units/1/lessons/2/levels/1?no_redirect=1'
 
 markdown_extensions:
   - admonition
