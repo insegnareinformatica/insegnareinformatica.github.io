@@ -87,10 +87,13 @@ class SiteBuildTests(unittest.TestCase):
         return (root / "site/index.html").read_text()
 
     def test_default_build_has_no_book_download_links_or_counter(self):
+        config = yaml.load((ROOT / "mkdocs.yml").read_text(), Loader=yaml.BaseLoader)
+        pending_message = config["extra"].get("book_pending_message", "disponibile prossimamente")
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             home = self.build(root)
-            self.assertEqual(home.count("disponibile prossimamente"), 2)
+            self.assertIn(pending_message, " ".join(ArticleLinks(home).text))
+            self.assertNotIn("Versione in lavorazione", home)
             self.assertNotIn("/releases/download/", home)
             self.assertNotIn('id="home-views"', home)
             self.assertNotIn("home-counter.js", home)
