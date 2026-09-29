@@ -136,9 +136,28 @@ class CatalogTests(unittest.TestCase):
 
     def test_missing_release_is_not_a_zero_download_link(self):
         rendered = downloads.render(book.catalog([]))
-        self.assertEqual(rendered.count("disponibile prossimamente"), 2)
+        self.assertEqual(rendered.count("<li>"), 1)
+        self.assertIn("Versione consigliata", rendered)
+        self.assertNotIn("Versione in lavorazione", rendered)
         self.assertNotIn("<a ", rendered)
         self.assertNotIn("0 download", rendered)
+
+    def test_pending_message_is_editable_and_escaped(self):
+        message = "Nuova data: <da confermare> & aggiornamenti"
+        rendered = downloads.render(book.catalog([]), pending_message=message)
+        self.assertIn(escape(message), rendered)
+        self.assertNotIn("<da confermare>", rendered)
+        published = downloads.render(book.catalog([release()]), pending_message=message)
+        self.assertNotIn(escape(message), published)
+        self.assertIn("/releases/download/v1.0.0/", published)
+        self.assertNotIn("Versione in lavorazione", published)
+
+    def test_working_version_appears_only_when_a_pdf_is_available(self):
+        rendered = downloads.render(book.catalog([
+            release("lavorazione-123-1", 8, prerelease=True),
+        ]))
+        self.assertIn("Versione in lavorazione", rendered)
+        self.assertIn("/releases/download/lavorazione-123-1/", rendered)
 
     def test_archived_versions_and_counts_are_rendered(self):
         rendered = downloads.render(book.catalog([release("v1.0.0", 3), release("v1.1.0", 7)]))

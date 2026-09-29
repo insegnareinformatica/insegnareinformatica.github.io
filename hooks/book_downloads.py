@@ -30,12 +30,13 @@ def link(entry, label):
     return '<a href="' + escape(url, quote=True) + '">' + escape(label) + "</a>"
 
 
-def render(data):
+def render(data, pending_message="disponibile prossimamente"):
     stable, working = data.get("stable", []), data.get("working", [])
     rows = ['<ul class="book-downloads">']
     for label, entries in (("Versione consigliata", stable), ("Versione in lavorazione", working)):
         if not entries:
-            rows.append("<li><strong>" + label + "</strong> — disponibile prossimamente</li>")
+            if entries is stable:
+                rows.append("<li><strong>" + label + "</strong> — " + escape(pending_message) + "</li>")
             continue
         entry = entries[0]
         details = ("Versione " + escape(entry["version"].removeprefix("v")) + " · ") if entries is stable else ""
@@ -64,4 +65,5 @@ def on_page_markdown(markdown, page, config, files):
     data = json.loads(path.read_text()) if path.exists() else {}
     if markdown.count("<!-- BOOK_DOWNLOADS -->") != 1:
         raise ValueError("The home page needs exactly one book downloads marker")
-    return markdown.replace("<!-- BOOK_DOWNLOADS -->", render(data))
+    pending_message = config.get("extra", {}).get("book_pending_message", "disponibile prossimamente")
+    return markdown.replace("<!-- BOOK_DOWNLOADS -->", render(data, pending_message))

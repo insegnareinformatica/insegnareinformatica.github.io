@@ -99,6 +99,7 @@ hooks:
 extra:
   generator: false
   home_counter_url: !ENV [HOME_COUNTER_URL, ""]
+  book_pending_message: "disponibile entro il 5 ottobre 2026"
 
 copyright: "Insegnare Informatica"
 

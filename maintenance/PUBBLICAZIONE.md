@@ -23,6 +23,11 @@ sottosezioni, il collegamento esterno alla playlist, il contatto email e le
 protezioni della pubblicazione. Restano necessari il marcatore BOOK_DOWNLOADS
 e la classe video-link per le rispettive funzionalita'.
 
+L'avviso prima dell'uscita si modifica in mkdocs.yml, alla voce
+extra.book_pending_message. Viene sostituito dal download quando esiste una
+versione consigliata pubblicata. La voce della versione in lavorazione rimane
+nascosta finche' non esiste un relativo PDF pubblico.
+
 A ogni push su main, Deploy site esegue prima Check site and publication helpers
 sullo stesso commit. Soltanto se tutti i controlli riescono costruisce e
 pubblica il sito. Se un controllo fallisce, rimane online la versione precedente.
