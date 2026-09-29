@@ -27,6 +27,7 @@ class ArticleLinks(HTMLParser):
         self.section = 0
         self.subsection = 0
         self.links = []
+        self.text = []
         self.feed(html)
 
     def handle_starttag(self, tag, attrs):
@@ -45,6 +46,10 @@ class ArticleLinks(HTMLParser):
     def handle_endtag(self, tag):
         if tag == "article":
             self.in_article = False
+
+    def handle_data(self, data):
+        if self.in_article:
+            self.text.append(data)
 
 
 class RedirectTargets(HTMLParser):
@@ -90,6 +95,23 @@ class SiteBuildTests(unittest.TestCase):
             self.assertNotIn('id="home-views"', home)
             self.assertNotIn("home-counter.js", home)
             self.assertFalse((root / "site/pdf").exists())
+
+    def test_error_page_has_an_absolute_home_link_without_error_code_or_counter(self):
+        config = yaml.load((ROOT / "mkdocs.yml").read_text(), Loader=yaml.BaseLoader)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.build(root, counter="https://lodi.ml/insegnareinformatica/counter.php")
+            html = (root / "site/404.html").read_text()
+            content = ArticleLinks(html)
+            self.assertTrue(content.text)
+            self.assertNotRegex(" ".join(content.text), r"\b404\b")
+            self.assertTrue(any(
+                attrs.get("href") == config["site_url"]
+                and "md-button" in attrs.get("class", "").split()
+                for attrs, _ in content.links
+            ), "The home button must work even from a nested missing URL")
+            self.assertNotIn("home-counter.js", html)
+            self.assertNotIn('id="home-views"', html)
 
     def test_configured_external_redirects_preserve_urls_without_home_counter(self):
         config = yaml.load((ROOT / "mkdocs.yml").read_text(), Loader=yaml.BaseLoader)
