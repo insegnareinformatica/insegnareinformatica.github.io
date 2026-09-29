@@ -48,6 +48,10 @@ Per aggiungere un collegamento, inserire una nuova coppia nella stessa mappa:
 Con la configurazione attuale, l'indirizzo risultante e' /nome-breve/.
 Non usare come origine una pagina esistente del sito. I redirect non vengono
 inseriti nella ricerca e non chiamano il contatore della home.
+Sono consentiti anche collegamenti e redirect verso PDF pubblici su altri siti,
+compresi indirizzi con parametri o riferimenti a una pagina del documento.
+Il divieto riguarda i file PDF copiati nel sito, non i collegamenti a risorse
+esterne. La pubblicazione del nostro libro conserva i propri controlli separati.
 Sono inoltri HTML, anche senza JavaScript, non risposte HTTP 301 del server.
 La dipendenza e' fissata alla versione 1.2.2 per mantenere MkDocs 1.x senza
 introdurre ProperDocs, aggiunto come dipendenza dalla versione 1.2.3.

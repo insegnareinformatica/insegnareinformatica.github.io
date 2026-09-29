@@ -10,6 +10,7 @@ import unittest
 from urllib.parse import parse_qs, urlparse
 
 import yaml
+from mkdocs.structure.files import File
 
 from test_book import book, release, site_check
 
@@ -80,7 +81,7 @@ class SiteBuildTests(unittest.TestCase):
         site_check.check(root / "site")
         return (root / "site/index.html").read_text()
 
-    def test_default_build_has_no_pdf_links_or_counter(self):
+    def test_default_build_has_no_book_download_links_or_counter(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             home = self.build(root)
@@ -90,26 +91,30 @@ class SiteBuildTests(unittest.TestCase):
             self.assertNotIn("home-counter.js", home)
             self.assertFalse((root / "site/pdf").exists())
 
-    def test_codea_redirect_preserves_configured_url_without_home_counter(self):
+    def test_configured_external_redirects_preserve_urls_without_home_counter(self):
         config = yaml.load((ROOT / "mkdocs.yml").read_text(), Loader=yaml.BaseLoader)
-        redirects = next(plugin["redirects"]["redirect_maps"]
-                         for plugin in config["plugins"] if "redirects" in plugin)
-        target = redirects["codeA.md"]
+        redirects = next((plugin["redirects"].get("redirect_maps", {})
+                          for plugin in config["plugins"] if "redirects" in plugin), {})
+        directory_urls = config.get("use_directory_urls", "true").lower() == "true"
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            home = self.build(root, counter="https://lodi.ml/insegnareinformatica/counter.php")
-            redirect = (root / "site/codeA/index.html").read_text()
-            self.assertEqual(RedirectTargets(redirect).targets, {
-                "refresh": "0; url=" + target,
-                "canonical": target,
-                "fallback": target,
-            })
-            self.assertNotIn("home-counter.js", redirect)
-            self.assertNotIn('id="home-views"', redirect)
-            self.assertNotIn('href="codeA/"', home)
+            self.build(root, counter="https://lodi.ml/insegnareinformatica/counter.php")
             search = json.loads((root / "site/search/search_index.json").read_text())
-            self.assertFalse(any(entry["location"].startswith("codeA/")
-                                 for entry in search["docs"]))
+            for source, target in redirects.items():
+                if urlparse(target).scheme not in ("http", "https"):
+                    continue
+                with self.subTest(source=source, target=target):
+                    page = File(source, "", "", directory_urls)
+                    redirect = (root / "site" / page.dest_path).read_text()
+                    self.assertEqual(RedirectTargets(redirect).targets, {
+                        "refresh": "0; url=" + target,
+                        "canonical": target,
+                        "fallback": target,
+                    })
+                    self.assertNotIn("home-counter.js", redirect)
+                    self.assertNotIn('id="home-views"', redirect)
+                    self.assertFalse(any(entry["location"].startswith(page.url)
+                                         for entry in search["docs"]))
 
     def assert_home_resources(self, home):
         links = ArticleLinks(home).links
@@ -164,7 +169,7 @@ class SiteBuildTests(unittest.TestCase):
 
 ### Altri percorsi
 
-[Materiali aggiornati](https://example.org/materiali/)
+[Materiali aggiornati](https://example.org/materiali.pdf?download=1#page=3)
 
 ## Scrivici
 

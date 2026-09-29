@@ -16,11 +16,11 @@ class PageCheck(HTMLParser):
             if attrs.get("href", "").startswith(("http:", "https:", "//")):
                 raise ValueError("Unexpected external stylesheet or connection")
         href = attrs.get("href", "")
-        if urlparse(href).path.endswith(".pdf"):
-            if not href.startswith(
-                "https://github.com/insegnareinformatica/insegnareinformatica.github.io/releases/download/"
-            ):
-                raise ValueError("PDF downloads must come from approved public versions")
+        target = urlparse(href)
+        if target.path.lower().endswith(".pdf"):
+            # Linking to teaching resources does not copy their PDFs into Pages.
+            if not (target.netloc and target.scheme in ("", "http", "https")):
+                raise ValueError("Local PDF link is not allowed in the static site: " + href)
 
 
 def check(root):
@@ -31,7 +31,10 @@ def check(root):
         if path.is_file() and path.suffix.lower() in forbidden:
             raise ValueError("Private or server file in the site: " + str(path))
         if path.suffix == ".html":
-            PageCheck().feed(path.read_text())
+            try:
+                PageCheck().feed(path.read_text())
+            except ValueError as error:
+                raise ValueError(str(path.relative_to(root)) + ": " + str(error)) from error
     for required in ("index.html", "contenuti/index.html"):
         if not (root / required).is_file():
             raise ValueError("Missing page: " + required)

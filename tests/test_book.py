@@ -1,4 +1,5 @@
 import importlib.util
+from html import escape
 import os
 from pathlib import Path
 import tempfile
@@ -171,8 +172,37 @@ class ArtifactTests(unittest.TestCase):
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_text("<html></html>")
             site_check.check(root)
-            (root / "book.pdf").write_bytes(b"%PDF-private")
-            with self.assertRaises(ValueError):
+            for name in ("book.pdf", "book.PDF", "main.tex", "counter.php"):
+                with self.subTest(name=name):
+                    path = root / name
+                    path.write_bytes(b"private test fixture")
+                    with self.assertRaisesRegex(ValueError, "Private or server file"):
+                        site_check.check(root)
+                    path.unlink()
+
+    def test_external_pdf_resources_are_allowed(self):
+        for url in ("https://resources.example/guide.pdf",
+                    "http://resources.example/guide.pdf#page=3",
+                    "https://resources.example/guide.PDF?lang=it&download=1#page=3",
+                    "//resources.example/guide.pdf",
+                    "https://github.com/" + book.REPOSITORY +
+                    "/releases/download/v1.0.0/" + book.ASSET_NAME):
+            with self.subTest(url=url):
+                href = escape(url, quote=True)
+                site_check.PageCheck().feed('<a href="' + href + '">Materiali</a>')
+                site_check.PageCheck().feed('<link rel="canonical" href="' + href + '">')
+
+    def test_local_pdf_links_are_still_rejected(self):
+        for url in ("book.pdf", "../book.pdf", "/pdf/book.PDF?download=1#page=3",
+                    "file:///tmp/book.pdf"):
+            with self.subTest(url=url), self.assertRaisesRegex(ValueError, "Local PDF link"):
+                site_check.PageCheck().feed('<a href="' + url + '">Libro</a>')
+
+    def test_html_errors_identify_the_page(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "risorsa.html").write_text('<a href="book.pdf">Libro</a>')
+            with self.assertRaisesRegex(ValueError, "risorsa.html: Local PDF link"):
                 site_check.check(root)
 
     def test_external_scripts_and_fonts_are_rejected(self):
