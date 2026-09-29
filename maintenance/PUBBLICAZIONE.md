@@ -29,6 +29,29 @@ pubblica il sito. Se un controllo fallisce, rimane online la versione precedente
 Gli stessi controlli partono sulle proposte di modifica (pull request) e possono
 essere avviati manualmente, senza pubblicare nulla. Non compilano il libro.
 
+## Collegamenti brevi e redirect
+
+I redirect si configurano in mkdocs.yml, sotto plugins > redirects > redirect_maps.
+Il plugin mkdocs-redirects genera le pagine di inoltro durante la compilazione
+del sito; non occorre creare file Markdown corrispondenti o aggiungerli al menu.
+
+Il primo collegamento e' https://informaticainclasse.it/codeA/ (A maiuscola):
+inoltra all'attivita' di Code.org indicata nella configurazione, conservando
+il parametro no_redirect=1.
+
+Per aggiungere un collegamento, inserire una nuova coppia nella stessa mappa:
+
+```yaml
+'nome-breve.md': 'https://esempio.org/destinazione'
+```
+
+Con la configurazione attuale, l'indirizzo risultante e' /nome-breve/.
+Non usare come origine una pagina esistente del sito. I redirect non vengono
+inseriti nella ricerca e non chiamano il contatore della home.
+Sono inoltri HTML, anche senza JavaScript, non risposte HTTP 301 del server.
+La dipendenza e' fissata alla versione 1.2.2 per mantenere MkDocs 1.x senza
+introdurre ProperDocs, aggiunto come dipendenza dalla versione 1.2.3.
+
 ## Sorgenti futuri
 
 Inserire in book/ soltanto i sorgenti e le immagini approvati per la diffusione.

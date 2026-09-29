@@ -1,2 +1,4 @@
 mkdocs>=1.6,<2
 mkdocs-material>=9.6,<10
+# 1.2.3 adds ProperDocs; keep the existing MkDocs toolchain.
+mkdocs-redirects==1.2.2

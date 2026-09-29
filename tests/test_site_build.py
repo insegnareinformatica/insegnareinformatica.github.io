@@ -9,6 +9,8 @@ import tempfile
 import unittest
 from urllib.parse import parse_qs, urlparse
 
+import yaml
+
 from test_book import book, release, site_check
 
 
@@ -44,6 +46,22 @@ class ArticleLinks(HTMLParser):
             self.in_article = False
 
 
+class RedirectTargets(HTMLParser):
+    def __init__(self, html):
+        super().__init__()
+        self.targets = {}
+        self.feed(html)
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "meta" and attrs.get("http-equiv") == "refresh":
+            self.targets["refresh"] = attrs.get("content")
+        elif tag == "link" and attrs.get("rel") == "canonical":
+            self.targets["canonical"] = attrs.get("href")
+        elif tag == "a":
+            self.targets["fallback"] = attrs.get("href")
+
+
 class SiteBuildTests(unittest.TestCase):
     def build(self, root, catalog=None, counter="", home_markdown=None):
         for directory in ("docs", "hooks", "overrides"):
@@ -71,6 +89,27 @@ class SiteBuildTests(unittest.TestCase):
             self.assertNotIn('id="home-views"', home)
             self.assertNotIn("home-counter.js", home)
             self.assertFalse((root / "site/pdf").exists())
+
+    def test_codea_redirect_preserves_configured_url_without_home_counter(self):
+        config = yaml.load((ROOT / "mkdocs.yml").read_text(), Loader=yaml.BaseLoader)
+        redirects = next(plugin["redirects"]["redirect_maps"]
+                         for plugin in config["plugins"] if "redirects" in plugin)
+        target = redirects["codeA.md"]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            home = self.build(root, counter="https://lodi.ml/insegnareinformatica/counter.php")
+            redirect = (root / "site/codeA/index.html").read_text()
+            self.assertEqual(RedirectTargets(redirect).targets, {
+                "refresh": "0; url=" + target,
+                "canonical": target,
+                "fallback": target,
+            })
+            self.assertNotIn("home-counter.js", redirect)
+            self.assertNotIn('id="home-views"', redirect)
+            self.assertNotIn('href="codeA/"', home)
+            search = json.loads((root / "site/search/search_index.json").read_text())
+            self.assertFalse(any(entry["location"].startswith("codeA/")
+                                 for entry in search["docs"]))
 
     def assert_home_resources(self, home):
         links = ArticleLinks(home).links
