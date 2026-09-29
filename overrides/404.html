@@ -1,0 +1,9 @@
+{% extends "main.html" %}
+
+{% block content %}
+  <h1><strong>Ops, questa pagina non si trova!</strong></h1>
+  <p>Anche in informatica capita di dover cambiare strategia. Ripartiamo dalla pagina iniziale?</p>
+  <p>
+    <a class="md-button md-button--primary" href="{{ config.site_url | e }}">Torna alla pagina iniziale</a>
+  </p>
+{% endblock %}
