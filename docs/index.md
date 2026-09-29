@@ -48,7 +48,7 @@ Il percorso privilegia attività concrete, discussione tra pari, confronto delle
 
 ## Contenuti
 
-Il libro attraversa cinque nuclei: algoritmi quotidiani, percorsi e griglie, rappresentazione delle informazioni, strategie per risolvere problemi e programmazione visuale.
+Il libro attraversa cinque macroargomenti: algoritmi quotidiani, percorsi e griglie, rappresentazione delle informazioni, strategie per risolvere problemi e programmazione visuale.
 
 [Vai ai contenuti](contenuti.md)
 

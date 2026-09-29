@@ -1,6 +1,6 @@
 # Contenuti
 
-Il libro è organizzato attorno ad alcuni nuclei di lavoro. Ogni nucleo collega concetti informatici, attività in classe e riflessione didattica.
+Il libro è organizzato attorno ad alcuni macroargomenti. Ogni macroargomento collega concetti informatici, attività in classe e riflessione didattica.
 
 <div class="activity-grid" markdown>
 
