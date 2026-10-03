@@ -15,7 +15,8 @@ except ImportError:
 SITE_ROOT = Path(__file__).resolve().parents[1]
 ROOT = SITE_ROOT / "book"
 SLUG = re.compile(r"[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*\Z")
-DIRECT_URL = re.compile(r"\\(?:urloriginale|hreforiginale)\s*\{")
+# codeorgsvgcredit conserva l'URL del renderer nei metadati non stampati.
+DIRECT_URL = re.compile(r"\\(?:urloriginale|hreforiginale|codeorgsvgcredit)\s*\{")
 ALIAS = re.compile(r"\\(?:linkbreve|hrefbreve)\s*\{([^{}]*)\}")
 LITERAL_URL = re.compile(r"https?://[^\s{}<>]+|www\.[^\s{}<>]+", re.IGNORECASE)
 INFRA_DEFINITION = re.compile(
@@ -228,7 +229,7 @@ def http_url_error(value):
 
 
 def mask_direct_urls(text, name, errors):
-    """Ammette solo il primo argomento delle macro per URL originali."""
+    """Ammette solo il primo argomento delle macro con URL originali."""
     chars = list(text)
     for match in DIRECT_URL.finditer(text):
         start = match.end() - 1
@@ -238,7 +239,7 @@ def mask_direct_urls(text, name, errors):
             if error:
                 line = text.count("\n", 0, match.start()) + 1
                 errors.append(f"{name}:{line}: {error} in {match.group().rstrip('{')}: {value!r}")
-        # Le etichette di hreforiginale e il testo successivo restano soggetti
+        # Le etichette, gli altri metadati e il testo successivo restano soggetti
         # al controllo. Un primo argomento invalido è già un errore bloccante.
         for pos in range(start + 1, end - 1):
             if chars[pos] != "\n":

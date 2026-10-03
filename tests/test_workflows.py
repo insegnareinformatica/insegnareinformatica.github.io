@@ -1,4 +1,6 @@
 from pathlib import Path
+import json
+import subprocess
 import unittest
 
 import yaml
@@ -61,10 +63,44 @@ class SiteWorkflowTests(unittest.TestCase):
     def test_book_workflow_tracks_redirect_and_generator_changes(self):
         publish = self.workflow("publish-book.yml")
         self.assertEqual(publish["on"]["push"]["branches"], ["main"])
-        self.assertTrue({"book/**", "config/book.json", "scripts/book.py",
+        self.assertTrue({"book/**", "fonts/**", "config/book.json", "scripts/book.py",
                          "scripts/aggiorna-link.py", "mkdocs.yml", "requirements.txt",
                          ".github/workflows/publish-book.yml"}
                         .issubset(publish["on"]["push"]["paths"]))
+
+    def test_book_fonts_are_available_from_the_latex_working_directory(self):
+        publish = self.workflow("publish-book.yml")
+        latex = next(step for step in publish["jobs"]["build"]["steps"]
+                     if step.get("uses") == "xu-cheng/latex-action@v4")
+        config = json.loads((ROOT / "config/book.json").read_text())
+        directory = (ROOT / config["source"]).parent
+        fonts = list(directory.glob(latex["with"]["extra_fonts"]))
+        self.assertEqual({font.name for font in fonts}, {
+            "SourceSansPro-Regular.otf", "SourceSansPro-RegularIt.otf",
+            "SourceSansPro-Bold.otf", "SourceSansPro-BoldIt.otf",
+        })
+        for font in fonts:
+            self.assertEqual(font.read_bytes()[:4], b"OTTO")
+        self.assertIn("SIL OPEN FONT LICENSE",
+                      (fonts[0].parent / "LICENSE.txt").read_text())
+        self.assertEqual(latex["with"]["texlive_version"], "2026")
+
+    def test_only_book_source_illustrations_can_be_pdf_files(self):
+        cases = {
+            "book/img/illustration.pdf": False,
+            "book/img/nested/illustration.pdf": False,
+            "book/main.pdf": True,
+            "book/draft.pdf": True,
+            "docs/book.pdf": True,
+            "dist/insegnare-informatica.pdf": True,
+        }
+        for path, ignored in cases.items():
+            with self.subTest(path=path):
+                result = subprocess.run(
+                    ["git", "check-ignore", "--no-index", "-q", path],
+                    cwd=ROOT, capture_output=True, text=True, timeout=10)
+                self.assertIn(result.returncode, (0, 1), result.stderr)
+                self.assertEqual(result.returncode == 0, ignored)
 
     def test_link_checks_do_not_relax_book_publication_approval(self):
         publish = self.workflow("publish-book.yml")

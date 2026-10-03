@@ -177,6 +177,22 @@ class BookLinksTests(unittest.TestCase):
                 (self.book / "cap1.tex").write_text(text + "\n", encoding="utf-8")
                 self.assertTrue(links.validate_sources(self.book, REDIRECTS))
 
+    def test_renderer_credit_accepts_only_its_original_url_argument(self):
+        self.make_book()
+        chapter = self.book / "cap1.tex"
+        chapter.write_text(
+            r"\codeorgsvgcredit{https://example.test/renderer?lang=it}{Level}{Changes}"
+            "\n", encoding="utf-8")
+        self.assertEqual(links.validate_sources(self.book, REDIRECTS), [])
+        for text in (
+                r"\codeorgsvgcredit{file:///private/example}{Level}{Changes}",
+                r"\codeorgsvgcredit{https://example.test/renderer}{https://example.test/hidden}{Changes}",
+                r"\codeorgsvgcredit{https://example.test/renderer}{Level}{https://example.test/hidden}",
+                r"\codeorgcredit{https://example.test/renderer}{Level}{Changes}"):
+            with self.subTest(text=text):
+                chapter.write_text(text + "\n", encoding="utf-8")
+                self.assertTrue(links.validate_sources(self.book, REDIRECTS))
+
     def test_renderer_preserves_targets_and_is_independent_of_map_order(self):
         target = "https://example.test/a%20b?q=one&x=two#part"
         forward = {"beta": BETA, "alpha": target}

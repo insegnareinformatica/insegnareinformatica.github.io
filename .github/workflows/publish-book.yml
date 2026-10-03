@@ -6,6 +6,7 @@ on:
     paths:
       - "book/**"
       - "config/book.json"
+      - "fonts/**"
       - "scripts/book.py"
       - "scripts/aggiorna-link.py"
       - "mkdocs.yml"
@@ -87,6 +88,7 @@ jobs:
           os: debian
           texlive_version: "2026"
           extra_system_packages: fonts-noto-cjk fonts-noto-color-emoji
+          extra_fonts: ../fonts/source-sans-pro/*.otf
       - name: Validate the generated PDF
         run: python scripts/book.py package
       - name: Transfer the explicitly approved PDF to the publishing job
