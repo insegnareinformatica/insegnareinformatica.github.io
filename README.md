@@ -19,22 +19,6 @@ Il sito raccoglie e raccoglierà progressivamente:
 - materiali collegati al libro *Insegnare Informatica*, oltre che il libro stesso liberamente scaricabile;
 - collegamenti ad altre risorse utili.
 
-## Manutenzione del sito e del libro
-
-Il sito rimane in Markdown con MkDocs Material. I sorgenti del libro, quando
-pronti, andranno in book/. I vecchi sorgenti e PDF riservati non sono stati importati.
-
-- [Pubblicazione, versioni e conteggi dei download](maintenance/PUBBLICAZIONE.md)
-- [Installazione del contatore della sola home](maintenance/CONTATORE.md)
-- [Decisioni concordate e verifiche ancora necessarie](maintenance/DECISIONI.md)
-- [Elenco delle modifiche e verifiche locali](maintenance/STATO.md)
-
-La pubblicazione del libro resta disabilitata fino al via libera esplicito.
-Il contatore della home si attiva tramite la variabile HOME_COUNTER_URL su GitHub;
-in locale rimane disattivato. La home raccoglie anche risorse e contatti,
-mentre Contenuti resta l'unica pagina aggiuntiva.
-Le istruzioni operative sono fuori da docs/ e non vengono pubblicate sul sito.
-
 ## Anteprima locale
 
     python3 -m venv .venv
