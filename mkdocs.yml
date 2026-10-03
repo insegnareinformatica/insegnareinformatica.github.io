@@ -77,9 +77,11 @@ plugins:
         'umcPercorsi.md': 'https://impactconectar.wixsite.com/website'
         'umcRicerca.md': 'https://www.tandfonline.com/doi/full/10.1080/08993408.2025.2542669'
         'coppia.md': 'https://www.youtube.com/watch?v=sTJ85VIYDRE'
-        'unpluggedOrdini.md': 'https://classic.csunplugged.org/documents/books/italian/csunplugged-it.2015.1.0.pdf#page=161.17'
+        'unpluggedPesi.md': 'https://classic.csunplugged.org/documents/books/italian/csunplugged-it.2015.1.0.pdf#page=101'
+        'unpluggedOrdini.md': 'https://classic.csunplugged.org/documents/books/italian/csunplugged-it.2015.1.0.pdf#page=161'
         'scratch-beetle.md': 'https://assets.scratch.mit.edu/internalapi/asset/46d0dfd4ae7e9bfe3a6a2e35a4905eae.svg/get/'
         'scratchblocks.md': 'https://scratchblocks.github.io/'
+
 
 
 markdown_extensions:
