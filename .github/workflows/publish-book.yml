@@ -7,6 +7,9 @@ on:
       - "book/**"
       - "config/book.json"
       - "scripts/book.py"
+      - "scripts/aggiorna-link.py"
+      - "mkdocs.yml"
+      - "requirements.txt"
       - ".github/workflows/publish-book.yml"
   workflow_dispatch:
     inputs:
@@ -69,6 +72,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+      - name: Install link validation dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Validate links and generate the book sitography
+        run: python scripts/book.py links
       - name: Set PDF version when supported by the sources
         run: python scripts/book.py stamp
       - name: Compile LaTeX

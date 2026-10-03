@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import subprocess
 import sys
 from urllib.error import HTTPError
 from urllib.parse import quote
@@ -162,6 +163,18 @@ def prepare():
     print("Book operation: " + plan["mode"])
 
 
+def links():
+    """Validate redirects and regenerate the sitography only in this checkout."""
+    source = ROOT / configuration()["source"]
+    subprocess.run([
+        sys.executable, str(ROOT / "scripts/aggiorna-link.py"),
+        "--root", str(source.parent),
+        "--source", source.name,
+        "--redirects", str(ROOT / "mkdocs.yml"),
+        "--allow-missing-book",
+    ], check=True)
+
+
 def stamp():
     plan = publication_plan(os.environ)
     if plan["mode"] == "verifica":
@@ -267,7 +280,7 @@ def publish():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=("prepare", "stamp", "package", "publish", "catalog"))
+    parser.add_argument("command", choices=("prepare", "links", "stamp", "package", "publish", "catalog"))
     args = parser.parse_args()
     if args.command == "catalog":
         enabled = os.environ.get("BOOK_PUBLICATION_ENABLED") == "true"

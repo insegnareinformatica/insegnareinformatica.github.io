@@ -29,6 +29,7 @@ Aprire http://127.0.0.1:8000/. Le anteprime locali non chiamano il contatore.
 
 ## Verifica
 
+    .venv/bin/python scripts/book.py links
     .venv/bin/python -m unittest discover -s tests -v
     node --test tests/home-counter.test.cjs
     .venv/bin/mkdocs build --strict
@@ -37,3 +38,11 @@ Aprire http://127.0.0.1:8000/. Le anteprime locali non chiamano il contatore.
 I test del PHP richiedono PHP CLI 8 a 64 bit; se non e' disponibile localmente,
 vengono saltati. Il controllo su GitHub verifica anche PHP. Il libro non viene
 compilato da questi test.
+
+Il comando `book.py links` controlla sempre gli alias in `mkdocs.yml`. Quando
+saranno presenti i sorgenti indicati in `config/book.json`, verifica anche i
+collegamenti della guida e genera l'intero `book/sitografia.tex`. Il controllo
+automatico viene eseguito sulle pull request e su ogni commit a `main`, prima
+della build del sito; viene ripetuto prima delle future compilazioni del libro.
+Le modifiche restano nel checkout di lavoro, senza commit automatici.
+Questo controllo non compila né pubblica la guida e non abilita la pubblicazione.

@@ -5,6 +5,25 @@ Inserire qui, quando pronti, i sorgenti LaTeX e le immagini autorizzate.
 Il file principale e' main.tex, compilato con LuaLaTeX.
 Il percorso e il motore sono modificabili in ../config/book.json.
 
+Prima della compilazione, `python scripts/book.py links` (dalla radice del sito)
+controlla i collegamenti e genera `sitografia.tex` dal registro in `mkdocs.yml`.
+Il generatore resta in `scripts/`, fuori da questa cartella. Finché i sorgenti
+non sono presenti, il comando controlla soltanto il registro. Se trova file
+`.tex` o `.bib` ma manca il sorgente principale, segnala l'incompletezza come
+errore. Non occorre copiare i materiali privati di `ALTRO`.
+
+Nei `.tex` usare `\linkbreve{alias}` o `\hrefbreve{alias}{testo}` per gli
+alias definiti in `mkdocs.yml`; per gli altri indirizzi restano
+`\urloriginale{URL}` e `\hreforiginale{URL}{testo}`. Nei `.bib`, `url`
+conserva sempre la destinazione originale e `usera` contiene il solo alias
+quando quella destinazione compare nel registro. Il controllo segnala alias
+mancanti, duplicati, URL non validi e incoerenze fra questi campi.
+
+Per verificare anche che il file generato sia aggiornato, senza modificarlo,
+con la struttura predefinita `book/main.tex`:
+
+    python scripts/aggiorna-link.py --check
+
 L'inserimento dei sorgenti non abilita automaticamente la pubblicazione dei PDF.
 
 Attenzione: questo repository e' pubblico. I sorgenti inviati a GitHub diventano
