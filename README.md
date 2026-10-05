@@ -44,6 +44,12 @@ saranno presenti i sorgenti indicati in `config/book.json`, verifica anche i
 collegamenti della guida e genera l'intero `book/sitografia.tex`. Il controllo
 automatico viene eseguito sulle pull request e su ogni commit a `main`, prima
 della build del sito; viene ripetuto prima delle future compilazioni del libro.
+Il registro può contenere anche collegamenti usati soltanto nel sito: la
+Sitografia include solo gli alias richiamati nei sorgenti attivi della guida
+o nella bibliografia, tramite `usera`, `\linkbreve` o `\hrefbreve`.
+Gli alias aggiuntivi restano disponibili sul sito e vengono comunque verificati;
+non modificano la Sitografia né richiedono di rigenerarla per superare `--check`,
+purché il registro rimanga valido e coerente con la bibliografia.
 Le modifiche restano nel checkout di lavoro, senza commit automatici.
 Questo controllo non compila né pubblica la guida e non abilita la pubblicazione.
 

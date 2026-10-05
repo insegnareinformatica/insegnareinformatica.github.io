@@ -7,6 +7,11 @@ Il percorso e il motore sono modificabili in ../config/book.json.
 
 Prima della compilazione, `python scripts/book.py links` (dalla radice del sito)
 controlla i collegamenti e genera `sitografia.tex` dal registro in `mkdocs.yml`.
+Nella Sitografia entrano soltanto gli alias richiamati nei sorgenti attivi o
+nella bibliografia, tramite `usera`, `\linkbreve` o `\hrefbreve`. Il registro
+può contenere altri collegamenti destinati solo al sito: restano validati ma
+non compaiono nella Sitografia. Commenti, copie LaTeX estranee ai sorgenti
+attivi e vecchie Sitografie generate non aggiungono alias all'elenco.
 Il generatore resta in `scripts/`, fuori da questa cartella. Finché i sorgenti
 non sono presenti, il comando controlla soltanto il registro. Se trova file
 `.tex` o `.bib` ma manca il sorgente principale, segnala l'incompletezza come

@@ -209,7 +209,7 @@ class BookLinksTests(unittest.TestCase):
         before = self.snapshot()
         self.assert_success(self.cli())
         output = self.book / "sitografia.tex"
-        self.assertEqual(output.read_text(encoding="utf-8"), links.render(REDIRECTS))
+        self.assertEqual(output.read_text(encoding="utf-8"), links.render({"alpha": ALPHA}))
         after = self.snapshot()
         self.assertEqual({name: value for name, value in after.items()
                           if name != "book/sitografia.tex"}, before)
@@ -223,6 +223,92 @@ class BookLinksTests(unittest.TestCase):
         missing = self.snapshot()
         self.assert_failure(self.cli("--check"))
         self.assertEqual(self.snapshot(), missing)
+
+    def test_site_only_alias_changes_do_not_change_sitography_or_check(self):
+        self.make_book()
+        self.write_registry({"alpha": ALPHA})
+        self.assert_success(self.cli())
+        output = self.book / "sitografia.tex"
+        original = output.read_bytes()
+        for maps in (
+                REDIRECTS,
+                {"alpha": ALPHA, "beta": "https://example.test/site-only-updated"},
+                {"alpha": ALPHA}):
+            with self.subTest(maps=maps):
+                self.write_registry(maps)
+                before = self.snapshot()
+                self.assert_success(self.cli("--check"))
+                self.assertEqual(self.snapshot(), before)
+                self.assert_success(self.cli())
+                self.assertEqual(output.read_bytes(), original)
+                self.assertNotIn(r"\linkbreve{beta}", output.read_text(encoding="utf-8"))
+
+    def test_alias_used_only_by_hrefbreve_in_included_file_is_rendered(self):
+        self.make_book()
+        self.write_bib("url = {https://example.test/unlisted}")
+        (self.book / "cap1.tex").write_text("\\input{nested/exercise}\n", encoding="utf-8")
+        (self.book / "nested").mkdir()
+        (self.book / "nested" / "exercise.tex").write_text(
+            "\\hrefbreve{beta}{Synthetic resource}\n", encoding="utf-8")
+        self.assert_success(self.cli())
+        self.assertEqual((self.book / "sitografia.tex").read_text(encoding="utf-8"),
+                         links.render({"beta": BETA}))
+        self.assert_success(self.cli("--check"))
+
+    def test_alias_used_only_by_bibliography_usera_is_rendered(self):
+        self.make_book()
+        (self.book / "cap1.tex").write_text("Synthetic chapter.\n", encoding="utf-8")
+        self.write_bib(f"url = {{{BETA}}}, usera = {{beta}}")
+        self.assert_success(self.cli())
+        self.assertEqual((self.book / "sitografia.tex").read_text(encoding="utf-8"),
+                         links.render({"beta": BETA}))
+        self.assert_success(self.cli("--check"))
+
+    def test_alias_used_only_by_bibliography_note_is_rendered(self):
+        self.make_book()
+        (self.book / "cap1.tex").write_text("Synthetic chapter.\n", encoding="utf-8")
+        for note in (r"\linkbreve{beta}", r"\hrefbreve{beta}{Synthetic resource}"):
+            with self.subTest(note=note):
+                self.write_bib("url = {https://example.test/unlisted}, note = {" + note + "}")
+                self.assert_success(self.cli())
+                self.assertEqual((self.book / "sitografia.tex").read_text(encoding="utf-8"),
+                                 links.render({"beta": BETA}))
+                self.assert_success(self.cli("--check"))
+
+    def test_comments_generated_tables_and_inactive_tex_do_not_add_aliases(self):
+        self.make_book()
+        (self.book / "cap1.tex").write_text(
+            "\\linkbreve{alpha}\n% \\hrefbreve{beta}{Commented resource}\n"
+            "\\input{sitografia-elenco}\n", encoding="utf-8")
+        self.write_bib(f"url = {{{ALPHA}}}, usera = {{alpha}}, "
+                       "note = {Comment % \\linkbreve{beta}\nAfter the comment}")
+        for relative in ("sitografia.tex", "sitografia-elenco.tex", "old-copy.tex",
+                         "build/old-main.tex"):
+            path = self.book / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("\\linkbreve{beta}\n", encoding="utf-8")
+        before = self.snapshot()
+        self.assert_success(self.cli())
+        self.assertEqual((self.book / "sitografia.tex").read_text(encoding="utf-8"),
+                         links.render({"alpha": ALPHA}))
+        self.assertEqual({name: value for name, value in self.snapshot().items()
+                          if name != "book/sitografia.tex"},
+                         {name: value for name, value in before.items()
+                          if name != "book/sitografia.tex"})
+        self.assert_success(self.cli("--check"))
+
+    def test_invalid_site_only_aliases_still_block_generation(self):
+        self.make_book()
+        self.assert_success(self.cli())
+        for target in ("not-an-absolute-url", "/local/resource",
+                       "ftp://example.test/file", ALPHA):
+            with self.subTest(target=target):
+                self.write_registry({"alpha": ALPHA, "beta": target})
+                before = self.snapshot()
+                self.assert_failure(self.cli())
+                self.assertEqual(self.snapshot(), before)
+                self.assert_failure(self.cli("--check"))
+                self.assertEqual(self.snapshot(), before)
 
     def test_invalid_sources_cannot_overwrite_existing_sitography(self):
         self.make_book()
@@ -264,12 +350,15 @@ class BookLinksTests(unittest.TestCase):
 
     def test_custom_entrypoint_is_used_by_api_and_cli(self):
         self.make_book(source="volume.tex")
-        (self.book / "main.tex").write_text("\\linkbreve{mustNotBeRead}\n", encoding="utf-8")
+        (self.book / "main.tex").write_text(
+            "\\linkbreve{mustNotBeRead}\n\\linkbreve{beta}\n", encoding="utf-8")
         paths = links.source_paths(self.book, source="volume.tex")
         self.assertIn(self.book / "volume.tex", paths)
         self.assertNotIn(self.book / "main.tex", paths)
         self.assertEqual(links.validate_sources(self.book, REDIRECTS, source="volume.tex"), [])
         self.assert_success(self.cli("--source", "volume.tex"))
+        self.assertEqual((self.book / "sitografia.tex").read_text(encoding="utf-8"),
+                         links.render({"alpha": ALPHA}))
         self.assert_success(self.cli("--source", "volume.tex", "--check"))
         self.assert_failure(self.cli("--source", "missing.tex", "--allow-missing-book"))
 
@@ -287,7 +376,7 @@ class BookLinksTests(unittest.TestCase):
             text=True, capture_output=True, timeout=20)
         self.assert_success(result)
         self.assertEqual((site / "book" / "sitografia.tex").read_text(encoding="utf-8"),
-                         links.render(REDIRECTS))
+                         links.render({"alpha": ALPHA}))
         self.assertFalse((self.book / "sitografia.tex").exists())
 
 

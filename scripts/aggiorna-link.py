@@ -326,6 +326,27 @@ def validate_sources(root, redirects, source="main.tex"):
     return errors
 
 
+def used_aliases(root, source="main.tex"):
+    """Alias presenti nei sorgenti e nella bibliografia, esclusa la Sitografia generata."""
+    used = set()
+
+    def collect(text):
+        for match in ALIAS.finditer(strip_comments(text)):
+            slug = match.group(1).strip()
+            if not re.fullmatch(r"#[1-9]", slug):
+                used.add(slug)
+
+    for path in source_paths(root, source):
+        collect(path.read_text(encoding="utf-8"))
+    for _, fields in read_bibliography((root / "references.bib").read_text(encoding="utf-8")):
+        if "usera" in fields:
+            used.add(fields["usera"].strip())
+        for name, value in fields.items():
+            if name not in ("url", "usera"):
+                collect(value)
+    return used
+
+
 def render(redirects):
     # Il layout appartiene al generatore: sitografia.tex è un file completo,
     # pronto per LuaLaTeX/Overleaf, senza importazioni o dipendenze da Python.
@@ -399,7 +420,9 @@ def main():
             print(f"Registro verificato: {len(redirects)} link brevi. Sorgenti del libro assenti: generazione saltata.")
             return 0
         errors = validate_sources(root, redirects, args.source)
-        generated = render(redirects)
+        cited = used_aliases(root, args.source)
+        book_redirects = {slug: target for slug, target in redirects.items() if slug in cited}
+        generated = render(book_redirects)
         output = root / "sitografia.tex"
         encoded = generated.encode("utf-8")
         if args.check and (not output.exists() or output.read_bytes() != encoded):
@@ -409,7 +432,8 @@ def main():
             return 1
         if not args.check:
             output.write_bytes(encoded)
-        print(f"{'Verifica riuscita' if args.check else 'Sitografia aggiornata'}: {len(redirects)} link brevi.")
+        print(f"{'Verifica riuscita' if args.check else 'Sitografia aggiornata'}: "
+              f"{len(book_redirects)} link brevi nella guida, {len(redirects)} nel registro.")
         return 0
     except (Invalid, OSError, yaml.YAMLError) as exc:
         print(f"Errore: {exc}", file=sys.stderr)
