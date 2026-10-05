@@ -99,7 +99,7 @@ def all_releases():
         page += 1
 
 
-def catalog(releases, now=None):
+def catalog(releases, now=None, compare_commits=None):
     stable, working = [], []
     for release in releases:
         if release.get("draft"):
@@ -128,14 +128,33 @@ def catalog(releases, now=None):
             "url": "https://github.com/" + REPOSITORY + "/releases/download/" +
                    quote(tag, safe="") + "/" + ASSET_NAME,
         }
+        source = release.get("target_commitish", "")
+        if isinstance(source, str) and re.fullmatch(r"[0-9a-f]{40}", source):
+            entry["source_commit"] = source
         (stable if is_stable else working).append(entry)
     stable.sort(key=lambda item: tuple(map(int, VERSION.fullmatch(item["version"]).groups())),
                 reverse=True)
     working.sort(key=lambda item: item["published_at"], reverse=True)
+    superseded = False
+    if stable and working:
+        base = working[0].get("source_commit")
+        head = stable[0].get("source_commit")
+        if base and head:
+            # Publication time can differ from source order, especially on reruns.
+            superseded = base == head
+            if not superseded and compare_commits is not None:
+                try:
+                    comparison = compare_commits("/compare/" + base + "..." + head)
+                    superseded = (isinstance(comparison, dict) and
+                                  comparison.get("status") in ("ahead", "identical"))
+                except (OSError, ValueError) as error:
+                    print("Cannot compare book sources; keeping the working version visible: " +
+                          str(error), file=sys.stderr)
     return {
         "updated_at": now or datetime.now(timezone.utc).isoformat(),
         "stable": stable,
         "working": working,
+        "working_superseded": superseded,
         "total_downloads": sum(item["downloads"] for item in stable + working),
     }
 
@@ -284,7 +303,7 @@ def main():
     args = parser.parse_args()
     if args.command == "catalog":
         enabled = os.environ.get("BOOK_PUBLICATION_ENABLED") == "true"
-        data = catalog(all_releases() if enabled else [])
+        data = catalog(all_releases() if enabled else [], compare_commits=api)
         path = ROOT / ".cache/book-releases.json"
         path.parent.mkdir(exist_ok=True)
         path.write_text(json.dumps(data, ensure_ascii=False, indent=2))

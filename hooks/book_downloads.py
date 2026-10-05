@@ -39,6 +39,8 @@ def render(data, pending_message="disponibile prossimamente"):
     stable, working = data.get("stable", []), data.get("working", [])
     rows = ['<ul class="book-downloads">']
     for label, entries in (("Versione consigliata", stable), ("Versione in lavorazione", working)):
+        if entries is working and stable and data.get("working_superseded") is True:
+            continue
         if not entries:
             if entries is stable:
                 rows.append("<li><strong>" + label + "</strong> — " + escape(pending_message) + "</li>")

@@ -1,10 +1,11 @@
 import importlib.util
 from html import escape
+import json
 import os
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from urllib.error import HTTPError
 
 
@@ -133,6 +134,109 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(result["stable"][0]["version"], "v1.1.0")
         self.assertEqual(result["working"][0]["version"], "lavorazione-200-1")
         self.assertEqual(result["total_downloads"], 26)
+
+    def test_same_sources_hide_working_pdf_without_losing_archive_or_counts(self):
+        compare = Mock()
+        data = book.catalog([
+            release("v1.0.0", 8, target_commitish="a" * 40),
+            release("v1.0.1", 10, target_commitish="b" * 40),
+            release("lavorazione-100-1", 3, prerelease=True,
+                    target_commitish="a" * 40, published_at="2026-09-25T12:00:00Z"),
+            release("lavorazione-200-1", 5, prerelease=True,
+                    target_commitish="b" * 40, published_at="2026-09-27T12:00:00Z"),
+        ], compare_commits=compare)
+        self.assertTrue(data["working_superseded"])
+        self.assertEqual(len(data["working"]), 2)
+        self.assertEqual(data["total_downloads"], 26)
+        rendered = downloads.render(data)
+        self.assertNotIn("Versione in lavorazione", rendered)
+        self.assertNotIn("/releases/download/lavorazione-", rendered)
+        self.assertIn("26 download complessivi", rendered)
+        self.assertIn("/releases/download/v1.0.1/", rendered)
+        self.assertIn("/releases/download/v1.0.0/", rendered)
+        compare.assert_not_called()
+
+    def test_source_ancestry_not_publication_date_controls_working_visibility(self):
+        for status, hidden in (("ahead", True), ("identical", True),
+                               ("behind", False), ("diverged", False), ("unknown", False)):
+            for date in ("2026-09-25T12:00:00Z", "2026-09-27T12:00:00Z"):
+                with self.subTest(status=status, date=date):
+                    compare = Mock(return_value={"status": status})
+                    data = book.catalog([
+                        release("v1.0.1", target_commitish="b" * 40),
+                        release("lavorazione-123-1", prerelease=True,
+                                target_commitish="a" * 40, published_at=date),
+                    ], compare_commits=compare)
+                    compare.assert_called_once_with("/compare/" + "a" * 40 + "..." + "b" * 40)
+                    self.assertEqual(data["working_superseded"], hidden)
+                    self.assertEqual("Versione in lavorazione" not in downloads.render(data), hidden)
+                    self.assertEqual(len(data["working"]), 1)
+
+    def test_only_latest_stable_and_latest_working_sources_are_compared(self):
+        compare = Mock(return_value={"status": "behind"})
+        data = book.catalog([
+            release("v1.10.0", target_commitish="b" * 40),
+            release("v1.9.0", target_commitish="a" * 40,
+                    published_at="2026-09-28T12:00:00Z"),
+            release("lavorazione-100-1", prerelease=True, target_commitish="a" * 40),
+            release("lavorazione-200-1", prerelease=True, target_commitish="c" * 40,
+                    published_at="2026-09-27T12:00:00Z"),
+        ], compare_commits=compare)
+        compare.assert_called_once_with("/compare/" + "c" * 40 + "..." + "b" * 40)
+        self.assertFalse(data["working_superseded"])
+        self.assertIn("/releases/download/lavorazione-200-1/", downloads.render(data))
+        self.assertNotIn("/releases/download/lavorazione-100-1/", downloads.render(data))
+
+    def test_unknown_sources_do_not_hide_working_pdf_or_make_api_requests(self):
+        for source in (None, "", "main", "a" * 39, "../bad", 123):
+            with self.subTest(source=source):
+                compare = Mock()
+                data = book.catalog([
+                    release(target_commitish=source),
+                    release("lavorazione-123-1", prerelease=True, target_commitish="a" * 40),
+                ], compare_commits=compare)
+                self.assertFalse(data["working_superseded"])
+                self.assertIn("Versione in lavorazione", downloads.render(data))
+                compare.assert_not_called()
+        for releases in ([], [release(target_commitish="a" * 40)],
+                         [release("lavorazione-123-1", prerelease=True, target_commitish="a" * 40)]):
+            compare = Mock()
+            self.assertFalse(book.catalog(releases, compare_commits=compare)["working_superseded"])
+            compare.assert_not_called()
+
+    def test_failed_or_invalid_comparison_keeps_working_pdf_visible(self):
+        releases = [
+            release(target_commitish="b" * 40),
+            release("lavorazione-123-1", prerelease=True, target_commitish="a" * 40),
+        ]
+        comparisons = [None, Mock(side_effect=HTTPError("test", 403, "Limited", None, None)),
+                       Mock(side_effect=TimeoutError("Timed out")),
+                       Mock(side_effect=ValueError("Invalid response")),
+                       Mock(return_value={}), Mock(return_value=None)]
+        for compare in comparisons:
+            with self.subTest(compare=compare), patch("sys.stderr"):
+                data = book.catalog(releases, compare_commits=compare)
+                self.assertFalse(data["working_superseded"])
+                self.assertIn("Versione in lavorazione", downloads.render(data))
+
+    def test_catalog_command_checks_source_ancestry(self):
+        releases = [
+            release(target_commitish="b" * 40),
+            release("lavorazione-123-1", prerelease=True, target_commitish="a" * 40),
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".cache").mkdir()
+            with patch.object(book, "ROOT", root), \
+                 patch.dict(os.environ, {"BOOK_PUBLICATION_ENABLED": "true"}), \
+                 patch.object(book, "all_releases", return_value=releases), \
+                 patch.object(book, "api", return_value={"status": "ahead"}) as api, \
+                 patch("sys.argv", ["book.py", "catalog"]):
+                book.main()
+            api.assert_called_once_with("/compare/" + "a" * 40 + "..." + "b" * 40)
+            data = json.loads((root / ".cache/book-releases.json").read_text())
+            self.assertTrue(data["working_superseded"])
+            self.assertEqual(len(data["working"]), 1)
 
     def test_missing_release_is_not_a_zero_download_link(self):
         rendered = downloads.render(book.catalog([]))

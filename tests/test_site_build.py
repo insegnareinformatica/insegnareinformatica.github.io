@@ -235,6 +235,21 @@ class SiteBuildTests(unittest.TestCase):
                 self.assertNotIn('id="home-views"', html)
                 self.assertNotIn("home-counter.js", html)
 
+    def test_superseded_working_pdf_is_hidden_in_built_home_but_still_counted(self):
+        data = book.catalog([
+            release("v1.0.0", 12, target_commitish="a" * 40),
+            release("v1.0.1", 20, target_commitish="b" * 40),
+            release("lavorazione-123-1", 8, prerelease=True, target_commitish="b" * 40),
+        ])
+        with tempfile.TemporaryDirectory() as directory:
+            home = self.build(Path(directory), data)
+            self.assertIn("40 download complessivi", home)
+            self.assertIn("/releases/download/v1.0.1/", home)
+            self.assertIn("/releases/download/v1.0.0/", home)
+            self.assertNotIn("Versione in lavorazione", home)
+            self.assertNotIn("/releases/download/lavorazione-123-1/", home)
+        self.assertEqual(len(data["working"]), 1)
+
 
 if __name__ == "__main__":
     unittest.main()
