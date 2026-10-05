@@ -53,6 +53,25 @@ purché il registro rimanga valido e coerente con la bibliografia.
 Le modifiche restano nel checkout di lavoro, senza commit automatici.
 Questo controllo non compila né pubblica la guida e non abilita la pubblicazione.
 
+## Pubblicazione del libro
+
+La compilazione e pubblicazione automatica di una versione in lavorazione parte
+solo per i push su `main` che modificano `book/`. Modifiche al sito, ai redirect,
+agli script o ai font esterni a `book/` non la avviano. Per verificare questi
+ultimi cambiamenti, avviare manualmente **Libro - verifica o pubblica** in
+modalità **verifica**; per una versione consigliata usare **consigliata**,
+indicando numero di versione e conferma di pubblicazione.
+
+La home nasconde una versione in lavorazione già superata dalla consigliata
+oppure con lo stesso contenuto di `book/`, anche se il commit complessivo è
+diverso. Le versioni nascoste restano nell'archivio e nei conteggi dei download.
+
+La rimozione di una release pubblicata avvia **Refresh site after removing a
+release**, che ripubblica il sito da `main` senza compilare il libro. Il link
+scompare al termine della pubblicazione del sito, non immediatamente. Per una
+release il cui tag non contiene questo workflow, oppure per aggiornare
+manualmente elenco e conteggi, avviare **Deploy site** da `main`.
+
 ## Verifica della versione dal PDF
 
 Il pulsante nella guida apre l'indirizzo permanente

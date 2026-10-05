@@ -99,7 +99,23 @@ def all_releases():
         page += 1
 
 
-def catalog(releases, now=None, compare_commits=None):
+def book_tree_id(commit):
+    if not isinstance(commit, str) or not re.fullmatch(r"[0-9a-f]{40}", commit):
+        raise ValueError("Invalid source commit")
+    response = api("/git/trees/" + commit)
+    if (not isinstance(response, dict) or response.get("truncated") is not False
+            or not isinstance(response.get("tree"), list)):
+        raise ValueError("Incomplete source tree")
+    matches = [entry.get("sha") for entry in response["tree"]
+               if isinstance(entry, dict) and entry.get("path") == "book"
+               and entry.get("type") == "tree"]
+    if (len(matches) != 1 or not isinstance(matches[0], str)
+            or not re.fullmatch(r"[0-9a-f]{40}", matches[0])):
+        raise ValueError("Missing or invalid book/ tree")
+    return matches[0]
+
+
+def catalog(releases, now=None, compare_commits=None, get_book_tree=None):
     stable, working = [], []
     for release in releases:
         if release.get("draft"):
@@ -149,6 +165,14 @@ def catalog(releases, now=None, compare_commits=None):
                                   comparison.get("status") in ("ahead", "identical"))
                 except (OSError, ValueError) as error:
                     print("Cannot compare book sources; keeping the working version visible: " +
+                          str(error), file=sys.stderr)
+            if not superseded and get_book_tree is not None:
+                try:
+                    # Compare complete book/ trees, not the API's limited changed-file list.
+                    working_tree = get_book_tree(base)
+                    superseded = bool(working_tree) and working_tree == get_book_tree(head)
+                except (OSError, ValueError) as error:
+                    print("Cannot compare book content; keeping the working version visible: " +
                           str(error), file=sys.stderr)
     return {
         "updated_at": now or datetime.now(timezone.utc).isoformat(),
@@ -235,9 +259,11 @@ def publish():
     if not re.fullmatch("[0-9a-f]{40}", sha):
         raise ValueError("Invalid source commit")
     stable = plan["mode"] == "consigliata"
-    if not stable and api("/git/ref/heads/main")["object"]["sha"] != sha:
-        print("A newer commit is on main; this working PDF will not be published.")
-        return
+    if not stable:
+        current = api("/git/ref/heads/main")["object"]["sha"]
+        if current != sha and book_tree_id(current) != book_tree_id(sha):
+            print("Newer book sources are on main; this working PDF will not be published.")
+            return
     if stable:
         tag = plan["version"]
     else:
@@ -303,7 +329,8 @@ def main():
     args = parser.parse_args()
     if args.command == "catalog":
         enabled = os.environ.get("BOOK_PUBLICATION_ENABLED") == "true"
-        data = catalog(all_releases() if enabled else [], compare_commits=api)
+        data = catalog(all_releases() if enabled else [], compare_commits=api,
+                       get_book_tree=book_tree_id)
         path = ROOT / ".cache/book-releases.json"
         path.parent.mkdir(exist_ok=True)
         path.write_text(json.dumps(data, ensure_ascii=False, indent=2))

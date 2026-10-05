@@ -106,12 +106,105 @@ class PublicationTests(unittest.TestCase):
     def test_stale_working_build_is_not_published(self):
         env = self.env(GITHUB_EVENT_NAME="push", BOOK_PUBLICATION_ENABLED="true")
         with patch.dict(os.environ, env, clear=True), \
+             patch.object(book, "book_tree_id", side_effect=["c" * 40, "d" * 40]) as tree, \
              patch.object(book, "api", return_value={"object": {"sha": "b" * 40}}) as api:
             book.publish()
             api.assert_called_once_with("/git/ref/heads/main")
+            self.assertEqual([call.args[0] for call in tree.call_args_list], ["b" * 40, "a" * 40])
+
+    def test_site_only_commit_does_not_discard_working_pdf(self):
+        env = self.env(GITHUB_EVENT_NAME="push", BOOK_PUBLICATION_ENABLED="true")
+        pdf = b"%PDF-test fixture"
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "dist").mkdir()
+            (root / "dist" / book.ASSET_NAME).write_bytes(pdf)
+            def response(path, **kwargs):
+                if path == "/git/ref/heads/main":
+                    return {"object": {"sha": "b" * 40}}
+                if path.startswith("/git/ref/tags/"):
+                    raise HTTPError(path, 404, "Not found", None, None)
+                if path == "/releases":
+                    return {"id": 123}
+                if "/assets?" in path:
+                    return {"state": "uploaded", "size": len(pdf)}
+                if path in ("/releases/123", "/actions/workflows/deploy-site.yml/dispatches"):
+                    return None
+                self.fail("Unexpected publication step: " + path)
+            with patch.object(book, "ROOT", root), patch.dict(os.environ, env, clear=True), \
+                 patch.object(book, "book_tree_id", return_value="c" * 40), \
+                 patch.object(book, "all_releases", return_value=[]), \
+                 patch.object(book, "api", side_effect=response) as api:
+                book.publish()
+                publication = next(call for call in api.call_args_list if call.args == ("/releases",))
+                self.assertEqual(publication.kwargs["body"]["target_commitish"], "a" * 40)
+                api.assert_any_call("/releases/123", method="PATCH",
+                                    body={"draft": False, "make_latest": "false"})
+
 
 
 class CatalogTests(unittest.TestCase):
+    def test_book_tree_id_reads_only_the_complete_book_subtree(self):
+        response = {"truncated": False, "tree": [
+            {"path": "docs", "type": "tree", "sha": "c" * 40},
+            {"path": "book", "type": "tree", "sha": "d" * 40},
+        ]}
+        with patch.object(book, "api", return_value=response) as api:
+            self.assertEqual(book.book_tree_id("a" * 40), "d" * 40)
+            api.assert_called_once_with("/git/trees/" + "a" * 40)
+
+    def test_book_tree_id_rejects_missing_or_incomplete_trees(self):
+        valid = {"path": "book", "type": "tree", "sha": "d" * 40}
+        for response in (None, {}, {"tree": [valid], "truncated": True},
+                         {"tree": [], "truncated": False},
+                         {"tree": [dict(valid, type="blob")], "truncated": False},
+                         {"tree": [dict(valid, sha="bad")], "truncated": False}):
+            with self.subTest(response=response), patch.object(book, "api", return_value=response):
+                with self.assertRaises(ValueError):
+                    book.book_tree_id("a" * 40)
+        with patch.object(book, "api") as api:
+            with self.assertRaises(ValueError):
+                book.book_tree_id("main")
+            api.assert_not_called()
+
+    def test_site_only_changes_hide_working_pdf_but_book_changes_do_not(self):
+        releases = [
+            release(target_commitish="a" * 40),
+            release("lavorazione-123-1", 8, prerelease=True, target_commitish="b" * 40),
+        ]
+        for status in ("behind", "diverged"):
+            for same_book in (True, False):
+                with self.subTest(status=status, same_book=same_book):
+                    trees = {"a" * 40: "c" * 40,
+                             "b" * 40: ("c" if same_book else "d") * 40}
+                    get_tree = Mock(side_effect=trees.__getitem__)
+                    data = book.catalog(releases, compare_commits=Mock(return_value={"status": status}),
+                                        get_book_tree=get_tree)
+                    self.assertEqual(data["working_superseded"], same_book)
+                    self.assertEqual("Versione in lavorazione" in downloads.render(data), not same_book)
+                    self.assertEqual(len(data["working"]), 1)
+                    self.assertEqual(data["total_downloads"], 23)
+                    self.assertEqual(get_tree.call_count, 2)
+
+    def test_book_tree_lookup_is_skipped_when_working_version_is_already_superseded(self):
+        get_tree = Mock()
+        data = book.catalog([
+            release(target_commitish="b" * 40),
+            release("lavorazione-123-1", prerelease=True, target_commitish="a" * 40),
+        ], compare_commits=Mock(return_value={"status": "ahead"}), get_book_tree=get_tree)
+        self.assertTrue(data["working_superseded"])
+        get_tree.assert_not_called()
+
+    def test_failed_tree_lookup_does_not_hide_a_potential_book_update(self):
+        for error in (TimeoutError("Timed out"), ValueError("Missing book tree")):
+            with self.subTest(error=error), patch("sys.stderr"):
+                data = book.catalog([
+                    release(target_commitish="a" * 40),
+                    release("lavorazione-123-1", prerelease=True, target_commitish="b" * 40),
+                ], compare_commits=Mock(return_value={"status": "behind"}),
+                    get_book_tree=Mock(side_effect=error))
+                self.assertFalse(data["working_superseded"])
+
     def test_only_ready_public_book_pdfs_are_counted(self):
         releases = [
             release(), release("v2.0.0", 999, draft=True),
@@ -238,6 +331,30 @@ class CatalogTests(unittest.TestCase):
             self.assertTrue(data["working_superseded"])
             self.assertEqual(len(data["working"]), 1)
 
+    def test_catalog_command_compares_book_content_after_site_only_commit(self):
+        releases = [
+            release(target_commitish="a" * 40),
+            release("lavorazione-123-1", prerelease=True, target_commitish="b" * 40),
+        ]
+        tree = {"truncated": False, "tree": [
+            {"path": "book", "type": "tree", "sha": "c" * 40},
+        ]}
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with patch.object(book, "ROOT", root), \
+                 patch.dict(os.environ, {"BOOK_PUBLICATION_ENABLED": "true"}), \
+                 patch.object(book, "all_releases", return_value=releases), \
+                 patch.object(book, "api", side_effect=[{"status": "behind"}, tree, tree]) as api, \
+                 patch("sys.argv", ["book.py", "catalog"]):
+                book.main()
+            self.assertEqual([call.args[0] for call in api.call_args_list], [
+                "/compare/" + "b" * 40 + "..." + "a" * 40,
+                "/git/trees/" + "b" * 40, "/git/trees/" + "a" * 40,
+            ])
+            data = json.loads((root / ".cache/book-releases.json").read_text())
+            self.assertTrue(data["working_superseded"])
+            self.assertNotIn("Versione in lavorazione", downloads.render(data))
+
     def test_missing_release_is_not_a_zero_download_link(self):
         rendered = downloads.render(book.catalog([]))
         self.assertEqual(rendered.count("<li>"), 1)
@@ -245,6 +362,23 @@ class CatalogTests(unittest.TestCase):
         self.assertNotIn("Versione in lavorazione", rendered)
         self.assertNotIn("<a ", rendered)
         self.assertNotIn("0 download", rendered)
+
+    def test_catalog_refresh_removes_deleted_releases_from_existing_cache(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            cache = root / ".cache/book-releases.json"
+            cache.parent.mkdir()
+            cache.write_text(json.dumps(book.catalog([
+                release(), release("lavorazione-123-1", prerelease=True),
+            ])))
+            with patch.object(book, "ROOT", root), \
+                 patch.dict(os.environ, {"BOOK_PUBLICATION_ENABLED": "true"}), \
+                 patch.object(book, "all_releases", return_value=[release()]), \
+                 patch("sys.argv", ["book.py", "catalog"]):
+                book.main()
+            data = json.loads(cache.read_text())
+            self.assertEqual(data["working"], [])
+            self.assertNotIn("Versione in lavorazione", downloads.render(data))
 
     def test_pending_message_is_editable_and_escaped(self):
         message = "Nuova data: <da confermare> & aggiornamenti"

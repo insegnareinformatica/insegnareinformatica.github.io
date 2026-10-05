@@ -60,13 +60,25 @@ class SiteWorkflowTests(unittest.TestCase):
         self.assertNotIn("if", steps[links])
         self.assertNotIn("continue-on-error", steps[links])
 
-    def test_book_workflow_tracks_redirect_and_generator_changes(self):
+    def test_book_workflow_only_runs_automatically_for_book_changes(self):
         publish = self.workflow("publish-book.yml")
         self.assertEqual(publish["on"]["push"]["branches"], ["main"])
-        self.assertTrue({"book/**", "fonts/**", "config/book.json", "scripts/book.py",
-                         "scripts/aggiorna-link.py", "mkdocs.yml", "requirements.txt",
-                         ".github/workflows/publish-book.yml"}
-                        .issubset(publish["on"]["push"]["paths"]))
+        self.assertEqual(publish["on"]["push"]["paths"], ["book/**"])
+        self.assertEqual(set(publish["on"]), {"push", "workflow_dispatch"})
+
+    def test_removed_releases_refresh_current_site_without_compiling_book(self):
+        refresh = self.workflow("refresh-site-on-release.yml")
+        self.assertEqual(refresh["on"]["release"]["types"], ["deleted", "unpublished"])
+        self.assertEqual(set(refresh["on"]), {"release", "workflow_dispatch"})
+        self.assertEqual(refresh["permissions"], {"actions": "write"})
+        steps = refresh["jobs"]["refresh"]["steps"]
+        self.assertEqual(len(steps), 1)
+        self.assertEqual(steps[0]["env"]["GH_TOKEN"], "${{ github.token }}")
+        command = steps[0]["run"]
+        self.assertIn("gh api --method POST", command)
+        self.assertIn("actions/workflows/deploy-site.yml/dispatches", command)
+        self.assertIn("-f ref=main", command)
+        self.assertNotIn("publish-book", command)
 
     def test_book_fonts_are_available_from_the_latex_working_directory(self):
         publish = self.workflow("publish-book.yml")

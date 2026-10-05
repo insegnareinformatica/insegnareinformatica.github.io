@@ -1,0 +1,22 @@
+name: Refresh site after removing a release
+
+on:
+  release:
+    types: [deleted, unpublished]
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Refresh the current site without rebuilding the book
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh api --method POST
+          "repos/$GITHUB_REPOSITORY/actions/workflows/deploy-site.yml/dispatches"
+          -f ref=main
