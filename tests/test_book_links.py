@@ -177,6 +177,32 @@ class BookLinksTests(unittest.TestCase):
                 (self.book / "cap1.tex").write_text(text + "\n", encoding="utf-8")
                 self.assertTrue(links.validate_sources(self.book, REDIRECTS))
 
+    def test_updates_button_accepts_only_the_known_version_macro_and_official_target(self):
+        self.make_book()
+        chapter = self.book / "cap1.tex"
+        chapter.write_text(
+            r"\hreforiginale{https://informaticainclasse.it/aggiornamenti/\#v=\guideversion}"
+            r"{Controlla la versione}" "\n", encoding="utf-8")
+        self.assertEqual(links.validate_sources(self.book, REDIRECTS), [])
+        self.assert_success(self.cli())
+        self.assert_success(self.cli("--check"))
+        for target in (
+                r"https://informaticainclasse.it/aggiornamenti/\#v=\unknownversion",
+                r"https://informaticainclasse.it/aggiornamenti/\#v=\guideversionExtra",
+                r"https://informaticainclasse.it/aggiornamenti/\#v=\guideversion\unknown",
+                r"https://example.test/aggiornamenti/\#v=\guideversion",
+                r"https://informaticainclasse.it/other/\#v=\guideversion",
+                r"https://\guideversion/aggiornamenti/",
+                r"https://informaticainclasse.it/\guideversion",
+                r"https://informaticainclasse.it/aggiornamenti/?v=\guideversion"):
+            with self.subTest(target=target):
+                chapter.write_text("\\hreforiginale{" + target + "}{Versione}\n", encoding="utf-8")
+                self.assertTrue(links.validate_sources(self.book, REDIRECTS))
+        chapter.write_text(
+            r"\hreforiginale{https://informaticainclasse.it/aggiornamenti/\#v=\guideversion}"
+            r"{https://example.test/hidden}" "\n", encoding="utf-8")
+        self.assertTrue(links.validate_sources(self.book, REDIRECTS))
+
     def test_renderer_credit_accepts_only_its_original_url_argument(self):
         self.make_book()
         chapter = self.book / "cap1.tex"

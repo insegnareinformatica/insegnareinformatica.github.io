@@ -235,7 +235,12 @@ def mask_direct_urls(text, name, errors):
         start = match.end() - 1
         value, end = group(text, start)
         if not re.fullmatch(r"#[1-9]", value):
-            error = http_url_error(unescape_url(value))
+            target = unescape_url(value)
+            # LaTeX espande la versione nel solo frammento della pagina ufficiale.
+            # Non ammettere macro arbitrarie in host, percorso o altri URL.
+            if target == r"https://informaticainclasse.it/aggiornamenti/#v=\guideversion":
+                target = target.removesuffix(r"\guideversion")
+            error = http_url_error(target)
             if error:
                 line = text.count("\n", 0, match.start()) + 1
                 errors.append(f"{name}:{line}: {error} in {match.group().rstrip('{')}: {value!r}")
