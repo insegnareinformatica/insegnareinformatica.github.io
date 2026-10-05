@@ -175,7 +175,7 @@ class SiteBuildTests(unittest.TestCase):
             home = self.build(root)
             self.assert_home_resources(home)
             search = json.loads((root / "site/search/search_index.json").read_text())
-            for page in ("risorse", "contatti"):
+            for page in ("risorse", "contatti", "contenuti"):
                 self.assertFalse((root / "site" / page).exists())
                 self.assertNotIn('href="' + page + '/"', home)
                 self.assertFalse(any(entry["location"].startswith(page + "/")
@@ -230,10 +230,20 @@ class SiteBuildTests(unittest.TestCase):
             self.assertLess(home.index('<footer class="md-footer">'), counter_position)
             self.assertGreater(home.index("</footer>"), counter_position)
             self.assertLess(home.index("</article>"), counter_position)
-            for page in ("contenuti",):
+            for page in ("aggiornamenti",):
                 html = (root / "site" / page / "index.html").read_text()
                 self.assertNotIn('id="home-views"', html)
                 self.assertNotIn("home-counter.js", html)
+
+    def test_home_places_book_download_before_images(self):
+        data = book.catalog([release()])
+        with tempfile.TemporaryDirectory() as directory:
+            home = self.build(Path(directory), data)
+            article = home[home.index("<article"):home.index("</article>")]
+            self.assertIn('class="book-downloads"', article)
+            self.assertNotIn("chapter-01-introduzione.jpg", article)
+            self.assertLess(article.index('class="book-downloads"'), article.index("<img"))
+            self.assertNotIn('href="contenuti/"', article)
 
     def test_superseded_working_pdf_is_hidden_in_built_home_but_still_counted(self):
         data = book.catalog([

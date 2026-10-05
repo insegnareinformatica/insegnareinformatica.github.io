@@ -4,15 +4,13 @@
 
 Il libro nasce originariamente per la scuola primaria, ma è adatto a docenti e studenti di scuola primaria e secondaria di primo grado, anche (e soprattutto) se non hanno basi di Informatica.
 
-![Illustrazione introduttiva del percorso](assets/images/chapter-01-introduzione.jpg){ .wide-image }
+## Il libro - scarica qui
 
-## Il libro
+<!-- BOOK_DOWNLOADS -->
 
 Il libro propone un percorso per avvicinare bambine e bambini al pensiero informatico, in linea con le Nuove Indicazioni Nazionali per il primo ciclo.
 
 La guida è disponibile gratuitamente.
-
-<!-- BOOK_DOWNLOADS -->
 
 ## Ulteriori risorse
 
@@ -49,8 +47,6 @@ Il percorso privilegia attività concrete, discussione tra pari, confronto delle
 ## Contenuti
 
 Il libro attraversa cinque macroargomenti: algoritmi quotidiani, percorsi e griglie, rappresentazione delle informazioni, strategie per risolvere problemi e programmazione visuale.
-
-[Vai ai contenuti](contenuti.md)
 
 ## A chi è rivolto
 

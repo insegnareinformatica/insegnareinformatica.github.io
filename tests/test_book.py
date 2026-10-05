@@ -290,7 +290,7 @@ class ArtifactTests(unittest.TestCase):
     def test_private_files_cannot_enter_pages(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            for path in ("index.html", "contenuti/index.html"):
+            for path in ("index.html", "aggiornamenti/index.html"):
                 target = root / path
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_text("<html></html>")

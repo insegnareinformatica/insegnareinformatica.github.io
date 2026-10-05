@@ -35,7 +35,7 @@ def check(root):
                 PageCheck().feed(path.read_text())
             except ValueError as error:
                 raise ValueError(str(path.relative_to(root)) + ": " + str(error)) from error
-    for required in ("index.html", "contenuti/index.html"):
+    for required in ("index.html", "aggiornamenti/index.html"):
         if not (root / required).is_file():
             raise ValueError("Missing page: " + required)
 

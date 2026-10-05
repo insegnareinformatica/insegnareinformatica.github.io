@@ -137,7 +137,7 @@ class UpdatesRenderingTests(unittest.TestCase):
                                                   self.page("index.md", ""), {}, [])
                 self.assertEqual(home, downloads.render(book.catalog([release()])))
                 self.assertNotIn("book-updates.js", home)
-                other = downloads.on_page_markdown("Unchanged", self.page("contenuti.md"), {}, [])
+                other = downloads.on_page_markdown("Unchanged", self.page("altra-pagina.md"), {}, [])
                 self.assertEqual(other, "Unchanged")
 
     def test_updates_page_requires_exactly_one_marker(self):
@@ -163,7 +163,7 @@ class UpdatesBuildTests(unittest.TestCase):
             self.assertEqual(updates.count("book-updates.js"), 1)
             self.assertTrue((root / "site/assets/javascripts/book-updates.js").is_file())
             self.assertNotIn("book-updates.js", home)
-            self.assertNotIn("book-updates.js", (root / "site/contenuti/index.html").read_text())
+            self.assertNotIn("book-updates.js", (root / "site/404.html").read_text())
 
     def test_fixture_build_recommends_only_latest_stable_and_preserves_home(self):
         data = book.catalog([
