@@ -1,0 +1,921 @@
+% !TeX root = main.tex
+% Impostazioni comuni, comandi e disegni della guida.
+% Per scrivere il testo, modificare main.tex, cap1.tex ... cap9.tex o crediti.tex.
+
+\usepackage[italian]{babel}
+\usepackage{csquotes}
+\usepackage{emoji}
+\usepackage{parskip}
+\usepackage{xurl}
+\usepackage{multirow}
+
+% Intestazioni di pagina.
+\fancyhead[LO]{\leftmark}
+
+\definecolor{ocre}{RGB}{243,102,25}
+\chapterimage{chapter-00-indice.jpg}
+\chapterspaceabove{6.5cm}
+\chapterspacebelow{6.75cm}
+\setlength{\headheight}{30pt}
+% Collegamenti.
+% Le pagine iniziali non numerate non devono duplicare le ancore dei capitoli.
+\AtBeginDocument{\hypersetup{pageanchor=false}}
+\AddToHook{cmd/frontmatter/after}{\hypersetup{pageanchor=true}}
+
+% Font proporzionale per gli URL: I con barre, l con curva alla base.
+% Stessa altezza delle minuscole del testo; niente legature negli indirizzi.
+\newfontfamily\fonturlguida{SourceSansPro}[
+  Path=font/,
+  Extension=.otf,
+  UprightFont=*-Regular,
+  BoldFont=*-Bold,
+  ItalicFont=*-RegularIt,
+  BoldItalicFont=*-BoldIt,
+  Scale=MatchLowercase,
+  RawFeature=+cv01,
+  Ligatures={CommonOff,TeXOff}]
+\makeatletter
+\newcommand{\url@guidastyle}{\def\UrlFont{\fonturlguida}}
+% url compone in modo matematico, che non applica le varianti OpenType.
+% La I passa in modo testo; mathbin conserva la possibilita di a capo di xurl.
+\g@addto@macro\UrlSpecials{\do\I{\mathbin{\hbox{I}}}}
+\makeatother
+\urlstyle{guida}
+
+% Link brevi: indirizzo stampato senza schema, destinazione cliccabile HTTPS.
+\newcommand{\linkbreve}[1]{%
+  \begingroup
+  \urlstyle{guida}%
+  % Il dominio puo andare a capo; l'alias resta intero e facile da trascrivere.
+  \href{https://informaticainclasse.it/#1}{%
+    \nolinkurl{informaticainclasse.it/}\allowbreak\mbox{\UrlFont #1}}%
+  \endgroup}
+\newcommand{\hrefbreve}[2]{\href{https://informaticainclasse.it/#1}{#2}}
+
+% Gli URL senza alias conservano schema e destinazione nel collegamento;
+% Nel testo visibile si omettono lo schema e la barra finale della sola radice.
+\ExplSyntaxOn
+\NewDocumentCommand{\urloriginale}{m}
+  {
+    \group_begin:
+    \urlstyle{guida}
+    \tl_set:Nn \l_tmpa_tl {#1}
+    \regex_replace_once:nnN { \A https?:// } {} \l_tmpa_tl
+    \regex_replace_once:nnN { \A ( [^/?\x{23}\cC.]+ ) / \Z } { \1 } \l_tmpa_tl
+    \href{#1}{\exp_args:NV \nolinkurl \l_tmpa_tl}
+    \group_end:
+  }
+\ExplSyntaxOff
+\newcommand{\hreforiginale}[2]{\href{#1}{#2}}
+
+% Stampa il link breve se usera e presente, altrimenti l’URL originale senza schema.
+\DeclareFieldFormat{url}{%
+  \mkbibacro{URL}\addcolon\space
+  \iffieldundef{usera}
+    {\urloriginale{#1}}%
+    {\printfield[linkbreve]{usera}}}
+\DeclareFieldFormat{linkbreve}{\linkbreve{#1}}
+% Box didattici.
+
+
+
+\usepackage{newunicodechar}
+
+% Mese e anno correnti alla compilazione, con nome italiano del mese.
+\newcommand{\meseannocorrente}{%
+  \ifcase\month\or
+    gennaio\or febbraio\or marzo\or aprile\or maggio\or giugno\or
+    luglio\or agosto\or settembre\or ottobre\or novembre\or dicembre%
+  \fi\space\number\year%
+}
+
+% ---------------------------------------------------------------
+% Palette dei blocchi semantici
+% Modificare qui i colori per aggiornare tutti i box della guida.
+% ---------------------------------------------------------------
+\colorlet{guideConsiglioColor}{Goldenrod!85!black}
+\colorlet{guideDomandeColor}{DarkOrchid}
+\colorlet{guideAttenzioneColor}{FireBrick}
+\definecolor{guideSpiegazioneColor}{HTML}{2F6B3C}
+\colorlet{guideRimandiQuadernoBorder}{black!40}
+\colorlet{guideRimandiQuadernoBackground}{black!5}
+\colorlet{guideRimandiQuadernoText}{black!72}
+\colorlet{guideSchedaColor}{black!70}
+\colorlet{guideSchedaBordoFondo}{black!12}
+\colorlet{guideSchedaBordoLinea}{black!35}
+\colorlet{guideProgrammatoreColor}{Teal}
+\colorlet{guideEsecutoreColor}{DarkOrange}
+\colorlet{guideManualeTitolo}{ocre!75}
+\colorlet{guideManualeIntestazione}{guideManualeTitolo!30}
+\colorlet{guideManualeFondo}{guideManualeTitolo!7}
+\colorlet{guideManualeBordo}{black!65}
+
+% Manuali delle istruzioni: titolo, intestazioni e celle coordinati.
+% Richiamare le impostazioni dentro un gruppo.
+% colortbl usa uno stato globale per il colore dei bordi; longtable non
+% lo ripristina automaticamente. Conservare il colore della tabella precedente.
+\makeatletter
+\newcommand{\manualesalvacolore}{\let\manuale@colorebordo\CT@arc@}
+\newcommand{\manualeripristinacolore}{\global\let\CT@arc@\manuale@colorebordo}
+\makeatother
+\newcommand{\manualeimpostazioni}{%
+  \manualesalvacolore
+  \setlength{\tabcolsep}{7pt}%
+  \setlength{\arrayrulewidth}{0.5pt}%
+  \setlength{\extrarowheight}{0pt}%
+  \renewcommand{\arraystretch}{1}%
+}
+% Padding simmetrico: titolo e intestazioni sono centrati sulla loro
+% altezza effettiva, senza strut che aggiungano spazio soltanto sopra.
+\newcommand{\manualecentratitolo}[1]{%
+  \ensuremath{\vcenter{\offinterlineskip\kern6pt\hbox{#1}\kern6pt}}%
+}
+\newcommand{\manualevoceintestazione}[1]{%
+  \manualecentratitolo{\sffamily\bfseries\normalsize #1}%
+}
+\newcommand{\manualetitolo}[2]{%
+  \multicolumn{#1}{|c|}{\cellcolor{guideManualeTitolo}%
+    \manualecentratitolo{\sffamily\bfseries\fontsize{14.5}{18}\selectfont
+      MANUALE \textit{DELLE} ISTRUZIONI (#2)}} \\\hline
+}
+\newcommand{\manualeintestazione}{%
+  \multicolumn{1}{|c|}{\cellcolor{guideManualeIntestazione}%
+    \manualevoceintestazione{ISTRUZIONE}} &
+  \multicolumn{1}{c|}{\cellcolor{guideManualeIntestazione}%
+    \manualevoceintestazione{AZIONE}} \\\hline
+}
+% Tutte le celle condividono il medesimo centro geometrico, anche quando
+% testo e immagini hanno altezze diverse. J allinea a sinistra, K al centro.
+\makeatletter
+\newcommand{\manualecellainizio}[2]{%
+  \(\vcenter\bgroup
+    \kern4pt
+    \vbox\bgroup
+      \hsize=#1\relax
+      \linewidth=\hsize
+      \hrule width\hsize height0pt depth0pt
+      \@arrayparboxrestore
+      \setlength{\parindent}{0pt}%
+      \setlength{\parskip}{0pt}%
+      #2\arraybackslash\ignorespaces
+}
+\newcommand{\manualecellafine}{%
+      \ifhmode\unskip\fi\par
+    \egroup
+    \kern4pt
+  \egroup\)%
+}
+\makeatother
+\newcolumntype{K}[1]{%
+  >{\columncolor{guideManualeFondo}%
+    \manualecellainizio{#1}{\centering}}c<{\manualecellafine}%
+}
+\newcolumntype{J}[1]{%
+  >{\columncolor{guideManualeFondo}%
+    \manualecellainizio{#1}{\raggedright}}c<{\manualecellafine}%
+}
+\newcommand{\manualeimmagini}[1]{{\centering#1\par}}
+
+% Caratteri Unicode presenti nel testo; compilazione con LuaLaTeX.
+\newunicodechar{➜}{\ensuremath{\rightarrow}}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\IfFontExistsTF{Noto Sans CJK SC}{%
+	\newfontfamily\guidecjkfont{Noto Sans CJK SC}%
+}{%
+	\IfFontExistsTF{Songti SC}{%
+		\newfontfamily\guidecjkfont{Songti SC}%
+	}{}%
+}%
+\ifdefined\guidecjkfont
+	\newunicodechar{爱}{{\guidecjkfont 爱}}%
+\else
+	\newunicodechar{爱}{\emph{ai}}%
+\fi
+
+\newcommand{\guideiconAttention}{%
+	\tikz[baseline=-0.65ex,x=1ex,y=1ex]{%
+		\fill[guideAttenzioneColor] (0,0) circle (0.9);
+		\node[font=\sffamily\bfseries\scriptsize,scale=0.85,text=white] at (0,0) {!};
+	}%
+}
+
+\newcommand{\guideiconQuestion}{%
+	\tikz[baseline=-0.65ex,x=1ex,y=1ex]{%
+		\fill[guideDomandeColor] (0,0) circle (0.9);
+		\node[font=\sffamily\bfseries\scriptsize,scale=0.85,text=white] at (0,0) {?};
+	}%
+}
+
+\newcommand{\guideblocktitle}[2]{%
+	{\sffamily\bfseries\color{#1}#2}\par\smallskip%
+}
+
+\newmdenv[
+	skipabove=8pt,
+	skipbelow=8pt,
+	backgroundcolor=guideConsiglioColor!9,
+	linecolor=guideConsiglioColor,
+	linewidth=4pt,
+	rightline=false,
+	topline=false,
+	bottomline=false,
+	innerleftmargin=8pt,
+	innerrightmargin=8pt,
+	innertopmargin=7pt,
+	innerbottommargin=7pt,
+	leftmargin=0cm,
+	rightmargin=0cm
+]{consiglioBox}
+
+\newmdenv[
+	skipabove=8pt,
+	skipbelow=8pt,
+	backgroundcolor=guideDomandeColor!7,
+	linecolor=guideDomandeColor,
+	linewidth=4pt,
+	rightline=false,
+	topline=false,
+	bottomline=false,
+	innerleftmargin=8pt,
+	innerrightmargin=8pt,
+	innertopmargin=7pt,
+	innerbottommargin=7pt,
+	leftmargin=0cm,
+	rightmargin=0cm
+]{domandeBox}
+
+\newmdenv[
+	skipabove=8pt,
+	skipbelow=8pt,
+	backgroundcolor=guideAttenzioneColor!7,
+	linecolor=guideAttenzioneColor,
+	linewidth=4pt,
+	rightline=false,
+	topline=false,
+	bottomline=false,
+	innerleftmargin=8pt,
+	innerrightmargin=8pt,
+	innertopmargin=7pt,
+	innerbottommargin=7pt,
+	leftmargin=0cm,
+	rightmargin=0cm
+]{attenzioneBox}
+
+\newmdenv[
+	skipabove=8pt,
+	skipbelow=8pt,
+	backgroundcolor=guideSpiegazioneColor!7,
+	linecolor=guideSpiegazioneColor,
+	linewidth=4pt,
+	rightline=false,
+	topline=false,
+	bottomline=false,
+	innerleftmargin=8pt,
+	innerrightmargin=8pt,
+	innertopmargin=7pt,
+	innerbottommargin=7pt,
+	leftmargin=0cm,
+	rightmargin=0cm
+]{spiegazioneBox}
+
+\NewDocumentEnvironment{consiglio}{O{Consiglio}}{%
+	\begin{consiglioBox}%
+	\guideblocktitle{guideConsiglioColor}{#1}%
+}{%
+	\end{consiglioBox}%
+}
+
+\NewDocumentEnvironment{domandestimolo}{O{Domande stimolo}}{%
+	\begin{domandeBox}%
+	\phantomsection%
+	\guideblocktitle{guideDomandeColor}{\guideiconQuestion\enspace #1}%
+}{%
+	\end{domandeBox}%
+}
+
+\NewDocumentEnvironment{attenzione}{O{Aspetto a cui fare attenzione}}{%
+	\begin{attenzioneBox}%
+	\phantomsection%
+	\guideblocktitle{guideAttenzioneColor}{\guideiconAttention\enspace #1}%
+}{%
+	\end{attenzioneBox}%
+}
+
+\NewDocumentEnvironment{spiegazione}{O{Idea di spiegazione}}{%
+	\begin{spiegazioneBox}%
+	\phantomsection%
+	\guideblocktitle{guideSpiegazioneColor}{#1}%
+}{%
+	\end{spiegazioneBox}%
+}
+
+% Rimandi facoltativi raccolti esclusivamente alla fine di ogni capitolo.
+\newmdenv[
+	skipabove=12pt,
+	skipbelow=8pt,
+	backgroundcolor=guideRimandiQuadernoBackground,
+	linecolor=guideRimandiQuadernoBorder,
+	fontcolor=guideRimandiQuadernoText,
+	nobreak=false,
+	linewidth=4pt,
+	rightline=false,
+	topline=false,
+	bottomline=false,
+	innerleftmargin=10pt,
+	innerrightmargin=10pt,
+	innertopmargin=9pt,
+	innerbottommargin=9pt,
+	leftmargin=0cm,
+	rightmargin=0cm
+]{rimandiQuadernoBox}
+
+\NewDocumentEnvironment{rimandiquaderno}{}{%
+	\par\Needspace{8\baselineskip}%
+	\begin{rimandiQuadernoBox}%
+	\small%
+	\guideblocktitle{guideRimandiQuadernoText}{Se possiedi il volume \emph{Sulle orme di Milù -- Informatica}}%
+}{%
+	\end{rimandiQuadernoBox}%
+}
+
+% Ruoli assunti da alunni e alunne nelle attività.
+% I colori delle icone si regolano nella palette iniziale.
+\newcommand{\guideiconProgrammatore}{%
+	\tikz[baseline=-0.55ex,x=1ex,y=1ex]{%
+		\draw[rounded corners=1.5pt,line width=0.6pt,draw=guideProgrammatoreColor,fill=guideProgrammatoreColor!10]
+			(-0.9,-0.9) rectangle (0.9,0.9);
+		\draw[line width=0.75pt,guideProgrammatoreColor] (-0.5,0.38) -- (0.3,0.38);
+		\draw[line width=0.75pt,guideProgrammatoreColor] (-0.5,0.05) -- (0.08,0.05);
+		\draw[line width=1pt,guideProgrammatoreColor] (-0.32,-0.5) -- (0.48,0.3);
+		\fill[guideProgrammatoreColor] (-0.45,-0.63) -- (-0.25,-0.56) -- (-0.38,-0.43) -- cycle;
+	}%
+}
+
+\newcommand{\guideiconEsecutore}{%
+	\tikz[baseline=-0.55ex,x=1ex,y=1ex]{%
+		\draw[line width=0.6pt,draw=guideEsecutoreColor,fill=guideEsecutoreColor!10] (0,0) circle (0.9);
+		\fill[guideEsecutoreColor] (-0.25,-0.43) -- (-0.25,0.43) -- (0.5,0) -- cycle;
+	}%
+}
+
+\newcommand{\ruoloProgrammatore}{\guideiconProgrammatore\enspace\textbf{programmatore}}
+\newcommand{\ruoloEsecutore}{\guideiconEsecutore\enspace\textbf{esecutore}}
+\newcommand{\ruoliattivita}[1]{%
+	\par\noindent{\sffamily\small\color{black!72}\textbf{Ruolo di alunni e alunne:} #1}\par\smallskip%
+}
+
+% Box per schede operative fotocopiabili.
+\newmdenv[
+	skipabove=10pt,
+	skipbelow=10pt,
+	backgroundcolor=white,
+	linecolor=guideSchedaColor,
+	linewidth=1pt,
+	innerleftmargin=10pt,
+	innerrightmargin=10pt,
+	innertopmargin=9pt,
+	innerbottommargin=9pt,
+	leftmargin=0cm,
+	rightmargin=0cm
+]{schedaBox}
+
+% Cornice fino ai bordi dell'A4, disegnata dietro il contenuto del foglio.
+% L'origine del hook shipout è l'angolo superiore sinistro della pagina.
+\newcommand{\guideSchedaBordo}{%
+  \put(0,0){%
+    \begin{tikzpicture}[overlay]
+      \fill[guideSchedaBordoFondo,even odd rule]
+        (0,0) rectangle (\paperwidth,-\paperheight)
+        (6mm,-6mm) rectangle
+        (\dimexpr\paperwidth-6mm\relax,\dimexpr6mm-\paperheight\relax);
+      \draw[guideSchedaBordoLinea,line width=0.5pt]
+        (6mm,-6mm) rectangle
+        (\dimexpr\paperwidth-6mm\relax,\dimexpr6mm-\paperheight\relax);
+    \end{tikzpicture}%
+  }%
+}
+
+% Schede a pagina intera: \begin{scheda}[A1][3] ... \end{scheda}.
+% Il primo argomento è il nome stampato e restituito da \ref: cambiarlo qui
+% aggiorna titolo e richiami dopo la ricompilazione. Usare label stabili,
+% per esempio \label{scheda-inventare-1}, indipendenti dal nome visibile.
+% Il secondo argomento è il capitolo, stampato prima della sigla della scheda.
+% Senza di esso resta disponibile il formato a box.
+% La marca del registro segue il foglio fino alla pagina effettiva del float.
+% Lo stile e il bordo si applicano solo quando il foglio viene emesso;
+% consumare la marca, perché LaTeX riutilizza i registri dei float.
+\makeatletter
+\AddToHookWithArguments{cmd/@wtryfc/before}[guide-schede]{%
+  \ifcsname guideSchedaFloat@\number#1\endcsname
+    \csname guideSchedaFloat@\number#1\endcsname
+    \global\expandafter\let\csname guideSchedaFloat@\number#1\endcsname\relax
+  \fi
+}
+\makeatother
+\newfontfamily\guideSchedaTitleFont{TeX Gyre Heros Cn}
+\makeatletter
+\NewDocumentEnvironment{scheda}{O{Scheda} o}{%
+	\IfNoValueTF{#2}{%
+		\begin{schedaBox}%
+		{\sffamily\bfseries\large\color{guideSchedaColor}#1}\par\medskip%
+	}{%
+		\begin{figure}[p]%
+		\expandafter\gdef\csname guideSchedaFloat@\number\@currbox\endcsname{%
+			\thispagestyle{empty}%
+			\AddToHookNext{shipout/background}{\guideSchedaBordo}%
+		}%
+		% Un float occupa tutta l'altezza del testo, ma il suo contenuto
+		% usa i margini A4 delle schede senza cambiare la geometria del libro.
+		\vbox to\textheight\bgroup
+			\offinterlineskip
+			\vskip\dimexpr14mm-1in-\voffset-\topmargin-\headheight-\headsep\relax
+			\hbox to\textwidth\bgroup\hss
+			\begin{minipage}[b][\dimexpr\paperheight-28mm\relax][t]{\dimexpr\paperwidth-36mm\relax}%
+		\def\@currentlabel{#1}%
+		\def\@currentlabelname{Capitolo #2 - Scheda #1}%
+		\sffamily\fontsize{18}{24}\selectfont\color{black}%
+		\setlength{\parindent}{0pt}%
+		\setlength{\parskip}{0pt}%
+		{\setlength{\fboxsep}{3mm}%
+		\colorbox{black!15}{\parbox{\dimexpr\linewidth-6mm\relax}{%
+			\fontsize{14}{17}\selectfont\bfseries CAPITOLO #2 - SCHEDA #1}}\par}%
+		\vspace{4mm}%
+		{\fontsize{12}{16}\selectfont
+		CLASSE \makebox[12mm]{\dotfill}\enspace
+		NOME: \dotfill\enspace DATA: \makebox[30mm]{\dotfill}\par}%
+		\vspace{7mm}%
+	}%
+}{%
+	\IfNoValueTF{#2}{%
+		\end{schedaBox}%
+	}{%
+		\par\vfill
+		\end{minipage}%
+			\hss\egroup
+			\vss
+		\egroup
+		\end{figure}%
+	}%
+}
+\makeatother
+
+\newcommand{\schedatitolo}[1]{%
+	{\guideSchedaTitleFont\fontsize{24}{28}\selectfont\bfseries #1\par}%
+	\vspace{5mm}%
+}
+\newcommand{\schedaparte}[2]{%
+	\noindent\makebox[12mm][l]{#1}%
+	\parbox[t]{\dimexpr\linewidth-12mm\relax}{\bfseries #2}\par
+	\vspace{2mm}%
+}
+\newcommand{\schedacasella}{%
+	\tikz[baseline=0pt]{\draw[line width=0.7pt] (0,0) rectangle (5mm,5mm);}%
+}
+
+% Tabella del manuale dei movimenti (capitolo 4, schede B1 e B2).
+\newcommand{\schedamanualegriglia}[1]{%
+  \hspace*{5mm}\resizebox{38mm}{!}{#1}\par
+}
+\newcommand{\schedamanualecoppia}[2]{%
+  \begin{minipage}[t]{\linewidth}
+  \textbullet\ prima\par
+  \vspace{0.5mm}
+  \schedamanualegriglia{#1}
+  \vspace{2mm}
+  \textbullet\ dopo\par
+  \vspace{0.5mm}
+  \schedamanualegriglia{#2}
+  \vspace{1mm}
+  \end{minipage}%
+}
+\newcommand{\schedamanualeintestazione}{%
+  \rowcolor{black!10}
+  Istruzione & Cosa fa il\newline personaggio? & Disegnalo sulla\newline griglia \\\hline
+}
+\newenvironment{schedamanualetabella}{%
+  \setlength{\tabcolsep}{2mm}%
+  \setlength{\arrayrulewidth}{0.6pt}%
+  \arrayrulecolor{black!55}%
+  \renewcommand{\arraystretch}{1}%
+  \noindent\begin{tabular}{|>{\raggedright\arraybackslash}p{\dimexpr\linewidth/3-2\tabcolsep-4\arrayrulewidth/3\relax}|>{\raggedright\arraybackslash}p{\dimexpr\linewidth/3-2\tabcolsep-4\arrayrulewidth/3\relax}|>{\raggedright\arraybackslash}p{\dimexpr\linewidth/3-2\tabcolsep-4\arrayrulewidth/3\relax}|}
+  \hline
+  \schedamanualeintestazione
+}{%
+  \end{tabular}\par
+}
+
+% Griglie e righe delle schede sul sistema di codifica.
+\newcommand{\schedacodificarighe}[1]{%
+  {\color{black!45}%
+  \foreach \riga in {1,...,#1}{\vspace{7mm}\hrule height 0.5pt}}%
+}
+% Parametri: colore opzionale, caselle piene (colonna/riga da zero), codice.
+\newcommand{\schedacodificagriglia}[3][black!30]{%
+  \begin{scope}
+    \ifblank{#2}{}{\foreach \colonna/\riga in {#2}{%
+      \fill[#1] ({10+12*\colonna},{5+12*\riga}) rectangle ++(12,12);%
+    }}%
+    \draw[line width=0.55pt,black!70] (10,5) rectangle (34,29)
+      (22,5) -- (22,29) (10,17) -- (34,17);
+    \node at (16,0) {1};
+    \node at (28,0) {2};
+    \node at (6,11) {1};
+    \node at (6,23) {2};
+    \node[anchor=north west,inner sep=0pt,align=left,text width=41mm]
+      at (41,-2.5) {#3};
+  \end{scope}%
+}
+\newcommand{\schedacodificavuota}{%
+  (\makebox[4mm]{\dotfill},\,\makebox[4mm]{\dotfill})\,\makebox[10mm]{\dotfill}%
+}
+
+% Pseudocodice con indentazione preservata.
+\usepackage{alltt}
+\newenvironment{pseudocodice}{%
+	\par\smallskip
+	\begin{alltt}%
+}{%
+	\end{alltt}\smallskip%
+}
+
+% Icone delle istruzioni per i percorsi su griglia.
+% Quadratino arrotondato con: freccia avanti / gira a sinistra / gira a destra / aspira / strofina
+\newcommand{\guideiconbox}[1]{%
+	\tikz[baseline=-0.6ex,x=1em,y=1em]{%
+		\draw[rounded corners=1.5pt,line width=0.5pt,black!70] (-0.52,-0.52) rectangle (0.52,0.52);
+		#1%
+	}%
+}
+\newcommand{\iconAvanti}{\guideiconbox{\draw[line width=1pt,black!60,-stealth] (0,-0.3) -- (0,0.3);}}
+\newcommand{\iconSx}{\guideiconbox{\draw[line width=1pt,black!60,-stealth,rounded corners=2pt,line cap=round,line join=round] (0.23,-0.30) -- (0.23,0.20) -- (-0.28,0.20);}}
+\newcommand{\iconDx}{\guideiconbox{\draw[line width=1pt,black!60,-stealth,rounded corners=2pt,line cap=round,line join=round] (-0.23,-0.30) -- (-0.23,0.20) -- (0.28,0.20);}}
+\newcommand{\iconAspira}{\guideiconbox{%
+	\fill[black!60] (0,0) circle (0.13);
+	\foreach \a in {45,135,225,315} \draw[line width=0.7pt,black!60,-stealth] (\a:0.42) -- (\a:0.2);}}
+\newcommand{\iconMocio}{\guideiconbox{%
+	\fill[black!60] (0,0) circle (0.13);
+	\draw[line width=0.7pt,black!60,-stealth] (0.3,0.12) arc[start angle=20,end angle=160,radius=0.32];
+	\draw[line width=0.7pt,black!60,-stealth] (-0.3,-0.12) arc[start angle=200,end angle=340,radius=0.32];}}
+
+% Caselle di spunta.
+\newcommand{\cbx}{\tikz[baseline=0.1ex]\draw[black!45,rounded corners=1pt,line width=0.6pt] (0,0) rectangle (0.82em,0.82em);}
+\newcommand{\cbxv}{\tikz[baseline=0.1ex]{\draw[black!45,rounded corners=1pt,line width=0.6pt] (0,0) rectangle (0.82em,0.82em);\draw[blue!70!black,line width=0.9pt] (0.14em,0.42em) -- (0.34em,0.14em) -- (0.76em,0.78em);}}
+
+% Colori per le attività di codifica (pixel art)
+\colorlet{codRosa}{magenta!55}
+\colorlet{codGiallo}{yellow!85!orange}
+\colorlet{codAzzurro}{cyan!60}
+\colorlet{codViola}{blue!45!violet!70}
+\definecolor{codArancione}{HTML}{E87932}
+\definecolor{codMarrone}{HTML}{824B2F}
+
+% Rame, panda rosso visto dall'alto.
+% #1 rotazione antioraria: 0 = muso in su, 90 = sinistra, -90 = destra.
+\newcommand{\minirameicona}[1]{%
+	\begin{scope}[rotate=#1,line join=round,line cap=round]
+		\definecolor{ramePelo}{HTML}{C9572C}
+		\definecolor{rameScuro}{HTML}{653B2E}
+		\definecolor{rameCrema}{HTML}{FFF1D5}
+		% Coda arcuata, con anelli larghi leggibili anche nelle mini-griglie.
+		\begin{scope}
+			\clip (0,-0.19) .. controls (0.06,-0.39) and (0.23,-0.45) .. (0.35,-0.34)
+				.. controls (0.44,-0.25) and (0.43,-0.15) .. (0.34,-0.16)
+				.. controls (0.26,-0.18) and (0.30,-0.28) .. (0.22,-0.28)
+				.. controls (0.14,-0.29) and (0.10,-0.18) .. (0.07,-0.14) -- cycle;
+			\fill[ramePelo] (-0.1,-0.5) rectangle (0.5,0);
+			\fill[rameCrema] (0.08,-0.48) -- (0.16,-0.48) -- (0.23,-0.23) -- (0.15,-0.20) -- cycle;
+			\fill[rameCrema] (0.26,-0.44) -- (0.35,-0.39) -- (0.26,-0.27) -- (0.20,-0.29) -- cycle;
+			\fill[rameCrema] (0.31,-0.25) -- (0.44,-0.27) -- (0.45,-0.20) -- (0.31,-0.18) -- cycle;
+		\end{scope}
+		% Zampe scure e dorso; la coda resta sul retro del personaggio.
+		\fill[rameScuro] (-0.18,-0.15) ellipse (0.07 and 0.12);
+		\fill[rameScuro] (0.18,-0.15) ellipse (0.07 and 0.12);
+		\fill[ramePelo] (0,-0.07) ellipse (0.20 and 0.24);
+		% Orecchie appuntite con interno chiaro, ai lati della testa.
+		\fill[rameScuro] (-0.11,0.12) -- (-0.30,0.27) -- (-0.26,0.01) -- cycle;
+		\fill[rameScuro] (0.11,0.12) -- (0.30,0.27) -- (0.26,0.01) -- cycle;
+		\fill[rameCrema] (-0.17,0.11) -- (-0.27,0.23) -- (-0.24,0.06) -- cycle;
+		\fill[rameCrema] (0.17,0.11) -- (0.27,0.23) -- (0.24,0.06) -- cycle;
+		\fill[ramePelo] (0,0.02) .. controls (-0.30,-0.02) and (-0.31,0.24) .. (-0.13,0.31)
+			-- (0,0.42) -- (0.13,0.31) .. controls (0.31,0.24) and (0.30,-0.02) .. cycle;
+		% Guance chiare e muso sporgente rendono esplicita la direzione.
+		\fill[rameCrema] (-0.23,0.14) .. controls (-0.22,0.30) and (-0.12,0.33) .. (-0.04,0.30)
+			-- (0,0.42) -- (0.04,0.30) .. controls (0.12,0.33) and (0.22,0.30) .. (0.23,0.14)
+			.. controls (0.11,0.14) and (0.07,0.22) .. (0,0.25)
+			.. controls (-0.07,0.22) and (-0.11,0.14) .. cycle;
+		\fill[rameScuro] (-0.115,0.245) circle (0.035);
+		\fill[rameScuro] (0.115,0.245) circle (0.035);
+		\fill[rameScuro] (-0.045,0.385) -- (0,0.435) -- (0.045,0.385) -- cycle;
+	\end{scope}%
+}
+
+% Griglia con Rame: #1 colonne, #2 righe, #3 colonna (da 0), #4 riga (da 0), #5 rotazione
+\newcommand{\minigrigliarame}[5]{%
+	\begin{tikzpicture}[scale=0.52,baseline=(current bounding box.center)]
+		\draw[gray!80,thin] (0,0) grid (#1,#2);
+		\begin{scope}[shift={(#3+0.5,#4+0.5)}]
+			\minirameicona{#5}
+		\end{scope}
+	\end{tikzpicture}%
+}
+
+% Mini-griglia vuota: #1 colonne, #2 righe
+\newcommand{\minigrigliavuota}[2]{%
+	\begin{tikzpicture}[scale=0.4,baseline=(current bounding box.center)]
+		\draw[gray!80,thin] (0,0) grid (#1,#2);
+	\end{tikzpicture}%
+}
+
+% Robot ortolano, visto dall'alto.
+% \robotortolanoicona{angolo} disegna nello scope TikZ corrente.
+% 0 = fronte in alto; 90 = sinistra; -90 = destra; 180 = basso.
+% L'icona resta entro una cella unitaria, anche dopo le rotazioni di 90 gradi.
+% Lo scarto di -0,055 centra l'ingombro della pinza e del carrello nella cella.
+\newcommand{\robotortolanoicona}[1]{%
+\begin{scope}[rotate=#1,shift={(0,-.055)},line join=round,line cap=round]
+  \definecolor{ortolanoTelaio}{HTML}{237E76}
+  \definecolor{ortolanoScuro}{HTML}{233F40}
+  \definecolor{ortolanoGomma}{HTML}{303B3D}
+  \definecolor{ortolanoPinza}{HTML}{F0A34C}
+  \definecolor{ortolanoCesto}{HTML}{F3DCB2}
+  \definecolor{ortolanoBordoCesto}{HTML}{816641}
+  \definecolor{ortolanoCarota}{HTML}{EE7B32}
+  \definecolor{ortolanoFoglie}{HTML}{477B42}
+  \foreach \xx in {-.34,.34}{\foreach \yy in {-.205,.135}{
+    \fill[ortolanoGomma,rounded corners=.8pt] (\xx-.075,\yy-.113) rectangle (\xx+.075,\yy+.113);
+    \draw[white!65!ortolanoGomma,line width=.45pt] (\xx-.044,\yy-.065) -- (\xx+.044,\yy-.065)
+      (\xx-.044,\yy+.065) -- (\xx+.044,\yy+.065);
+  }}
+  \path[fill=ortolanoTelaio,draw=ortolanoScuro,line width=.8pt,rounded corners=1.7pt]
+    (-.265,-.365) rectangle (.265,.235);
+  % Cassetta delle verdure sul retro.
+  \path[fill=ortolanoCesto,draw=ortolanoBordoCesto,line width=.7pt,rounded corners=.5pt]
+    (-.22,-.315) rectangle (.22,-.045);
+  \draw[ortolanoBordoCesto,line width=.4pt] (-.188,-.283) rectangle (.188,-.077);
+  \path[fill=ortolanoCarota,draw=ortolanoBordoCesto,line width=.5pt]
+    (-.135,-.26) -- (.105,-.20) .. controls (.15,-.155) and (.08,-.075) .. (.028,-.105) -- cycle;
+  \draw[ortolanoFoglie,line width=1.7pt,line cap=round]
+    (.072,-.133) -- (.064,-.065)
+    (.072,-.133) -- (.145,-.079)
+    (.072,-.133) -- (.16,-.132);
+  % Freccia dipinta sul telaio: indica il davanti.
+  \fill[white] (-.038,-.025) -- (.038,-.025) -- (.038,.104)
+    -- (.091,.104) -- (0,.214) -- (-.091,.104) -- (-.038,.104) -- cycle;
+  % Pinza sporgente sul davanti.
+  \draw[ortolanoScuro,line width=3.2pt] (0,.24) -- (0,.335);
+  \draw[ortolanoPinza,line width=2pt] (0,.24) -- (0,.335);
+  \path[fill=ortolanoPinza,draw=ortolanoScuro,line width=.65pt]
+    (-.025,.295) -- (-.165,.353) -- (-.147,.462) -- (-.065,.474)
+    -- (-.07,.429) -- (-.099,.421) -- (-.104,.375) -- (0,.338)
+    -- (.104,.375) -- (.099,.421) -- (.07,.429) -- (.065,.474)
+    -- (.147,.462) -- (.165,.353) -- (.025,.295) -- cycle;
+  \fill[ortolanoScuro] (0,.318) circle (.026);
+\end{scope}}
+
+% Griglia: colonne, righe, colonna e riga del robot (indici da 0), angolo.
+% Come \minigrigliarame, le righe crescono dal basso verso l'alto.
+\newcommand{\minigrigliarobotortolano}[5]{%
+  \begin{tikzpicture}[x=9.5mm,y=9.5mm,baseline=(current bounding box.center)]
+    \draw[gray!80,line width=0.73pt,step=1] (0,0) grid (#1,#2);
+    \begin{scope}[shift={(#3+0.5,#4+0.5)}]
+      \robotortolanoicona{#5}
+    \end{scope}
+  \end{tikzpicture}%
+}
+\addbibresource{references.bib}
+% Bibliografie di capitolo.
+% I capitoli incrociano la categoria con le rispettive parole chiave cap1...cap8.
+% Le risorse qui elencate presentano attività concrete, anche in articoli accademici.
+% Le altre voci restano nei Riferimenti, dopo l'eventuale box del volume studente.
+\DeclareBibliographyCategory{attivita}
+\addtocategory{attivita}{lodi-lonati-infonin}
+\addtocategory{attivita}{bebras-it}
+\addtocategory{attivita}{bebras-explorer}
+\addtocategory{attivita}{programmailfuturo-lezione-03}
+\addtocategory{attivita}{programmailfuturo-lezione-06}
+\addtocategory{attivita}{quidplus-unplugged-fiabe}
+\addtocategory{attivita}{bebras-2025-costruzioni}
+\addtocategory{attivita}{csunplugged-kidbots}
+\addtocategory{attivita}{csunplugged-it-2015}
+\addtocategory{attivita}{lodi-etal-2020}
+\addtocategory{attivita}{programmailfuturo-lezione-04}
+\addtocategory{attivita}{bellettini-etal-2019}
+\addtocategory{attivita}{csunplugged-it-2015-ordinamento}
+\addtocategory{attivita}{bebras-2019-ordine}
+\addtocategory{attivita}{programmailfuturo}
+\addtocategory{attivita}{nardelli-2020}
+\addtocategory{attivita}{caserio-etal-umc}
+\addtocategory{attivita}{brennan-creative-computing}
+\addtocategory{attivita}{learning-creative-learning}
+\addtocategory{attivita}{giordano-moscetti-2016}
+\addtocategory{attivita}{impact-conectar-umc}
+\ExecuteBibliographyOptions{backref=true,dashed=false,maxbibnames=99}
+% Omette la data quando il campo year è assente.
+\renewbibmacro*{date+extradate}{%
+  \iffieldundef{year}
+    {}%
+    {\printtext[parens]{\printlabeldateextra}}}
+\DeclareNameAlias{sortname}{given-family}
+\DeclareDelimFormat[bib]{multinamedelim}{\addcomma\space}
+\DeclareDelimFormat[bib]{finalnamedelim}{\addcomma\space}
+
+\hypersetup{
+  pdftitle={Insegnare Informatica},
+  pdfauthor={Michael Lodi, Agnese Del Zozzo, Alberto Montresor, Giorgia Bissoli},
+  pdfsubject={Una guida per docenti del primo ciclo - Volume 1},
+  pdfkeywords={informatica, primo ciclo, scuola primaria, scuola secondaria di primo grado, didattica, guida insegnanti},
+  pdflang={it-IT},
+  pdfcreator={Michael Lodi},
+  bookmarksdepth=2}
+
+\title{Insegnare Informatica}
+
+\author{Michael Lodi, Agnese Del Zozzo, \newline Alberto Montresor, Giorgia Bissoli}
+\date{}
+
+% Disegni vettoriali del capitolo 4.
+\newcommand{\figuraavanzaregriglie}{%
+% Quattro esecuzioni indipendenti della stessa istruzione relativa.
+% Ogni caso: centro -> casella davanti al muso, senza cambiare orientamento.
+\begin{center}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[x=9mm,y=9mm,
+  griglia/.style={draw=black!55,line width=0.45pt,step=1},
+  istruzione/.style={font=\fontsize{12}{14}\selectfont,
+    fill=black!5,rounded corners=2pt,inner xsep=6pt,inner ysep=4pt}]
+  % Separatori tra esempi, meno marcati delle griglie.
+  \foreach \x in {3.45,7.35,11.25}{
+    \draw[black!15,line width=0.4pt] (\x,-3.05) -- (\x,5.55);
+  }
+  % x del pannello / rotazione / colonna finale / riga finale (indici da 0).
+  \foreach \x/\rotazione/\colonna/\riga in {
+    0/180/1/0, 3.9/90/0/1, 7.8/-90/2/1, 11.7/0/1/2}{
+    \begin{scope}[shift={(\x,0)}]
+      \begin{scope}[shift={(0,1.9)}]
+        \fill[black!4] (1,1) rectangle (2,2);
+        \draw[griglia] (0,0) grid (3,3);
+        \draw[griglia,line width=0.7pt] (0,0) rectangle (3,3);
+        \begin{scope}[shift={(1.5,1.5)},scale=1]
+          \minirameicona{\rotazione}
+        \end{scope}
+      \end{scope}
+      \node[istruzione] at (1.5,1.15) {\texttt{VAI AVANTI}};
+      \begin{scope}[shift={(0,-3)}]
+        \fill[ocre!12] (\colonna,\riga) rectangle +(1,1);
+        \draw[griglia] (0,0) grid (3,3);
+        \draw[griglia,line width=0.7pt] (0,0) rectangle (3,3);
+        \begin{scope}[shift={(\colonna+0.5,\riga+0.5)},scale=1]
+          \minirameicona{\rotazione}
+        \end{scope}
+      \end{scope}
+    \end{scope}
+  }
+\end{tikzpicture}%
+}
+\end{center}
+}
+
+\newcommand{\figurarotazionigriglie}{%
+% Due sequenze di quattro rotazioni, ciascuna eseguita sul posto.
+% Ogni riquadro ripete la stessa casella: le frecce orizzontali scandiscono
+% l'esecuzione delle istruzioni e non indicano un percorso sulla griglia.
+\begin{center}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[x=1cm,y=1cm,
+  casella/.style={draw=black!55,line width=0.65pt,fill=black!4},
+  istruzione/.style={font=\fontsize{13}{15}\selectfont,align=center,
+    fill=black!5,rounded corners=2pt,inner xsep=5pt,inner ysep=4pt}]
+  % La prima e l'ultima posa sono identiche: quattro quarti di giro.
+  \foreach \y/\verso in {0/DESTRA,-5.1/SINISTRA}{
+    \begin{scope}[shift={(0,\y)}]
+      \foreach \passo in {0,...,4}{
+        \pgfmathsetmacro{\x}{3.6*\passo}
+        \draw[casella] (\x-1.05,-1.05) rectangle (\x+1.05,1.05);
+      }
+      \foreach \passo in {0,...,3}{
+        \pgfmathsetmacro{\x}{3.6*\passo}
+        \draw[black!50,line width=0.8pt,-stealth] (\x+1.17,0) -- (\x+2.43,0);
+        \node[istruzione] at (\x+1.8,1.65)
+          {\texttt{GIRA A}\\\texttt{\verso}};
+      }
+    \end{scope}
+  }
+  % Rotazione antioraria della macro: 0 = alto.
+  \foreach \x/\angolo in {0/180,3.6/90,7.2/0,10.8/-90,14.4/180}{
+    \begin{scope}[shift={(\x,0)},scale=1.85]
+      \minirameicona{\angolo}
+    \end{scope}
+  }
+  \foreach \x/\angolo in {0/180,3.6/-90,7.2/0,10.8/90,14.4/180}{
+    \begin{scope}[shift={(\x,-5.1)},scale=1.85]
+      \minirameicona{\angolo}
+    \end{scope}
+  }
+\end{tikzpicture}%
+}
+\end{center}
+}
+
+\newcommand{\figuramovimentirotazioni}{%
+% Pagina di figure dedicata ai comandi relativi al corpo dell'esecutore.
+\clearpage
+\begin{figure}[p]
+\centering
+\begin{minipage}[c][0.96\textheight][s]{\linewidth}
+  {\centering\Large\bfseries Avanzare\par}
+  \smallskip
+  {\centering Un passo nella direzione in cui guarda Rame.\par}
+  \figuraavanzaregriglie%
+  \vfill
+  {\centering\Large\bfseries Ruotare sul posto\par}
+  \smallskip
+  {\centering Ogni istruzione fa ruotare Rame di 90\textdegree.\\
+    Rame resta nella stessa casella.\par}
+  \figurarotazionigriglie%
+\end{minipage}
+\end{figure}
+\clearpage
+}
+
+\newcommand{\figuraselezionegriglia}{%
+% Griglia della selezione.
+% Cassetta vuota di destinazione e mucchio che nasconde talpa o carota.
+\begin{tikzpicture}[baseline=(current bounding box.center),
+                   line join=round,line cap=round]
+  \definecolor{ortoBordo}{HTML}{816641}
+  \definecolor{ortoLegno}{HTML}{F3DCB2}
+  \definecolor{ortoLegnoLato}{HTML}{D9B783}
+  \definecolor{ortoInterno}{HTML}{C69D69}
+  \definecolor{ortoScuro}{HTML}{665039}
+  \definecolor{ortoTerra}{HTML}{C49A70}
+  \definecolor{ortoTerraOmbra}{HTML}{A67952}
+  \definecolor{ortoSassi}{HTML}{E0C5A2}
+  \draw[gray!70,thin] (0,0) grid[step=1.6] (4.8,4.8);
+
+  % Cassetta aperta e vuota: apertura, due assi e maniglie essenziali.
+  \begin{scope}[shift={(4.0,4.0)}]
+    \path[fill=ortoInterno,draw=ortoBordo,line width=.8pt]
+      (-.62,.22) -- (0,.44) -- (.62,.22) -- (0,0) -- cycle;
+    \path[fill=ortoLegno,draw=ortoBordo,line width=.8pt]
+      (-.62,.22) -- (0,.44) -- (.62,.22) -- (0,0) -- cycle
+      (-.48,.22) -- (0,.05) -- (.48,.22) -- (0,.39) -- cycle;
+    % Pareti interne e fondo ribassato rendono evidente il vano vuoto.
+    \path[fill=ortoScuro!75!ortoInterno]
+      (-.48,.22) -- (0,.39) -- (0,.25) -- (-.29,.15) -- cycle;
+    \path[fill=ortoInterno]
+      (0,.39) -- (.48,.22) -- (.29,.15) -- (0,.25) -- cycle;
+    \path[fill=ortoLegnoLato]
+      (-.29,.15) -- (0,.25) -- (.29,.15) -- (0,.05) -- cycle;
+    \draw[ortoBordo,line width=.45pt]
+      (0,.39) -- (0,.25) -- (-.29,.15)
+      (0,.25) -- (.29,.15);
+    \path[fill=ortoLegnoLato,draw=ortoBordo,line width=.8pt]
+      (-.62,.22) -- (0,0) -- (0,-.44) -- (-.62,-.22) -- cycle;
+    \path[fill=ortoLegno,draw=ortoBordo,line width=.8pt]
+      (0,0) -- (.62,.22) -- (.62,-.22) -- (0,-.44) -- cycle;
+    \draw[ortoBordo,line width=.65pt]
+      (-.62,0) -- (0,-.22) -- (.62,0);
+    \draw[ortoScuro,line width=1.65pt]
+      (-.42,.045) -- (-.23,-.022)
+      (.23,-.022) -- (.42,.045);
+    \foreach \x/\y in {-.55/.08,-.55/-.14,-.07/-.09,-.07/-.31,
+                       .07/-.09,.07/-.31,.55/.08,.55/-.14}{
+      \fill[ortoBordo] (\x,\y) circle (.016);
+    }
+  \end{scope}
+
+  % Terra neutra, senza germoglio: non anticipa il contenuto nascosto.
+  \begin{scope}[shift={(2.4,2.4)}]
+    \path[fill=ortoTerra,draw=ortoBordo,line width=.8pt]
+      (-.60,-.21)
+      .. controls (-.58,-.10) and (-.46,-.10) .. (-.41,-.03)
+      .. controls (-.37,.07) and (-.34,.19) .. (-.21,.18)
+      .. controls (-.16,.31) and (.06,.34) .. (.15,.22)
+      .. controls (.30,.25) and (.35,.12) .. (.40,.03)
+      .. controls (.46,-.05) and (.55,-.07) .. (.60,-.21)
+      .. controls (.40,-.30) and (-.39,-.30) .. cycle;
+    \path[fill=ortoTerraOmbra]
+      (-.565,-.21)
+      .. controls (-.34,-.16) and (-.27,-.24) .. (-.05,-.19)
+      .. controls (.20,-.13) and (.34,-.12) .. (.50,-.12)
+      -- (.57,-.20)
+      .. controls (.32,-.28) and (-.34,-.28) .. cycle;
+    \path[fill=ortoSassi,draw=ortoBordo,line width=.5pt]
+      (-.32,-.10) .. controls (-.33,-.03) and (-.22,0) .. (-.19,-.07)
+      .. controls (-.17,-.12) and (-.28,-.14) .. cycle;
+    \path[fill=ortoSassi,draw=ortoBordo,line width=.5pt]
+      (.18,.01) .. controls (.16,.07) and (.25,.12) .. (.29,.04)
+      .. controls (.31,-.01) and (.22,-.02) .. cycle;
+    \draw[ortoBordo,line width=.7pt] (-.075,.135) -- (.015,.16);
+    \fill[ortoBordo] (.055,-.10) circle (.021);
+    \path[fill=ortoTerra,draw=ortoBordo,line width=.5pt]
+      (-.50,-.32) ellipse[x radius=.055,y radius=.025]
+      (.47,-.33) ellipse[x radius=.06,y radius=.025];
+  \end{scope}
+
+  \begin{scope}[shift={(0.8,0.8)},scale=1.35]
+    \robotortolanoicona{0}
+  \end{scope}
+\end{tikzpicture}%
+}

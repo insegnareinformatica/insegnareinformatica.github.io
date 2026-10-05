@@ -1,0 +1,832 @@
+% !TeX root = main.tex
+\chapterimage{chapter-04-movimenti-griglia.jpg}
+\chapter{Movimenti su una griglia}\label{capitolo-4-movimenti-su-una-griglia}
+
+Nel capitolo precedente abbiamo lavorato su situazioni quotidiane e giochi, in cui gli alunni e le alunne hanno sperimentato l'idea di descrivere \textbf{sequenze} di azioni e di osservare ciò che succedeva eseguendole.
+
+In questo capitolo facciamo un passo avanti: ci spostiamo in un ambiente più strutturato, la griglia, che diventa il nostro campo di gioco.
+
+Da un punto di vista informatico, la griglia è un contesto chiaro in cui formulare sequenze di \textbf{istruzioni} precise, osservare come un \textbf{esecutore} le interpreta, individuare eventuali errori e correggerli. È il modo più immediato per far capire ai bambini e bambine che un computer (o un robot) esegue sempre e solo ciò che ``gli diciamo'', senza intuire ciò che non è stato specificato.
+
+Da un punto di vista delle altre discipline, come la matematica (ma non solo), muoversi su una griglia significa ragionare in termini di spazio, angoli, distanze, direzioni, coordinate. È un terreno ideale per materializzare concetti di geometria e di ragionamento spaziale in attività pratiche.
+
+\section{Traguardi e obiettivi generali }\label{traguardi-e-obiettivi-generali-1}
+
+\begin{itemize}
+\item
+  Pianificare sequenze di istruzioni ordinate per raggiungere un obiettivo definito.
+\item
+  Prevedere l'esecuzione di un programma, immaginando passo per passo cosa farà l'esecutore.
+\item
+  Verificare sperimentalmente l'esecuzione di un programma, confrontando le previsioni con il risultato.
+\item
+  Individuare e correggere errori (debugging) osservando gli effetti dell'esecuzione.
+\item
+  Comprendere il valore di un linguaggio preciso e condiviso, che consente di comunicare efficacemente sia con un computer sia tra esseri umani.
+\item
+  Riconoscere e utilizzare diversi sistemi di riferimento spaziali (ad es. destra/sinistra, punti cardinali) per descrivere movimenti e posizioni.
+\end{itemize}
+
+\section{Prerequisiti }\label{prerequisiti-1}
+
+Gli alunni e le alunne avranno già svolto le attività del Capitolo~\ref{algoritmi-quotidiani} - Algoritmi quotidiani, quindi:
+
+\begin{itemize}
+\item
+  dovrebbero già avere un'idea iniziale di \textbf{algoritmo}, inteso in modo informale come una sequenza di passi per raggiungere un obiettivo;
+\item
+  dovrebbero avere familiarità con il fatto che le istruzioni vengono eseguite da un esecutore (computer o umano ``che fa il computer''), nell'ordine in cui sono state scritte.
+\end{itemize}
+
+\section{Contenuti, in breve }\label{contenuti-in-breve-1}
+
+Questo capitolo contiene attività a difficoltà crescente in cui i bambini e le bambine devono far completare delle ``missioni'' a un personaggio che si muove su un campo di gioco composto da una griglia (ad esempio, una griglia 8x8 disegnata sul pavimento, composta da 64 caselle). Può essere utile inserire l'attività in un contesto che dia senso alla missione e al personaggio. Ad esempio:
+
+\begin{itemize}
+\item
+  il personaggio è Miguel e la sua missione è prendere un certo peluche usando la macchina con l'artiglio (Claw Crane);
+
+
+
+\item il personaggio è un'ape che vola tra i fiori e la sua missione è impollinare più fiori possibili;
+
+
+
+\item
+  personaggio e missione sono ispirati a una storia letta in classe e poi simulata sulla griglia. Ad esempio, il personaggio è Cappuccetto Rosso e la sua missione è andare dalla nonna e portarle il pranzo, evitando il lupo per strada.
+\end{itemize}
+
+In particolare, vengono proposte 3 attività.
+
+\textbf{Attività 1 -- Be my robot:} gli alunni e le alunne guidano un compagno-robot sulla griglia con istruzioni semplici in linguaggio naturale, sperimentando diversi modi per descrivere movimenti e posizioni.
+
+\textbf{Attività 2 -- Be my more intelligent robot:} si arricchisce il linguaggio con istruzioni di ripetizione e selezione (``se\ldots{} allora\ldots''), per scrivere programmi più compatti e generali.
+
+\textbf{Attività 3 -- Bee my robot:} gli stessi concetti vengono ripresi usando veri robot educativi che si muovono sulla griglia, programmati in anticipo tramite tasti o carte-istruzioni.
+
+\section{Movimenti su una griglia e sistemi di riferimento }\label{movimenti-su-una-griglia-e-sistemi-di-riferimento}
+
+Nelle attività discusse in questo capitolo, i bambini e le bambine imparano a scrivere istruzioni per far muovere un compagno/a su una griglia. L'attività si svolge in coppia o in piccolo gruppo: a turno, alcuni progettano e scrivono (o, in alcuni casi, dettano) le istruzioni per il movimento (cioè, interpretano il ruolo dei \textbf{programmatori} \guideiconProgrammatore) mentre altri le devono eseguire (cioè, interpretano il ruolo dell'\textbf{esecutore} \guideiconEsecutore).
+
+Chi esegue il movimento lo fa in modo meccanico, senza aggiungere né indovinare nulla.
+
+\begin{attenzione}\label{aspetto-a-cui-fare-attenzione}
+
+
+Distinguere tra chi \textbf{pianifica} \guideiconProgrammatore\ e chi \textbf{esegue} \guideiconEsecutore\ è importante per avvicinare gli alunni e le alunne a un modo di pensare tipico dell'informatica. Il programmatore deve immaginare in anticipo cosa accadrà, scrivere le istruzioni correttamente e prevedere gli effetti di ciascuna istruzione. L'esecutore, invece, si comporta come un piccolo robot \emph{senza volontà}: segue ciò che è scritto, anche quando qualcosa non ha senso, aiutando così il gruppo a capire se il programma è stato progettato bene o va corretto.
+\end{attenzione}
+
+
+Le istruzioni riguardano i movimenti sulla griglia e si possono descrivere usando diversi sistemi di riferimento:
+
+\begin{itemize}
+\item
+  \textbf{oggettivi} o \textbf{assoluti} (es. punti cardinali, riferimento cartesiano);
+\item
+  \textbf{soggettivi egocentrici} (rispetto a chi dà le istruzioni, es. ``alla mia destra'');
+\item
+  \textbf{soggettivi allocentrici} (rispetto a chi si muove, es. ``alla tua destra'').
+\end{itemize}
+
+\subsection{Sistemi di riferimento oggettivi o assoluti }\label{sistemi-di-riferimento-oggettivi-o-assoluti}
+
+In questo caso, il programmatore descrive il movimento come se leggesse una mappa: le direzioni non dipendono da dove è orientato l'esecutore, ma da un sistema di riferimento esterno e fisso.
+
+In questi sistemi, ad esempio, l'istruzione ``vai a \texttt{NORD} di una casella'' avrà sempre lo stesso effetto: il personaggio/robot/persona con il ruolo di esecutore andrà nella casella che si trova immediatamente a Nord (come definito dal sistema di riferimento, es. con una rosa dei venti stampata in un angolo della griglia) rispetto a quella in cui è posizionato, indipendentemente dalla direzione in cui è rivolto prima di eseguire l'istruzione.
+
+Se in classe avete già introdotto i punti cardinali, queste attività possono essere un'occasione per rafforzare il lessico spaziale e per utilizzare i concetti appresi in contesti nuovi. Altrimenti, questa è l'occasione per presentarli!
+
+Incontreremo questi sistemi anche nei Corsi A e B (2021) di Code.org, descritti nel Capitolo~\ref{capitolo-7-code.org}.
+
+\subsection{Sistemi di riferimento soggettivi }\label{sistemi-di-riferimento-soggettivi}
+
+In questi sistemi, invece, è fondamentale la direzione in cui l'esecutore è orientato (``dove sta guardando'') e le istruzioni date dal programmatore saranno di tipo soggettivo allocentrico perché dovranno essere espresse dal punto di vista dell'esecutore (``vai avanti'' potrebbe voler dire andare avanti di una casella nella direzione in cui sta guardando l'esecutore; ``gira a sinistra'' potrebbe significare che l'esecutore deve girarsi su se stesso sul posto di 90 gradi in senso antiorario rispetto al proprio corpo).
+
+
+Questo tipo di approccio, in cui la descrizione del movimento viene espressa dal punto di vista del corpo di chi si muove, è stato proposto da Papert con il linguaggio educativo LOGO e viene chiamato ``body syntonic'', cioè in sintonia con il corpo: se l'esecutore è un robot, il bambino immagina di essere lui stesso il robot. Molte attività unplugged, molti robot (es. BeeBot) e molti linguaggi didattici, come Scratch e quelli di Code.org a partire dal Corso C, adottano questo approccio, su cui è quindi bene iniziare a lavorare già con attività unplugged come quelle descritte.
+
+
+\figuramovimentirotazioni%
+
+\subsection{Oggettivi o soggettivi?}
+
+
+La scelta tra riferimenti oggettivi e soggettivi dipende molto dal momento dell'anno e dal grado di maturità della classe. Un aspetto molto interessante delle attività di movimento su griglia è che lo stesso percorso può essere descritto in modi diversi. Cambia la descrizione linguistica (e, possibilmente, alcuni dettagli di movimento e il numero di istruzioni eseguite), ma non il risultato del programma (per esempio, il personaggio attraversa le stesse caselle, arriva allo stesso punto, raccoglie gli stessi oggetti). Questo offre a bambini e bambine un'occasione preziosa per:
+
+\begin{itemize}
+\item
+  confrontare diverse rappresentazioni di una soluzione;
+\item
+  lavorare sulla flessibilità cognitiva;
+\item
+  prendere consapevolezza del fatto che la descrizione linguistica non è neutra, ma influenza il modo in cui pensiamo e organizziamo le azioni.
+\end{itemize}
+
+\begin{domandestimolo}\label{domande-stimolo-2}
+
+\begin{itemize}
+\item
+  Possiamo scrivere lo stesso programma usando parole diverse?
+\item
+  Che differenza c'è tra dire solo la meta (``vai lì'') e spiegare tutti i passi per arrivarci?
+\item
+  Quale descrizione linguistica preferite?
+\end{itemize}
+\end{domandestimolo}
+
+Far notare agli alunni e alle alunne che stanno programmando l'esecutore per percorrere lo stesso percorso, ma in due modi diversi, è utile per lavorare su un primo livello di astrazione: stanno manipolando rappresentazioni dei movimenti da eseguire, e non solo camminando su una griglia.
+
+\section{Modalità di lavoro }\label{modalituxe0-di-lavoro-1}
+
+Tutte le attività che seguono sono pensate per essere svolte in classe.
+
+\begin{itemize}
+\item
+  Il lavoro si svolge in piccoli gruppi o collettivamente, attraverso il movimento fisico, il disegno, la costruzione di percorsi o l'uso di robot educativi.
+\item
+  Lo spazio deve essere abbastanza ampio da permettere di muoversi liberamente (es. corridoio o aula sgombra).
+\item
+  È cruciale permettere agli alunni e alle alunne di sviluppare soluzioni alternative: l'insegnante comunica la consegna, osserva lo svolgimento e stimola riflessioni con domande guida.
+\item
+  Per poter agganciare le domande guida a ciò che avviene in classe, è importante tenere traccia delle parole e delle produzioni degli alunni e delle alunne (ad esempio, fornendo schede strutturate per scrivere, ma anche scattando foto o video).
+\end{itemize}
+
+Come detto, in tutte le attività descritte è importante separare nettamente la parte di ``scrittura del programma'', cioè la fase in cui uno o più alunni o alunne ipotizzano (e scrivono) l'intera sequenza di passi che l'esecutore deve (e)seguire per svolgere il compito assegnato, da quella in cui un bambino o una bambina che impersona l'esecutore esegue tali istruzioni in modo acritico. La fase di scrittura dovrebbe essere separata dall'esecuzione: dopo una fase introduttiva in cui si provano le diverse istruzioni ``per vedere l'effetto che fanno'', dovranno provare a scrivere il programma ``immaginando'' che cosa farà l'esecutore, senza poterlo vedere esplicitamente.
+
+Spesso, infatti, c'è la tendenza di chi ha scritto la sequenza di istruzioni, o di chi la sta leggendo o eseguendo, ad accorgersi dell'errore e a volerlo correggere immediatamente. Per mantenere coerente la metafora informatica alla base di questa attività (il programmatore scrive un programma, lo esegue, osserva gli errori che avvengono/l'output errato, modifica il programma, e poi, solo in seguito alle modifiche, lo ri-esegue, e così via) è importante quindi che, se qualcuno (idealmente chi ha scritto il programma) si accorge di qualche errore, possa ``fermare l'esecuzione'' (o attendere la fine), e solo a questo punto modificare il programma e chiedere che venga ri-eseguito.
+
+Come detto, chi interpreta l'esecutore, dal canto suo, deve invece limitarsi a eseguire le istruzioni così come vengono fornite / come le legge, anche se dovesse rendersi conto che non sono corrette per l'obiettivo.
+
+Quanto più possibile, il feedback non dovrà essere fornito dall'insegnante: bambini e bambine potranno comprendere se hanno scritto un programma corretto verificando che, quando eseguito, raggiunga l'obiettivo desiderato.
+
+\section{Attività 1: Be my robot}
+
+
+\subsection{Preparazione }\label{preparazione-2}
+
+Predisporre i materiali necessari. Serviranno sicuramente:
+
+\begin{itemize}
+\item
+  supporti (es. carte, fogli, oggetti) che rappresentano o contengono le istruzioni (es. un foglio con una freccia e la relativa istruzione testuale, come \texttt{VAI AVANTI});
+\item
+  supporti vuoti per far costruire agli alunni e alle alunne istruzioni personalizzate.
+\end{itemize}
+  Se si usa un sistema di riferimento oggettivo:
+\begin{itemize}
+  \item frecce quali \texttt{NORD} / \texttt{SUD} / \texttt{OVEST} / \texttt{EST};
+\item
+  rosa dei venti.
+\end{itemize}
+
+Se si usa un sistema di riferimento soggettivo:
+
+\begin{itemize}
+\item
+  frecce quali \texttt{VAI AVANTI DI UN PASSO} / \texttt{GIRA A DESTRA DI UN ANGOLO RETTO}/ \texttt{GIRA A SINISTRA DI UN ANGOLO RETTO} disegnate dentro ai supporti.
+\end{itemize}
+
+Costruire una griglia 8x8 (es. utilizzando le piastrelle, o il nastro adesivo di carta sul pavimento, o i tappetini puzzle a quadrati) e posizionare eventuali ostacoli, oggetti da raccogliere, e così via.
+
+\subsection{Fase 0 - attività propedeutica }\label{fase-0---attivituxe0-propedeutica}
+
+\ruoliattivita{\ruoloProgrammatore}
+
+\subsubsection{Obiettivo}\label{obiettivo-1}
+
+Scoprire quali istruzioni l'esecutore è in grado di comprendere\footnote{
+  Questo approccio è ispirato alle attività proposte da \textcite{lodi-etal-2020}.
+  }.
+
+\subsubsection{Descrizione}
+
+\noindent\begin{minipage}[c]{.80\linewidth}
+Nella griglia si prepara una missione da compiere, ad esempio: la griglia rappresenta un orto e il personaggio è un robot raccogli-verdure e la sua missione è raccogliere tutte le verdure e portarle in una cassetta.
+\end{minipage}\hfill
+\begin{minipage}[c]{.16\linewidth}
+\centering
+\begin{tikzpicture}[x=24mm,y=24mm]
+\robotortolanoicona{0}
+\end{tikzpicture}
+\end{minipage}\par
+
+L'insegnante interpreterà il personaggio e dovrà eseguire le istruzioni di bambini e bambine. Non le dovrà eseguire tutte, ma solo quelle precise e comprensibili, rifiutando quelle troppo generiche o ambigue (dicendo esplicitamente ``non capisco'').
+
+Per esempio, l'istruzione \texttt{CERCA E RACCOGLI TUTTE LE CAROTE E RIPORTALE NELLA CASSETTA} sarà scartata perché troppo generale, mentre \texttt{VAI INDIETRO DI UNA CASELLA} potrà essere accettata e messa in atto.
+
+Consegnare la scheda~\ref{scheda-studenti-fase-0}, L'orto è pieno di verdure! (nella pagina seguente). Ovviamente la scheda può essere personalizzata a seconda dell'ambientazione scelta.
+
+Alunne e alunni, osservando attentamente e attivamente il comportamento dell'insegnante-esecutore, dovranno prima individuare le istruzioni ammesse, costruendo insieme l'insieme limitato di istruzioni che l'esecutore è in grado di comprendere ed eseguire.
+
+
+Analizzando la tabella compilata, dovranno cercare di capire quali sono le caratteristiche delle istruzioni che il robot riesce a comprendere. Con le schede compilate si discute in classe.
+
+\begin{domandestimolo}\label{domande-stimolo-3}
+
+\begin{itemize}
+\item
+  Cosa avete trovato di simile tra le istruzioni che il robot capiva?
+\item
+  E cosa avete trovato di simile tra quelle che non capiva?
+\end{itemize}
+\end{domandestimolo}
+
+\begin{scheda}[A][4]
+\phantomsection\label{scheda-studenti-fase-0}
+\schedatitolo{L'ORTO È PIENO DI VERDURE!}
+Dai a voce le istruzioni al robot-raccogli verdura per raccogliere tutta la verdura e metterla nella cassetta. Attenzione però! Il robot capisce solo alcune istruzioni: quali? Cerca di scoprirlo!\par
+\vspace{5mm}
+Primo passo: dai diverse istruzioni al robot e compila la tabella.\par
+\vspace{4mm}
+\begingroup
+\setlength{\tabcolsep}{3mm}
+\setlength{\arrayrulewidth}{0.6pt}
+\arrayrulecolor{black!55}
+\renewcommand{\arraystretch}{1}
+\noindent\begin{tabular}{|p{\dimexpr.5\linewidth-2\tabcolsep-1.5\arrayrulewidth\relax}|p{\dimexpr.5\linewidth-2\tabcolsep-1.5\arrayrulewidth\relax}|}
+\hline
+\rowcolor{black!10}
+\multicolumn{1}{|c|}{\rule[-3mm]{0pt}{12mm}\fontsize{16}{20}\selectfont\textbf{ISTRUZIONI CAPITE}} &
+\multicolumn{1}{c|}{\fontsize{16}{20}\selectfont\textbf{ISTRUZIONI NON CAPITE}} \\
+\hline
+% Spazio per almeno quattro istruzioni per colonna, senza suddivisioni.
+\rule{0pt}{84mm} & \\\hline
+\end{tabular}\par
+\endgroup
+\vspace{6mm}
+Secondo passo: osserva la tabella. Cosa hanno di speciale le istruzioni che il robot capisce? Scrivi tutte le tue osservazioni.\par
+{\color{black!55}%
+\vspace{9mm}\hrule height 0.6pt
+\vspace{9mm}\hrule height 0.6pt
+\vspace{9mm}\hrule height 0.6pt}
+\end{scheda}
+
+Al termine dell'attività, alla lavagna si scrivono i nomi delle istruzioni ammesse che devono codificare i movimenti sulla griglia (es. vai avanti di un passo, gira a destra di un angolo retto, gira a sinistra di un angolo retto) e le operazioni necessarie a raggiungere gli obiettivi (es. raccogli la frutta e metti la frutta nella cassetta).
+
+\begin{attenzione}\label{aspetto-a-cui-fare-attenzione-1}
+
+
+Perché tutto funzioni, le istruzioni devono essere:
+
+
+\begin{itemize}
+\item
+  scritte sempre nello stesso modo, seguendo una forma precisa: questo riguarda la \textbf{sintassi}, ovvero le ``regole del linguaggio'' (per esempio: si decide che si scrive sempre \texttt{AVANTI 2} e non ``vai avanti di due caselle'');
+\item
+  chiare nel significato, così che tutti comprendano esattamente cosa deve succedere: questo riguarda la \textbf{semantica}, ovvero il significato di ciascuna istruzione (per esempio: \texttt{GIRA A SINISTRA} vuol dire ruotare di 90 gradi in senso antiorario sul posto);
+\end{itemize}
+
+
+Inoltre, è importante tenere a mente i casi limite: cosa succede se il robot è su una casella sul bordo della griglia e gli viene chiesto di fare un passo in una direzione che lo porterebbe fuori dalla griglia?
+
+A seconda del contesto scelto (una storia, una missione, un gioco), si possono introdurre anche altre istruzioni: raccogli un oggetto, salta, lascia un oggetto, fai un suono, e così via. Questo rende l'attività più coinvolgente e stimola l'immaginazione, mantenendo l'attenzione sulla precisione del linguaggio.
+\end{attenzione}
+
+
+\subsubsection{Contenuto informatico}\label{contenuto-informatico-4}
+
+Questa attività introduce in modo naturale il concetto di linguaggio formale e prepara il terreno per le fasi successive.
+
+\subsection{Fase 1 - prendere familiarità con il linguaggio }\label{fase-1---prendere-familiarituxe0-con-il-linguaggio}
+
+\ruoliattivita{\ruoloProgrammatore\quad\ruoloEsecutore}
+
+\subsubsection{Obiettivo}\label{obiettivo-2}
+
+Riconoscere l'associazione tra istruzioni e comportamenti dell'esecutore in un contesto in cui le istruzioni sono espresse mediante un sistema di riferimento soggettivo rispetto al punto di vista dell'esecutore (legame tra sintassi e semantica).
+
+\subsubsection{Descrizione}\label{descrizione-1}
+
+Le istruzioni ammesse sono quelle scritte sulla lavagna al termine della Fase 0.
+
+Nella griglia si prepara una missione da far compiere al personaggio-esecutore, ad esempio il robot raccogli-verdure.
+
+Il personaggio ha sempre una direzione iniziale e interpreta le istruzioni in base a essa.
+
+Stavolta a interpretare il personaggio saranno, a turno, gli alunni e le alunne. L'esecutore si posiziona in un punto della griglia. Gli altri si mettono tutti da un lato della griglia (devono avere lo stesso punto di vista) e danno, una alla volta, le istruzioni al compagno-esecutore per compiere la missione.
+
+Sarà importante far sperimentare sia il ruolo di chi dà le istruzioni sia quello di chi le esegue. Questa fase si può ripetere facendo interpretare l'esecutore (nel nostro esempio, il robot raccogli-verdure) anche a un oggetto (di cui sia chiaro l'orientamento nello spazio: per alcuni oggetti, per esempio una palla, è difficile capire cosa significa ``andare avanti di un passo'', non essendo chiara la direzione in cui è orientata).
+
+Dopo aver fatto qualche prova, si discute in classe, cercando di riportare alla lavagna tutte le osservazioni dei bambini e delle bambine.
+
+\begin{domandestimolo}\label{domande-stimolo-4}
+
+\begin{itemize}
+\item
+  Che cosa vuol dire ``gira a destra di un angolo retto''?
+\item
+  Che cosa vuol dire ``gira a sinistra di un angolo retto''?
+\item
+  Che cosa vuol dire ``vai avanti di un passo''?
+\item
+  Se parto guardando in una certa direzione, quanti ``gira a destra di un angolo retto'' consecutivi devo fare per tornare a guardare nella direzione iniziale?
+\item
+  E quanti ``gira a sinistra di un angolo retto'' consecutivi?
+\item
+  Se dalla posizione iniziale il personaggio esegue le istruzioni ``gira a sinistra di un angolo retto'' - ``vai avanti di un passo'' - ``vai avanti di un passo'' dove arriva?
+\item
+  E ora che istruzioni date per farlo tornare alla posizione iniziale?
+\end{itemize}
+\end{domandestimolo}
+
+Al termine della discussione, alla lavagna in corrispondenza di ciascuna istruzione, si aggiunge la descrizione a parole del corrispondente comportamento del personaggio esecutore.
+
+\Needspace{4\baselineskip}
+Per chiudere, gli studenti scrivono le istruzioni e i significati nelle schede~\ref{scheda-manuale-1} e~\ref{scheda-manuale-2}, MANUALE DELLE ISTRUZIONI (nelle due pagine successive).\label{richiamo:cap04-schede-2ab}
+\begin{scheda}[B1][4]
+\phantomsection\label{scheda-manuale-1}
+\schedatitolo{MANUALE DELLE ISTRUZIONI}
+Completa la tabella.\par
+\vspace{2mm}
+\begin{schedamanualetabella}
+vai avanti\newline di un passo &
+Si sposta di una\newline casella nella\newline direzione in cui\newline ``sta guardando''\newline (è orientato) &
+\schedamanualecoppia{\minigrigliarobotortolano{4}{4}{1}{1}{0}}{\minigrigliarobotortolano{4}{4}{1}{2}{0}} \\\hline
+gira a destra\newline di un\newline angolo retto & &
+\schedamanualecoppia{\minigrigliarobotortolano{4}{4}{1}{2}{0}}{\minigrigliarobotortolano{4}{4}{1}{2}{-90}} \\\hline
+\end{schedamanualetabella}
+\end{scheda}
+
+\begin{scheda}[B2][4]
+\phantomsection\label{scheda-manuale-2}
+\begin{schedamanualetabella}
+gira a sinistra\newline di un\newline angolo retto & &
+\schedamanualecoppia{\minigrigliavuota{4}{4}}{\minigrigliavuota{4}{4}} \\\hline
+& & \schedamanualecoppia{\minigrigliavuota{4}{4}}{\minigrigliavuota{4}{4}} \\\hline
+\centering\rule[-3mm]{0pt}{14mm}\ldots & \centering\ldots & \centering\arraybackslash\ldots \\\hline
+\end{schedamanualetabella}
+\end{scheda}
+
+% Tenere titolo e ruolo insieme all’inizio degli obiettivi.
+\Needspace{8\baselineskip}
+\subsection{Fase 2 - programmare il movimento sull'intero percorso }\label{fase-2---programmare-il-movimento-sullintero-percorso}
+
+\ruoliattivita{\ruoloProgrammatore}
+
+\subsubsection{Obiettivi}\label{obiettivi}
+
+\begin{itemize}
+\item
+  Scrivere un programma pianificando il comportamento dell'esecutore e prevedere il suo comportamento senza eseguire il programma.
+\item
+  Verificare la propria previsione osservando l'esecuzione del programma scritto.
+\end{itemize}
+
+\subsubsection{Descrizione}\label{descrizione-2}
+
+Una volta acquisita familiarità con le istruzioni e il loro significato, si propone un'attività di scrittura di un programma ottenuto mettendo in sequenza diverse istruzioni.
+
+Nella griglia, si sceglie un personaggio e si stabilisce per il personaggio una missione uguale per tutti che prevede un punto di partenza e un obiettivo (es. dalla casella iniziale, raggiungere un’altra casella con un oggetto).
+
+\Needspace{5\baselineskip}
+Si distribuisce la scheda~\ref{scheda-missione}, PROGRAMMA UNA MISSIONE! (nella pagina successiva): studenti e studentesse saranno i programmatori e devono immaginare in anticipo cosa accadrà, progettare una strategia per raggiungere l'obiettivo e scrivere il programma per realizzarla.\label{richiamo:cap04-scheda-2c}
+\begin{scheda}[C][4]
+\phantomsection\label{scheda-missione}
+\schedatitolo{PROGRAMMA UNA MISSIONE!}
+Personaggio: \hrulefill\par
+\vspace{5mm}
+{\color{black!55}\hrule height 0.6pt}\par
+\vspace{3mm}
+Missione: \hrulefill\par
+\vspace{5mm}
+{\color{black!55}\hrule height 0.6pt}\par
+\vspace{7mm}
+{\fontsize{16}{21}\selectfont
+Disegna nella griglia la situazione iniziale, l'obiettivo e, con la matita,
+la strada che vuoi far fare al personaggio. Poi completa la tabella.\par}
+\vspace{7mm}
+{\centering
+\begin{tikzpicture}[x=10mm,y=10mm]
+\draw[step=1,line width=0.6pt,black!55] (0,0) grid (8,8);
+\end{tikzpicture}\par}
+\vspace{7mm}
+\begingroup
+\setlength{\tabcolsep}{3mm}
+\setlength{\arrayrulewidth}{0.6pt}
+\arrayrulecolor{black!55}
+\renewcommand{\arraystretch}{1}
+\fontsize{15}{19}\selectfont
+\noindent\begin{tabular}{|p{\dimexpr.5\linewidth-2\tabcolsep-1.5\arrayrulewidth\relax}|p{\dimexpr.5\linewidth-2\tabcolsep-1.5\arrayrulewidth\relax}|}
+\hline
+\rowcolor{black!10}
+\rule{0pt}{8mm}\textbf{ISTRUZIONI DISPONIBILI} &
+\rule{0pt}{8mm}\textbf{PROGRAMMA PER COMPIERE LA MISSIONE}\rule[-3mm]{0pt}{3mm} \\
+\hline
+\rule{0pt}{48mm} & \\\hline
+\end{tabular}\par
+\endgroup
+\end{scheda}
+
+Quando ciascuno ha compilato la propria scheda, si avvia un confronto collettivo tra le diverse strategie e i diversi programmi scritti: l'insegnante si comporta da esecutore ed esegue alcuni dei programmi scritti dai bambini e dalle bambine. Sarà importante scegliere programmi che contengano errori, per stimolare una riflessione su come correggerli.
+
+Mentre l'insegnante esegue il programma di qualcuno, muovendosi sulla griglia del pavimento, chi l'ha scritto traccia sulla propria scheda il percorso seguito dall'insegnante con una penna di un altro colore. Al termine dell'esecuzione, si avvia una discussione.
+
+\begin{domandestimolo}\label{domande-stimolo-5}
+
+\begin{itemize}
+\item
+  Il percorso fatto era quello che ti aspettavi?
+\item
+  Come mai, secondo te?
+\item
+  Guardando quello che è successo, come correggeresti il programma?
+\item
+  Qualcun altro aveva fatto così?
+\end{itemize}
+\end{domandestimolo}
+
+\subsection{Fase 3 - programmare evitando gli ostacoli }\label{fase-3---programmare-evitando-gli-ostacoli}
+
+\ruoliattivita{\ruoloProgrammatore}
+
+
+
+Per aumentare la complessità, si disegnano ostacoli sulla griglia o si aggiungono regole (es. ``non puoi passare sulle caselle rosse''). I bambini e le bambine devono trovare un percorso valido, usando solo le istruzioni disponibili.
+
+\begin{domandestimolo}\label{domande-stimolo-6}
+
+\begin{itemize}
+\item
+  Esistono più soluzioni?
+\item
+  Se aggiungo un ostacolo, come cambia il programma?
+\end{itemize}
+\end{domandestimolo}
+
+
+\newpage
+\subsection{Fase 4 - programmare a coppie }\label{fase-4---programmare-a-coppie}
+
+\ruoliattivita{\ruoloProgrammatore\quad\ruoloEsecutore}
+
+\subsubsection{Obiettivo}\label{obiettivo-3}
+
+\begin{itemize}
+\item
+  Progettare una situazione problematica (missione) e scrivere un programma che la risolva.
+\item
+  Verificare la propria previsione osservando l'esecuzione del programma scritto.
+\item
+  Individuare gli errori nel programma scritto e correggerli modificando la sequenza di istruzioni.
+\end{itemize}
+
+\subsubsection{Descrizione}\label{descrizione-3}
+
+In questa fase si lavora in coppia. Ciascuno sceglie un personaggio e una missione, e disegna nella griglia la situazione iniziale. Un componente della coppia fa il programmatore e scrive una sequenza di istruzioni su carta, poi la consegna all'altro componente, che agisce come un esecutore e muove una pedina (o disegna il percorso) su una griglia cartacea.
+
+Suggerimento: dopo un po' si possono invertire i ruoli, in modo che tutti sperimentino entrambe le prospettive.
+
+\begin{domandestimolo}\label{domande-stimolo-7}
+
+\begin{itemize}
+\item
+  Quale ruolo hai trovato più facile? Quello del programmatore o dell'esecutore?
+\item
+  Come mai secondo te?
+\item
+  Quali errori avete fatto? E come li avete corretti?
+\end{itemize}
+\end{domandestimolo}
+
+\subsection{Per esercitarsi: completare, scrivere e inventare missioni}
+
+La stessa struttura si presta a esercizi individuali su carta di difficoltà crescente. Puoi proporre attività in cui alunne e alunni completano un programma, ne scrivono uno da zero (cercando anche di farlo con il minimo numero di istruzioni possibile) e poi progettano nuove situazioni problematiche da far risolvere ai propri compagni.
+
+
+\section{Attività 2: Be my more intelligent robot}
+
+\ruoliattivita{\ruoloProgrammatore\quad\ruoloEsecutore}
+
+Oltre alle classiche istruzioni del robot del tipo:
+
+\begin{center}
+\manualeimpostazioni
+\begin{tabular}{|J{\dimexpr0.35\linewidth-2\tabcolsep-3\arrayrulewidth/2\relax}|J{\dimexpr0.65\linewidth-2\tabcolsep-3\arrayrulewidth/2\relax}|}
+\arrayrulecolor{guideManualeBordo}
+\hline
+\manualetitolo{2}{ROBOT}
+\manualeintestazione
+\texttt{VAI AVANTI} & Va avanti di una casella nella direzione in cui è orientato \\
+\hline
+\texttt{GIRA A SINISTRA} & Gira a sinistra ruotando su se stesso di 90 gradi \\
+\hline
+\texttt{GIRA A DESTRA} & Gira a destra ruotando su se stesso di 90 gradi \\
+\hline
+\texttt{RACCOGLI X} & Se nella casella in cui si trova c'è un X, ne raccoglie un'unità. Altrimenti non fa nulla / si blocca e dà errore / \ldots{} \\
+\hline
+\end{tabular}
+\manualeripristinacolore
+\end{center}
+
+
+è possibile introdurre \textbf{strutture di controllo} come la \textbf{ripetizione} e la \textbf{selezione}.
+
+
+\subsection{Ripetizione per un numero fissato di volte }\label{ripetizione-un-numero-fissato-di-volte}
+
+Probabilmente la più naturale, e quella che emerge spesso dai bambini stessi, è la ripetizione di una o più istruzioni per un numero fissato di volte.
+
+È importante fornire agli alunni e alle alunne un contesto in cui usare la ripetizione è necessario o desiderabile, per esempio:
+
+\begin{itemize}
+\item
+  si ha a disposizione un numero limitato di istruzioni \texttt{VAI AVANTI} e quindi è necessario usare, ad esempio, \texttt{RIPETI 4 VOLTE: VAI AVANTI}.
+\item
+  le istruzioni \texttt{VAI AVANTI} sono molto costose e dunque si fa una gara a chi riesce a risolvere un problema ``spendendo meno''.
+\end{itemize}
+
+Qualsiasi sintassi si scelga, è importante che non sia ambigua: deve essere chiaro quali istruzioni vanno ripetute e quali, invece, vengono dopo la ripetizione.
+
+È possibile utilizzare le parentesi oppure l'indentazione, cioè \textbf{scrivere spostate a destra} tutte le istruzioni da ripetere.
+
+\begin{domandestimolo}
+
+\begin{itemize}
+\item Che cosa farà il robot con queste istruzioni?
+
+\begin{pseudocodice}
+VAI AVANTI
+RIPETI 4 VOLTE:
+    VAI AVANTI
+    GIRA A DESTRA
+\end{pseudocodice}
+
+\item I due programmi seguenti fanno eseguire al robot le stesse istruzioni?
+
+
+\begin{tabular}{|p{0.4\linewidth}|p{0.4\linewidth}|}
+\hline
+\begin{minipage}[t]{\linewidth}
+\begin{pseudocodice}
+GIRA A DESTRA
+RIPETI 3 VOLTE:
+    VAI AVANTI
+GIRA A DESTRA
+VAI AVANTI
+GIRA A SINISTRA
+\end{pseudocodice}
+\end{minipage}
+&
+\begin{minipage}[t]{\linewidth}
+\begin{pseudocodice}
+GIRA A DESTRA
+RIPETI 3 VOLTE:
+    VAI AVANTI
+    GIRA A DESTRA
+    VAI AVANTI
+    GIRA A SINISTRA
+\end{pseudocodice}
+\end{minipage} \\
+\hline
+\end{tabular}
+
+\end{itemize}
+\end{domandestimolo}
+
+\subsection{Selezione }\label{selezione}
+
+Finora i programmi scritti da bambini e bambine risolvono problemi specifici e non sono soluzioni a problemi generali: permettono al personaggio di raggiungere il traguardo solo se il programma viene eseguito nella precisa condizione (cioè, nello stato preciso) mostrata sulla griglia (posizione e orientamento iniziali del protagonista, posizione degli ostacoli o degli oggetti, posizione del traguardo ecc.).
+
+Aggiungere istruzioni che permettano di decidere cosa fare in base a una condizione consente di scrivere programmi più generali.
+
+Per esempio, supponiamo di sapere che in una certa casella c'è una carota o una talpa, ma non sappiamo quale (ad esempio, può essere nascosta sotto un'immagine di un mucchio di terra). Il robot raccogli-verdura potrebbe eseguire un programma del tipo:
+
+\begin{center}
+\begin{tabular}{p{0.5\linewidth}c}
+\begin{minipage}[c]{\linewidth}
+\begin{pseudocodice}
+VAI AVANTI
+GIRA A DESTRA
+VAI AVANTI
+SE C'È UNA CAROTA:
+    RACCOGLI LA CAROTA
+ALTRIMENTI:
+    CHIEDI SCUSA ALLA TALPA
+VAI AVANTI
+GIRA A SINISTRA
+VAI AVANTI
+DEPOSITA LA VERDURA
+\end{pseudocodice}
+\end{minipage}
+&
+\figuraselezionegriglia%
+\\
+\end{tabular}
+\end{center}
+
+Si può creare una griglia con tanti mucchietti e far decidere a un gruppo di bambini se mettere sotto ciascun mucchietto una talpa o una carota.
+
+Un altro gruppo dovrà scrivere il programma, sapendo dove sono i mucchi di terra ma non sapendo che cosa i compagni hanno messo sotto.
+
+Il programma dovrebbe funzionare per tutte le possibili scelte dei bambini che hanno posizionato le carote e le talpe, e potrà essere testato più volte in scenari diversi.
+
+Ovviamente, è necessario chiarire nel Manuale delle istruzioni il comportamento esatto del robot per ciascuna istruzione introdotta.
+
+\section{Attività 3: Bee my robot}
+
+\ruoliattivita{\ruoloProgrammatore}
+
+Sebbene non sia necessario, se hai in dotazione robot educativi, dopo aver svolto le prime due attività (o almeno la prima), puoi utilizzarli al posto del ``compagno-robot''. Il robot, essendo un vero computer, incarna perfettamente l'esecutore ``stupido e veloce'': esegue sempre e solo il programma che i bambini hanno inserito, senza intuire, stancarsi o ``aiutarli''.
+
+\subsection{Preparazione }\label{preparazione-3}
+
+\begin{itemize}
+\item
+  Spesso i robot vengono venduti con tappeti griglia che forniscono contesti narrativi. In alternativa, è possibile costruire le proprie griglie: l'importante è assicurarsi che le caselle abbiano una dimensione tale da far sì che ogni passo mandi il robot dal centro della casella in cui si trova al centro della casella successiva nella direzione richiesta (e non, ad esempio, a metà tra due caselle). Dunque, le caselle non devono essere né troppo piccole né troppo grandi.
+\item
+  Prepara o riusa le carte-istruzione coerenti con le istruzioni del robot, in continuità con il linguaggio usato nelle prime due attività. Oppure predisponi un foglio su cui gli alunni e le alunne possano scrivere le istruzioni da dare al robot.
+\end{itemize}
+
+
+
+Qualsiasi robot che si muove su una griglia con istruzioni avanti/gira è compatibile con le attività del capitolo. Ne esistono moltissimi; ne citiamo alcuni tra i più famosi.
+
+\begin{itemize}
+\item
+  Bee-Bot (\linkbreve{beebot}). Robot a forma di ape, con istruzioni direttamente sul dorso: avanti, indietro, gira a destra/sinistra, pausa. È estremamente semplice e robusto; subito comprensibile; con grande disponibilità di tappeti tematici e materiali già pronti. Fai attenzione: il programma rimane ``nascosto'' (i bambini non vedono la sequenza se non la scrivono a parte); si lavora praticamente solo con sequenze, senza strutture più ricche.
+\item
+  Blue-Bot (\linkbreve{bluebot}). È una versione ``trasparente'' di Bee-bot, il che suscita curiosità nei bambini. Si può ugualmente comandare con i tasti sul dorso, ma anche con dei tasselli (simili alle carte) separati, oppure con una app per tablet/pc.
+\item
+  Cubetto (\linkbreve{cubetto}). È un robot in legno che si programma inserendo blocchi fisici (avanti, gira a destra/sinistra, funzione\ldots) su un quadro di legno, in stile Montessori. Rende molto evidente che il programma è qualcosa di distinto dall'esecuzione (prima costruisco la sequenza sulla console, poi premo GO); il blocco ``funzione'' permette di introdurre, in modo molto informale, l'idea di sottoprogramma.
+\item
+  Tale-Bot Pro (\linkbreve{talebot}). Robot programmabile tramite tasti, pensato per l'infanzia e l'inizio della primaria. Il funzionamento è simile a quello della Bee-Bot, ma dispone di una striscia di LED che visualizza il programma inserito fino a quel punto. Sono disponibili diversi accessori (tappeti, carte di storia, possibilità di farlo disegnare o di montarci sopra dei LEGO® Duplo®). Inoltre, dispone di ulteriori istruzioni (es. registrazione e riproduzione vocale) adatte alle attività di storytelling.
+\end{itemize}
+
+
+\subsection{Attività}
+
+\begin{itemize}
+\item
+  \textbf{Esplorare le istruzioni.} Fai provare ai bambini i tasti del robot uno alla volta. Per ogni istruzione, chiedi: ``Cosa succede?'' e collega il movimento alla griglia (quante caselle? che rotazione?)
+\item
+  \textbf{Scrivere il programma prima di eseguire.} Come nelle attività unplugged, chiedi agli alunni e alle alunne di progettare la sequenza con le carte-istruzione (o su un foglio) e solo dopo fagliela inserire nel robot.
+\item
+  \textbf{Debugging.} Se il robot non raggiunge l'obiettivo, è il programma ad essere sbagliato\footnote{Dando per scontato che il robot sia partito dalla posizione corretta, che l'orientamento sia giusto, e che le dimensioni della griglia siano quelle previste.}: fermate l'esecuzione, rileggete la sequenza, correggete ed eseguite nuovamente. Il fatto che il robot non sia in grado di comprendere l'errore aiuta a capire che non sta ``ragionando'', sta solo eseguendo la sequenza di istruzioni che gli è stata fornita.
+\end{itemize}
+
+\subsection{Contenuto informatico }\label{contenuto-informatico-5}
+
+Rispetto al compagno-robot, il robot fisico:
+
+\begin{itemize}
+\item
+  non interpreta le istruzioni,
+\item
+  ripete il programma identico quante volte si vuole.
+\end{itemize}
+
+Questo rende visibile l'idea di una macchina veloce e instancabile, ma ``stupida'', cioè ``meccanica''.
+
+\section{Possibili estensioni, variazioni e personalizzazioni }\label{possibili-estensioni-variazioni-e-personalizzazioni-1}
+
+
+\subsubsection{Ambiente}
+
+Se non si può andare in giardino / usare le mattonelle dell'aula, è possibile usare un foglio di carta e un piccolo oggetto, per esempio una pedina di un gioco da tavolo, come personaggio.
+
+\newpage
+\subsubsection{Spunti per adattare le attività}
+
+
+In caso di difficoltà:
+
+\begin{itemize}
+\item
+  Far indossare all'esecutore due laccetti di colori diversi, uno al polso sinistro e uno al polso destro.
+\item
+  Utilizzare codici colori per le diverse istruzioni (con colori adeguati per studenti con daltonismo).
+\end{itemize}
+
+\noindent Come rendere le attività più sfidanti:
+
+\begin{itemize}
+\item
+  Interpretare un programma senza eseguirlo: il bambino-esecutore deve dire dove andrà il robot senza eseguire i passi.
+\item
+  Carte ``imprevisto'': tieni un mazzo di carte (o dei post-it) con eventi casuali (es. «Piastrella rotta: scegli una strada alternativa»). L'osservatore pesca una carta e la inserisce, costringendo il gruppo a modificare il programma.
+\item
+  Caccia al tesoro: raggiungere una certa casella fa raggiungere un indizio che è un altro programma per nuovi movimenti.
+\end{itemize}
+
+\section{Aspetti informatici }\label{aspetti-informatici-1}
+
+Un aspetto importante affrontato in questo capitolo riguarda il ``set di istruzioni disponibili'': l'esecutore -- che sia un compagno, un robot o un oggetto simbolico -- può seguire \textbf{solo} le istruzioni previste. Questa limitazione rende evidente quanto sia cruciale avere un linguaggio condiviso e quanto la scelta delle istruzioni (da parte di chi progetta il linguaggio) influenzi la facilità o la difficoltà nel risolvere un problema.
+
+Nelle attività in classe può capitare che bambini e bambine sentano il bisogno di aggiungere nuove istruzioni perché quelle già disponibili non sono sufficienti o risultano troppo scomode. Questo è un passaggio molto interessante, perché li porta naturalmente all'idea di definire proprie istruzioni, cioè di creare ``scorciatoie'' -- istruzioni più complesse a partire da quelle elementari. È lo stesso processo che avviene nella programmazione vera e propria, quando costruiamo nuove funzioni o procedure per semplificare il lavoro: invece di ripetere sempre gli stessi passi, possiamo raggrupparli e dare loro un nome. In questo modo bambini e bambine non solo imparano a seguire le regole, ma anche a riflettere criticamente sul linguaggio che usano, a modificarlo e a renderlo più adatto alle proprie esigenze.
+
+Dopo aver compreso la logica delle sequenze, i movimenti su griglia diventano il terreno ideale per introdurre due altre strutture fondamentali della programmazione: le \textbf{selezioni} e le \textbf{ripetizioni}. Le selezioni permettono di prendere decisioni (``se trovi un ostacolo, gira a destra''), mentre le ripetizioni consentono di semplificare un compito che altrimenti richiederebbe molte istruzioni (``ripeti tre volte: vai avanti di una casella'').
+
+Queste attività aiutano bambini e bambine a scoprire che un programma non è solo una sequenza lineare di istruzioni, ma può contenere regole che guidano il comportamento dell'esecutore in situazioni variabili. In questo modo il programma diventa più flessibile e generale: invece di descrivere ogni singolo passo, si impara a progettare programmi che funzionano in più contesti.
+
+Lavorando su selezioni e ripetizioni, alunni e alunne lavorano anche sulla capacità di pianificazione: devono immaginare non solo il percorso corretto, ma anche le possibili varianti o ostacoli e predisporre regole che guidino l'esecuzione senza possibilità di fraintendimenti. In questo contesto, l'errore non è un evento da evitare, anzi: il riconoscere gli errori e correggerli (\emph{debugging}) è una pratica fondamentale in ambito informatico ed è parte integrante dell'attività.
+
+Nella programmazione, il linguaggio diventa uno strumento per controllare un'azione: non basta avere un'intuizione o sapere cosa fare, bisogna tradurre l'intenzione in una sequenza di istruzioni chiara, non ambigua e comprensibile anche da un altro (una persona, un robot, un personaggio).
+
+Due elementi tipici della disciplina informatica entrano così in gioco:
+
+\begin{itemize}
+\item
+  la \textbf{pianificazione}, ovvero la capacità di progettare in anticipo una sequenza di istruzioni prima che venga eseguita, ragionando sugli effetti che ogni azione avrà;
+\item
+  la \textbf{correzione degli errori} (\emph{\textbf{debugging}}), cioè la disponibilità ad osservare ciò che non ha funzionato, risalire alla causa e modificare le istruzioni in modo efficace.
+\end{itemize}
+
+Allenarsi a pensare in questo modo, anche attraverso attività giocose, permette di lavorare sullo sviluppo di un approccio ordinato, riflessivo e orientato alla soluzione dei problemi -- che è alla base del pensiero computazionale e quindi dell'informatica.
+
+\section{Relazione con l'informatica nelle Indicazioni Nazionali 2025 }\label{relazione-con-linformatica-nelle-indicazioni-nazionali-1}
+
+Relativamente alle Indicazioni Nazionali 2025, queste attività contribuiscono allo sviluppo delle seguenti competenze, obiettivi e conoscenze (queste ultime inserite nelle Indicazioni Nazionali 2025 a titolo di esempio, non prescrittive).
+
+
+\subsubsection{Competenze (alla fine della scuola primaria) nella disciplina Matematica}
+
+
+\begin{itemize}
+\item
+  \emph{Descrivere procedure per lo svolgimento di compiti pratici mediante algoritmi.} Questa competenza era già coperta dalle attività della sezione ``Algoritmi quotidiani''. Nelle attività proposte in questa sezione i compiti non sono più quelli della vita quotidiana, ma sono gli obiettivi dettati dal contesto-storia in cui l'insegnante colloca le attività sulla griglia.
+\item
+  \emph{Scrivere e comprendere semplici programmi, espressi in elementari linguaggi di programmazione a scopo didattico, e valutarne l'adeguatezza rispetto al compito che si vuole automatizzare.} Pur essendo unplugged (senza computer), queste attività avvicinano ai \textbf{linguaggi formali}, puntando a una sintassi e una semantica il più possibile precise e condivise. Per questo sono una buona preparazione a questa competenza, poiché sono orientate alla progettazione e scrittura di programmi, e alla loro valutazione (controllo di correttezza, debugging, \ldots).
+
+\end{itemize}
+
+
+
+
+
+
+\subsubsection{Obiettivi (alla fine della terza primaria) nella disciplina Matematica}
+
+(Tenendo presenti le stesse specifiche appena fatte per le competenze)
+
+\begin{itemize}
+\item
+  \emph{Descrivere a parole attività della vita quotidiana tramite sequenze di passi precisi e non ambigui e saperle eseguire.}
+\item
+  \emph{Scrivere semplici programmi e verificare, mediante la loro esecuzione, se svolgono il compito previsto ed eventualmente correggerli.}
+\end{itemize}
+
+\subsubsection{Conoscenze (scuola primaria) nella disciplina Matematica}
+
+
+\begin{itemize}
+\item
+  \textit{concetto di algoritmo e sua esecuzione rigorosa};
+\item
+  \textit{strutture di controllo fondamentali di un linguaggio di programmazione}. Qui si lavora in particolare sulla sequenza, la più semplice di queste strutture, sulla selezione e sulla ripetizione;
+\item
+  \textit{controllo di correttezza dei programmi}.
+\end{itemize}
+
+\section{Valore costruzionista }\label{valore-costruzionista-1}
+
+Le attività sulla griglia non sono semplici giochi: diventano esperienze in cui gli alunni e le alunne materializzano le proprie idee, trasformandole in movimenti sulla griglia visibili da tutti. La condivisione permette il confronto e la discussione con gli altri: ciascuno può osservare il risultato delle istruzioni fornite, confrontarlo con le proprie intenzioni e rielaborarlo insieme al resto della classe.
+
+In questo processo, l'errore è un'occasione preziosa per inventare varianti, immaginare soluzioni alternative e approfondire i propri ragionamenti. Le attività descritte non sono utili ai bambini solo per apprendere a pianificare un percorso, ma anche per riflettere su come hanno pensato e comunicato, e per iniziare a sviluppare autonomia, metacognizione e creatività.
+
+\section{Suggerimenti per ulteriori attività}\label{suggerimenti-per-ulteriori-attivituxe0-e-riferimenti-1}
+
+Le attività di movimento su una griglia sono tra le proposte di informatica più diffuse (spesso etichettate con il termine ``coding''), e quindi è possibile trovarne in moltissimi siti web, libri, blog. Il capitolo che hai appena letto dovrebbe aiutarti a valutare criticamente, da un punto di vista informatico, le proposte che potresti incontrare.
+
+\printbibliography[heading=none,keyword={cap4},category={attivita}]
+
+\begin{rimandiquaderno}
+Se possiedi il volume studente \emph{Sulle orme di Milù -- Informatica}
+(Mondadori Education, 2026), puoi usare i rimandi seguenti per affiancarlo
+alle attività di questo capitolo.\par\smallskip
+
+\textbf{Attività 1, Fase 2.} La scheda LABIRINTI~\textbullet{}~1 (pagg.~8--9) propone esercizi su carta analoghi alla programmazione del percorso dell'Attività 1, Fase 2. Fra le tre proposte, la soluzione del primo esercizio è la prima:
+\par\smallskip
+\mbox{\iconAvanti\,\iconSx\,\iconAvanti\,\iconDx\,\iconAvanti\,\iconDx\,\iconAvanti\,\iconSx\,\iconAvanti\,\iconAvanti\,\iconAvanti.}
+\par\smallskip
+La soluzione dell'esercizio con la sequenza da completare, di cui sono già fornite le prime 5 istruzioni, è:
+\par\smallskip
+\mbox{\iconAvanti\,\iconSx\,\iconAvanti\,\iconAvanti\,\iconDx\,\iconAvanti\,\iconAvanti\,\iconDx\,\iconAvanti\,\iconSx\,\iconAvanti\,\iconAvanti.}
+
+\textbf{Attività 1, Fase 3.} La scheda ROBOT DELLE PULIZIE (pagg.~10--11) può essere assegnata in classe o a casa, come esercizio individuale su griglia.
+
+L'attività è analoga a quanto visto in classe. Integra la presenza di ostacoli da evitare e la scelta di due istruzioni diverse in base a ciò che è presente nella casella in cui si trova il robot. Esistono molte soluzioni possibili: in prima battuta, tutte le soluzioni che consentono di pulire la griglia (cioè passare su tutte le macchie e la polvere e rimuoverle con il relativo strumento adeguato) vanno bene.
+
+In una seconda fase, è possibile invitare gli alunni e le alunne a provare a utilizzare il minor numero di istruzioni possibile.
+
+\iconAspira{} è per l'istruzione \texttt{ASPIRA} e \iconMocio{} per \texttt{SUPER SPAZZOLA}.
+\par\smallskip
+Una soluzione corretta di 14 istruzioni:
+\par\smallskip
+\mbox{\iconDx\,\iconAvanti\,\iconSx\,\iconAvanti\,\iconAspira\,\iconDx\,\iconAvanti\,\iconSx\,\iconAvanti\,\iconMocio\,\iconAvanti\,\iconSx\,\iconAvanti\,\iconAspira.}
+\par\smallskip
+La soluzione ottima, di 12 istruzioni:
+\par\smallskip
+\mbox{\iconAvanti\,\iconDx\,\iconAvanti\,\iconAspira\,\iconAvanti\,\iconSx\,\iconAvanti\,\iconMocio\,\iconAvanti\,\iconSx\,\iconAvanti\,\iconAspira.}
+
+
+
+\textbf{Attività 1, Fase 4.} La scheda ALICE RADICE (pagg.~12--13) propone tre esercizi in linea con quanto proposto dopo la Fase 4 dell'Attività 1: completare un programma, scriverne uno da zero cercando il minimo numero di istruzioni e inventare nuove missioni da far risolvere ai compagni.
+\par\smallskip
+Soluzione dell'Esercizio 1:
+\par\smallskip
+\mbox{\iconAvanti\,\iconDx\,\iconAvanti\,\iconSx\,\iconAvanti\,\iconAvanti\,\iconSx\,\iconAvanti.}
+\par\smallskip
+Una possibile soluzione dell'Esercizio 2 con il minimo numero di istruzioni:
+\par\smallskip
+\mbox{\iconAvanti\,\iconSx\,\iconAvanti\,\iconDx\,\iconAvanti\,\iconAvanti\,\iconDx\,\iconAvanti.}
+\end{rimandiquaderno}

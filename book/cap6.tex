@@ -1,0 +1,577 @@
+% !TeX root = main.tex
+\chapterimage{chapter-06-strategie-problemi.jpg}
+\chapter{Strategie di soluzione di problemi}\label{capitolo-6-strategie-di-soluzione-di-problemi}
+
+Nel Capitolo~\ref{algoritmi-quotidiani}, le alunne e gli alunni hanno lavorato su situazioni quotidiane e giochi in cui hanno sperimentato l'idea di descrivere sequenze di azioni e di osservare ciò che accadeva eseguendole. Nel Capitolo~\ref{capitolo-4-movimenti-su-una-griglia}, hanno scritto sequenze di istruzioni (tramite un preciso formalismo iconico) per descrivere percorsi di un personaggio su una griglia. Hanno quindi sperimentato che dare istruzioni non significa ``dire a parole cosa fare'', ma costruire una sequenza precisa di passi che un esecutore possa seguire senza intuire nulla di non detto. In questo capitolo faremo un passo in più: non ci interessa solo trovare una soluzione, ma anche una buona strategia. Le alunne e gli alunni cominceranno anche a pensare a strategie più generali per risolvere classi di problemi (es. trovare il più pesante tra certi oggetti, ordinare una sequenza).
+
+\section{Traguardi e obiettivi generali }\label{traguardi-e-obiettivi-generali-3}
+
+\begin{itemize}
+\item
+  Costruire una strategia per risolvere un problema o una classe di problemi.
+\item
+  Rappresentare e comunicare una strategia sotto forma di sequenza di istruzioni.
+\item
+  Confrontare strategie diverse: osservare che possono esserci più soluzioni corrette.
+\item
+  Verificare se una strategia funziona ``sempre'' (su più prove, con dati diversi), non solo una volta.
+\end{itemize}
+
+\section{Prerequisiti }\label{prerequisiti-3}
+
+\begin{itemize}
+\item
+  Aver lavorato su sequenze e sul fatto che ``l'ordine conta''.
+\item
+  Familiarità con l'idea di \emph{Manuale delle istruzioni} (insieme limitato di azioni disponibili).
+\item
+  Saper gestire (anche in modo informale) i confronti: più pesante/più leggero, più lungo/più corto, più piccolo/più grande.
+\end{itemize}
+
+\section{Contenuti, in breve }\label{contenuti-in-breve-3}
+
+\textbf{Attività 1 - Trova il sacchetto più pesante}: si lavorerà sul progettare una strategia per trovare l'elemento più pesante, potendo solo effettuare confronti a coppie (es. con una gruccia usata come bilancia a due piatti\footnote{
+  Questo approccio è ispirato alle attività proposte da \textcite{lodi-etal-2020}.
+  }).
+
+\textbf{Attività 2 - Il barista ordinato}: si lavorerà sul trovare e confrontare diverse strategie per ordinare oggetti (es. cannucce di lunghezze diverse), potendo solo effettuare confronti e scambi tra due oggetti.
+
+\section{Problema, algoritmo, strategia }\label{problema-algoritmo-strategia}
+
+Come visto nel Capitolo~\ref{fondamentali-di-informatica}, in informatica si vogliono spesso risolvere problemi generali. La soluzione non è un numero (o più in generale un oggetto), ma un procedimento, un algoritmo. Con strategia intendiamo, in modo informale, la scelta di quali istruzioni costituiscono un algoritmo.
+
+Due strategie diverse possono dare la stessa risposta ma una delle due può essere più efficiente (meno passi, meno confronti, meno errori), più chiara, più elegante, più semplice da capire. In generale, una buona strategia usa le informazioni che otteniamo passo dopo passo e ci fa eliminare le possibilità inutili.
+
+\section{Attività 1: trova il sacchetto più pesante (gruccia-bilancia)}
+
+\ruoliattivita{\ruoloProgrammatore\quad\ruoloEsecutore}
+
+\subsection{Obiettivo }\label{obiettivo-5}
+
+Sviluppare una strategia per trovare il sacchetto più pesante tra quattro sacchetti, rispettando vincoli precisi e usando un \emph{Manuale delle istruzioni} per esprimerla come algoritmo.
+
+\subsection{Che cosa serve}
+
+\begin{itemize}
+\item
+  Una gruccia robusta da usare come ``bilancia''. La gruccia deve dare la possibilità di appendere ai due lati, in modo bilanciato, due sacchetti (ad esempio, usa una gruccia con le pinze).
+\item
+  4 sacchetti identici che non permettano di intravedere il contenuto.
+\item
+  Materiale per riempirli con pesi diversi (riso, pasta, sassolini, monete, frutta\ldots), in modo che i pesi dei sacchetti siano tutti diversi, ma abbastanza simili tra loro.
+\item
+  2 scatole (o spazi delimitati) etichettate:
+
+  \begin{itemize}
+  \item
+    SACCHETTI DA PESARE
+  \item
+    SACCHETTI ELIMINATI
+  \end{itemize}
+\end{itemize}
+
+\subsection{Preparazione}
+
+\begin{itemize}
+\item
+  Prepara quattro sacchetti che siano all'apparenza ``quasi uguali'', ma che abbiano pesi tutti diversi.
+\item
+  Verifica prima tu che la gruccia funzioni bene: appesa a un filo o tenuta con il gancio appoggiato a un dito deve restare in perfetto equilibrio. Con due sacchetti appesi, deve ``pendere'' in modo chiaro dal lato di quello più pesante.
+\end{itemize}
+
+\begin{attenzione}\label{aspetto-a-cui-fare-attenzione-3}
+
+
+I sacchetti devono apparire il più possibile simili: se si distinguono ``a occhio'' o ``a tatto'' l'attività perde senso.
+\end{attenzione}
+
+\subsubsection{Regole del gioco (da esplicitare in classe)}
+
+
+\begin{itemize}
+\item
+  All'inizio, tutti e 4 i sacchetti sono nella scatola ``SACCHETTI DA PESARE''.
+\item
+  Esiste anche la scatola ``SACCHETTI ELIMINATI''.
+\item
+  In ogni momento, puoi avere in mano un solo sacchetto.
+\item
+  Alla fine, sulla gruccia deve restare solo il sacchetto più pesante.
+\end{itemize}
+
+\subsection{Fase 1 -- capire il manuale delle istruzioni }\label{fase-1-capire-il-manuale-delle-istruzioni}
+
+Leggi e commenta in classe il Manuale delle istruzioni. Le uniche istruzioni che l'esecutore potrà compiere sono le seguenti:
+
+\begin{center}
+\manualeimpostazioni
+\begin{tabular}{|J{\dimexpr1\linewidth-2\tabcolsep-2\arrayrulewidth/1\relax}|}
+\arrayrulecolor{guideManualeBordo}
+\hline
+\manualetitolo{1}{GRUCCIA-BILANCIA}
+\multicolumn{1}{|c|}{\cellcolor{guideManualeIntestazione}\manualevoceintestazione{ISTRUZIONE/AZIONE}} \\
+\hline
+\texttt{METTI IL SACCHETTO CHE HAI IN MANO NEI SACCHETTI ELIMINATI} \\
+\hline
+\texttt{APPENDI IL SACCHETTO CHE HAI IN MANO ALLA GRUCCIA} \\
+\hline
+\texttt{PRENDI IN MANO UN SACCHETTO DAI SACCHETTI DA PESARE} \\
+\hline
+\texttt{PRENDI IN MANO IL SACCHETTO PIÙ LEGGERO TRA I DUE SULLA GRUCCIA} \\
+\hline
+\end{tabular}
+\manualeripristinacolore
+\end{center}
+
+
+
+
+\begin{attenzione}\label{aspetto-a-cui-fare-attenzione-4}
+
+
+Qui è utile ribadire un'idea già incontrata: l'esecutore deve seguire solo queste istruzioni, nell'ordine scelto dal programmatore.
+\end{attenzione}
+
+
+\subsection{Fase 2 -- ideazione e test di una strategia }\label{fase-2-ideazione-e-test-di-una-strategia}
+
+In piccoli gruppi:
+
+\begin{itemize}
+\item
+  un'alunna o un alunno pensa a una strategia e dà le istruzioni (programmatore);
+\item
+  un'altra o un altro le esegue materialmente (esecutore);
+\item
+  una terza o un terzo controlla che le regole siano rispettate (un solo sacchetto in mano, scatole ecc.).
+\end{itemize}
+
+Quando si arriva alla fine, il gruppo verifica (per esempio usando una bilancia elettronica, oppure se era stato annotato in precedenza dall'insegnante) se:
+
+\begin{itemize}
+\item
+  sulla gruccia è rimasto un solo sacchetto;
+\item
+  è davvero il più pesante.
+\end{itemize}
+
+\begin{attenzione}\label{aspetto-a-cui-fare-attenzione-5}
+
+
+È normale che alcuni bambini provino strategie diverse (ad esempio togliere e rimettere sacchetti ``per controllare''). Non è un problema: anzi, è un ottimo punto di discussione su cosa significa ``avere una strategia'' e su come semplificarla.
+\end{attenzione}
+
+Quando il gruppo è soddisfatto, scrivere la sequenza di istruzioni usando il Manuale.
+
+\subsection{Fase 3 -- verifica con quattro sacchetti nuovi }\label{fase-3-verifica-con-quattro-sacchetti-nuovi}
+
+Se c'è tempo, è utile verificare che la strategia funzioni anche con sacchetti di pesi diversi da quelli originariamente usati durante l'ideazione.
+
+
+\subsection{Fase 4 -- discussione: perché funziona?}
+
+
+In questa fase è importante favorire una riflessione sulla strategia naturale che sarà probabilmente emersa.
+
+\begin{domandestimolo}\label{domande-stimolo-10}
+
+\begin{itemize}
+\item
+  Dopo la prima pesata, quanti sacchetti potrebbero ancora essere il più pesante?
+\item
+  Il sacchetto eliminato può essere il più pesante? Perché?
+\item
+  Se ripeti sempre lo stesso tipo di ragionamento, cosa succede dopo 3 eliminazioni?
+\end{itemize}
+\end{domandestimolo}
+
+\subsection{Una strategia corretta }\label{una-strategia-corretta}
+
+Una strategia molto naturale (e coerente con i vincoli) è questa:
+
+\begin{itemize}
+\item
+  Metto sulla gruccia due sacchetti.
+\item
+  Elimino quello più leggero.
+\item
+  Metto sulla gruccia un nuovo sacchetto contro quello rimasto.
+\item
+  Elimino di nuovo il più leggero.
+\item
+  Ripeto finché ne resta uno.
+\end{itemize}
+
+\begin{spiegazione}\label{idea-di-spiegazione}
+Sulla gruccia resta sempre un ``campione'' (quello più pesante tra quelli visti finora). Ogni nuovo sacchetto viene sfidato contro il campione.
+\end{spiegazione}
+
+
+Sequenza di istruzioni (1--14):
+
+{\small
+\begin{pseudocodice}
+ 1. PRENDI IN MANO UN SACCHETTO DAI SACCHETTI DA PESARE
+ 2. APPENDI IL SACCHETTO CHE HAI IN MANO ALLA GRUCCIA
+ 3. PRENDI IN MANO UN SACCHETTO DAI SACCHETTI DA PESARE
+ 4. APPENDI IL SACCHETTO CHE HAI IN MANO ALLA GRUCCIA
+ 5. PRENDI IN MANO IL SACCHETTO PIÙ LEGGERO TRA I DUE SULLA GRUCCIA
+ 6. METTI IL SACCHETTO CHE HAI IN MANO NEI SACCHETTI ELIMINATI
+ 7. PRENDI IN MANO UN SACCHETTO DAI SACCHETTI DA PESARE
+ 8. APPENDI IL SACCHETTO CHE HAI IN MANO ALLA GRUCCIA
+ 9. PRENDI IN MANO IL SACCHETTO PIÙ LEGGERO TRA I DUE SULLA GRUCCIA
+10. METTI IL SACCHETTO CHE HAI IN MANO NEI SACCHETTI ELIMINATI
+11. PRENDI IN MANO UN SACCHETTO DAI SACCHETTI DA PESARE
+12. APPENDI IL SACCHETTO CHE HAI IN MANO ALLA GRUCCIA
+13. PRENDI IN MANO IL SACCHETTO PIÙ LEGGERO TRA I DUE SULLA GRUCCIA
+14. METTI IL SACCHETTO CHE HAI IN MANO NEI SACCHETTI ELIMINATI
+\end{pseudocodice}
+}
+
+
+\subsection{Possibile estensione: generalizzazione }\label{possibile-estensione-generalizzazione}
+
+
+La sequenza numerata qui sopra è una soluzione immediata e molto esplicita: funziona bene per una prima discussione, perché rende visibili tutti i passaggi e aiuta gli alunni a ``fidarsi'' del procedimento.
+
+
+Però, appena ci si sposta da quattro sacchetti a tanti sacchetti, la stessa idea diventa lunga da scrivere. Si crea così un'ottima occasione per introdurre (in modo leggero) il concetto di ripetizione: quando un blocco di istruzioni si ripete ``uguale'' molte volte, possiamo scriverlo una volta sola e dire quando ripeterlo. Seguono due esempi.
+
+\subsubsection{Versione con ``salto'' (torna indietro)}\label{versione-con-salto-torna-indietro}
+
+Qui l'idea è: faccio il confronto tra due sacchetti, elimino quello più leggero, poi ricomincio dal confronto con il sacchetto ``campione'' rimasto sulla gruccia finché non finiscono i sacchetti da pesare.
+
+{\small
+\begin{pseudocodice}
+1. PRENDI IN MANO UN SACCHETTO DAI SACCHETTI DA PESARE
+2. APPENDI IL SACCHETTO CHE HAI IN MANO ALLA GRUCCIA
+3. PRENDI IN MANO UN SACCHETTO DAI SACCHETTI DA PESARE
+4. APPENDI IL SACCHETTO CHE HAI IN MANO ALLA GRUCCIA
+5. PRENDI IN MANO IL SACCHETTO PIÙ LEGGERO TRA I DUE SULLA GRUCCIA
+6. METTI IL SACCHETTO CHE HAI IN MANO NEI SACCHETTI ELIMINATI
+7. SE CI SONO ANCORA SACCHETTI DA PESARE: TORNA ALL'ISTRUZIONE 3
+\end{pseudocodice}
+}
+
+\subsubsection{Versione con ``ripeti finché''}\label{versione-con-ripeti-finchuxe9}
+
+Ai programmatori di oggi non piace molto utilizzare istruzioni di salto come\\ \texttt{TORNA ALL'ISTRUZIONE 3}.
+
+Si può allora utilizzare una ripetizione con condizione (vedi~\ref{elementi-comuni}).
+
+{\small
+\begin{pseudocodice}
+PRENDI IN MANO UN SACCHETTO DAI SACCHETTI DA PESARE
+APPENDI IL SACCHETTO CHE HAI IN MANO ALLA GRUCCIA
+FINCHÉ CI SONO ANCORA SACCHETTI DA PESARE:
+    PRENDI IN MANO UN SACCHETTO DAI SACCHETTI DA PESARE
+    APPENDI IL SACCHETTO CHE HAI IN MANO ALLA GRUCCIA
+    PRENDI IN MANO IL SACCHETTO PIÙ LEGGERO TRA I DUE SULLA GRUCCIA
+    METTI IL SACCHETTO CHE HAI IN MANO NEI SACCHETTI ELIMINATI
+\end{pseudocodice}
+}
+
+\subsubsection{Ulteriore estensione}\label{ulteriore-estensione}
+
+E se due sacchetti avessero esattamente lo stesso peso? Qui è interessante discutere del fatto che l'algoritmo debba prevedere cosa fare in quel caso, altrimenti l'esecutore non sa come comportarsi.
+
+\subsection{Contenuto informatico }\label{contenuto-informatico-9}
+
+La ricerca del massimo in una sequenza è un problema tipico dell'informatica e contiene alcuni elementi ricorrenti in algoritmi e programmi: scorrere una sequenza, su ciascun elemento compiere un'azione se si verifica una certa condizione.
+
+\section{Attività 2: il barista ordinato}
+
+\ruoliattivita{\ruoloProgrammatore}
+
+\subsection{Obiettivo }\label{obiettivo-6}
+
+Inventare strategie per ordinare 5 elementi (es. 5 cannucce di lunghezza diversa) secondo un criterio (dalla cannuccia più corta, che dovrà stare a sinistra, alla più lunga, che dovrà stare a destra) avendo a disposizione solo la possibilità di confrontare ed eventualmente scambiare due cannucce alla volta.
+
+\subsection{Che cosa serve }\label{che-cosa-serve}
+
+\begin{itemize}
+\item
+  5 cannucce di carta di 5 colori diversi.
+\item
+  Forbici.
+\item
+  Un foglio di carta (per la Fase 2 ``cannucce coperte'').
+\end{itemize}
+
+\subsection{Preparazione }\label{preparazione-6}
+
+\begin{itemize}
+\item
+  Tagliare 5 cannucce di lunghezze tutte diverse.
+\item
+  Scegliere lunghezze abbastanza distanti tra loro, così il confronto è netto.
+\end{itemize}
+
+\subsection{Capire il manuale delle istruzioni }\label{capire-il-manuale-delle-istruzioni}
+
+Il Manuale delle istruzioni in questo caso presenta una sola istruzione, che deve essere compresa molto bene dalle alunne e dagli alunni. In questa attività, l'insegnante avrà il ruolo dell'esecutore.
+
+\begin{center}
+% Le identità conservano colore e lunghezza; cambia solo l'ordine della lista.
+% 1 = rossa, 2 = azzurra, 3 = verde, 4 = viola, 5 = gialla.
+\newcommand{\cannucce}[2]{% #1 = identità in ordine, #2 = posizioni indicate
+\begin{tikzpicture}[baseline=(current bounding box.south)]
+  \path[use as bounding box] (0,-0.48) rectangle (2,2.12);
+  \foreach[count=\posizione] \identita in {#1} {
+    \ifcase\identita
+      \or \def\altezza{1.60}\colorlet{cann}{red!75!black}
+      \or \def\altezza{1.45}\colorlet{cann}{cyan!65!blue}
+      \or \def\altezza{1.80}\colorlet{cann}{green!60!black}
+      \or \def\altezza{0.95}\colorlet{cann}{violet!70!black}
+      \or \def\altezza{1.95}\colorlet{cann}{codGiallo}
+    \fi
+    \pgfmathsetmacro{\x}{0.22+(\posizione-1)*0.39}
+    \draw[line width=4pt,cann,line cap=round] (\x,0) -- (\x,\altezza);
+  }
+  \foreach \posizione in {#2} {
+    \pgfmathsetmacro{\x}{0.22+(\posizione-1)*0.39}
+    \draw[->,line width=0.7pt,black!75] (\x,-0.42) -- (\x,-0.11);
+  }
+\end{tikzpicture}}
+\manualeimpostazioni
+\begin{tabular}{|J{\dimexpr0.26\linewidth-2\tabcolsep-4\arrayrulewidth/3\relax}|J{\dimexpr0.37\linewidth-2\tabcolsep-4\arrayrulewidth/3\relax}|J{\dimexpr0.37\linewidth-2\tabcolsep-4\arrayrulewidth/3\relax}|}
+\arrayrulecolor{guideManualeBordo}
+\hline
+\manualetitolo{3}{BARISTA ORDINATO}
+\multicolumn{1}{|c|}{\cellcolor{guideManualeIntestazione}\manualevoceintestazione{ISTRUZIONE}} &
+\multicolumn{2}{c|}{\cellcolor{guideManualeIntestazione}\manualevoceintestazione{AZIONE}} \\
+\hline
+\texttt{CONFRONTA (ED EVENTUALMENTE SCAMBIA) LE DUE CANNUCCE INDICATE}
+& Tra le due cannucce indicate, se quella a sinistra è più lunga di quella a destra, l'esecutore le scambia.\par\medskip
+  {\centering\resizebox{\linewidth}{!}{\cannucce{1,2,3,4,5}{2,4}\hspace{1mm}\raisebox{1.28cm}{$\longrightarrow$}\hspace{1mm}\cannucce{1,4,3,2,5}{}}\par}
+& Se invece la cannuccia indicata a sinistra è più corta di quella indicata a destra, l'esecutore le lascia al loro posto.\par\medskip
+  {\centering\resizebox{\linewidth}{!}{\cannucce{1,2,3,4,5}{4,5}\hspace{1mm}\raisebox{1.28cm}{$\longrightarrow$}\hspace{1mm}\cannucce{1,2,3,4,5}{}}\par} \\
+\hline
+\end{tabular}
+\manualeripristinacolore
+\par{\small Le frecce in basso indicano le due cannucce scelte.}
+\end{center}
+
+\subsection{Svolgimento }\label{svolgimento}
+
+\subsubsection{Fase 1 - cannucce scoperte}\label{fase-1---cannucce-scoperte}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Un adulto mette le 5 cannucce in un ordine casuale.
+\item
+  Le alunne e gli alunni indicano due cannucce alla volta.
+\item
+  L'adulto applica la regola di scambio.
+\item
+  Si prosegue finché le cannucce risultano ordinate.
+\end{enumerate}
+
+\subsubsection{Fase 2 - cannucce coperte}\label{fase-2---cannucce-coperte}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Mentre le alunne e gli alunni non guardano, un adulto taglia 5 cannucce (tutte diverse) e le dispone in ordine casuale.
+\item
+  Le allinea e copre la parte finale con un foglio o un qualsiasi altro oggetto adeguato: le alunne e gli alunni vedono i colori e le posizioni, ma non la lunghezza.
+\item
+  Le alunne e gli alunni indicano due cannucce: l'adulto decide se scambiarle o meno seguendo il \emph{Manuale delle istruzioni}, ovviamente senza mostrare la lunghezza.
+\item
+  Quando pensano che le cannucce siano ordinate, le alunne e gli alunni provano a spiegare perché ritengono di aver finito, poi chiedono all'adulto di scoprirle per verificare insieme il risultato. La scoperta conclude il tentativo, anche se le cannucce non sono ordinate. In questo caso, si discute come correggere la strategia e la si riprova ripartendo dal punto 1, con nuove cannucce tagliate senza essere viste. Non basta ricoprire o rimescolare le stesse cannucce, perché i colori permettono di ricordarne le lunghezze.
+\end{enumerate}
+
+\begin{attenzione}\label{aspetto-a-cui-fare-attenzione-6}
+
+
+Problemi tipici potrebbero essere:
+
+
+\begin{itemize}
+\item
+  supporre che dopo la prima passata, le cannucce siano già tutte ordinate;
+\item
+  non riuscire a trovare una regola per decretare che le cannucce sono ordinate e non è più necessario confrontarne oltre.
+\end{itemize}
+\end{attenzione}
+
+\subsection{Modalità di lavoro }\label{modalituxe0-di-lavoro-3}
+
+\subsubsection{Il ruolo dell'adulto}\label{importanza-dellaiutante-adulto}
+
+In questa attività, il ruolo di esecutore è affidato a un adulto, per vari motivi:
+
+\begin{itemize}
+\item
+  alunne e alunni potrebbero confondere sinistra e destra, specialmente se messi uno di fronte all'altro;
+\item
+  nella Fase 2, l'adulto deve contemporaneamente tenere coperte le cannucce e scambiarle.
+\end{itemize}
+
+Per questo motivo, se l'attività viene svolta in classe, è opportuno che, ad esempio, l'insegnante lavori con ciascun alunno a turno, magari mentre il resto della classe osserva le scelte effettuate dalla compagna o dal compagno che sta giocando in quel momento.
+
+A differenza dell'Attività 1, questa attività è pensata perché gli studenti inizino a esplorare l'idea che esistono molte strategie diverse per risolvere un problema o raggiungere un obiettivo.
+
+\subsubsection{Differenza tra Fase 1 e Fase 2}\label{differenza-tra-fase-1-e-fase-2}
+
+Nella Fase 1 le cannucce sono visibili: i bambini vedono subito quale cannuccia è più lunga e possono basare la strategia sul confronto ``a colpo d'occhio'', per esempio cercando la più corta e spostandola all'inizio (tramite uno scambio tra essa e quella in prima posizione), poi la seconda più corta, e così via. In altre parole, si osserva l'insieme e si decide quali cannucce indicare. Questa fase è importante per iniziare a ideare una strategia, che però dovrà essere raffinata con i vincoli successivi.
+
+Nella Fase 2, infatti, le cannucce sono coperte. Non si può più scegliere ``la più corta'' o ``la più lunga'' guardandole: le informazioni sulle lunghezze provengono dal confronto tra due cannucce alla volta, e l'adulto decide se scambiarle. I bambini indicano una coppia, osservano se avviene uno scambio e ne ricavano informazioni sull'ordine relativo delle due cannucce. Possono ricordare e combinare queste informazioni per scegliere come proseguire, oppure seguire una sequenza di confronti stabilita in anticipo. Quest'ultima possibilità può però richiedere confronti che, tenendo conto di quanto si è già scoperto, si potrebbero evitare. Questo cambia profondamente il modo di ragionare sul problema: non si tratta più di individuare subito l'ordine corretto, ma di usare le informazioni che deduciamo dai confronti per avvicinarsi gradualmente alla soluzione e capire quando il lavoro è concluso, senza dover vedere le lunghezze.
+
+\subsubsection{Possibili strategie e aspetti a cui fare attenzione (soprattutto per la fase 2)}\label{possibili-strategie-e-aspetti-a-cui-fare-attenzione-soprattutto-per-la-fase-2}
+
+La ricerca mostra che le bambine e i bambini tra i 4 e i 10 anni riescono a scoprire da soli strategie efficienti per ordinare gli oggetti, anche quando l'informazione sulla loro lunghezza è nascosta. La loro accuratezza aumenta con l'età \parencite{yang-etal-2025}.
+
+Mostriamo due delle possibili strategie che potrebbero essere proposte dagli alunni e dalle alunne, descrivendole in modo volutamente informale, lasciando così alla classe la libertà di scegliere le modalità linguistiche per esprimerle.
+
+Una \textbf{prima strategia} consiste nel fare più ``passate'' da sinistra a destra, scorrendo le coppie di cannucce vicine, confrontandole ed eventualmente scambiandole. Per 5 cannucce, ogni passata consiste nelle istruzioni seguenti:
+
+\begin{itemize}
+\item
+  Si confronta la prima cannuccia con la seconda, scambiandole se la seconda è più corta della prima.
+\item
+  Ora si confronta la seconda con la terza cannuccia, eventualmente scambiandole.
+\item
+  Ora si confronta la terza con la quarta cannuccia, eventualmente scambiandole.
+\item
+  Ora si confronta la quarta con la quinta cannuccia, eventualmente scambiandole.
+\end{itemize}
+
+Si ripete la passata più volte; quando durante una passata non avvengono scambi, le cannucce sono ordinate e l'algoritmo termina.
+
+La ricerca suggerisce che spesso, finita una passata ``da sinistra a destra'', alunne e alunni tenderanno a farne una seconda ``da destra a sinistra'', e poi di nuovo ``da sinistra a destra''. È una variante perfettamente sensata.
+
+\textit{Perché funziona?} Dopo una passata completa, la cannuccia più lunga sarà finita completamente a destra (perché, se è più lunga, viene spostata verso destra ogni volta che la confronti con una più corta). Ripetendo, anche le altre trovano la loro posizione corretta.
+
+\textbf{Un'alternativa altrettanto naturale è la seguente strategia}. In questo caso, una passata consiste nel considerare una certa posizione e nel confrontare (ed eventualmente scambiare) la cannuccia in quella posizione con le cannucce nelle posizioni seguenti (potenzialmente, durante la passata, la cannuccia nella posizione fissata cambierà per via degli eventuali scambi, ma si confronta comunque sempre la cannuccia in posizione fissata con le successive). Per 5 cannucce:
+
+\begin{itemize}
+\item
+  Si fa una passata fissando la prima posizione.
+\item
+  Si fa una passata fissando la seconda posizione.
+\item
+  Si fa una passata fissando la terza posizione.
+\item
+  Si fa una passata fissando la quarta posizione.
+\end{itemize}
+
+\textit{Perché funziona?} Dopo la prima passata, la cannuccia più corta sarà in prima posizione. Per cui, non serve più controllare quella posizione. Dopo la seconda passata, la seconda cannuccia più corta sarà in seconda posizione. Dopo quattro passate, tutte saranno nella posizione corretta. Non è necessario confrontare la cannuccia in quinta posizione perché non ha cannucce che la seguono.
+
+Queste due sono solo le più comuni strategie osservate negli studi. Le alunne e gli alunni potrebbero proporre molte strategie diverse, miste, eccetera. A questo livello, l'obiettivo non è insegnare strategie migliori (ne esistono altre, più efficienti ma più complicate), ma solo far sperimentare ai ragazzi la costruzione di strategie e la necessità di misurarne la bontà secondo un criterio (ad esempio il numero di scambi effettuati).
+
+\subsubsection{Esplorazione e riflessione}\label{esplorazione-e-riflessione}
+
+Prima di tutto, è importante che le alunne e gli alunni trovino un modo per ``formalizzare'' la propria strategia, cioè descriverla (a parole), anche con l'idea di comunicare la strategia ad altri, di modo che essi la possano seguire fedelmente e applicare in casi diversi (cioè con cannucce di lunghezza diversa o, più avanzato, con un numero di cannucce diverso). Spesso, nei capitoli precedenti, le istruzioni erano già formalizzate nei Manuali delle istruzioni: qui si chiede alle alunne e agli alunni di iniziare a proporre le loro istruzioni. Inoltre, è possibile aprire a riflessioni informatiche più profonde:
+
+\begin{itemize}
+\item
+  come capire se la strategia funziona sempre?
+\item
+  come capire se una strategia è meglio di un'altra?
+\end{itemize}
+
+A questo livello scolastico, la principale possibilità è quella di provare ciascuna strategia con cannucce di lunghezze diverse e con disposizioni iniziali diverse (le cannucce sono già ordinate, oppure ordinate ma in ordine decrescente di lunghezza, oppure quasi ordinate, oppure in ordine totalmente casuale), contando quanti confronti vanno effettuati con una certa strategia nei diversi casi.
+
+\begin{attenzione}\label{aspetto-a-cui-fare-attenzione-7}
+
+
+NB: per confrontare l'efficienza delle strategie si potrebbe pensare di tenere traccia del numero degli scambi, ma in realtà è più efficace tenere traccia del numero di confronti richiesti (cioè quante volte si indica una coppia di cannucce, indipendentemente dal fatto che poi questo risulti o meno in uno scambio).
+\end{attenzione}
+
+
+\subsection{Contenuto informatico }\label{contenuto-informatico-10}
+
+La progettazione di questa attività è ispirata alla ricerca di \textcite{yang-etal-2025}, che mostra che le bambine e i bambini mettono in atto strategie riconducibili ad algoritmi noti dell'informatica.
+
+Lo studio degli algoritmi di ordinamento è un argomento classico in Informatica\footnote{La prima strategia suggerita (confrontare a coppie adiacenti) è simile al Bubble sort, nella variante Shaker sort se si fa una passata ``in avanti'' e una ``indietro''. La seconda strategia è simile al Selection sort, nella variante ``con scambi immediati'' (Exchange/Interchange sort), dovuta al fatto che il confronto e l'eventuale scambio avvengono unitamente nell'unica istruzione disponibile. Esistono algoritmi più efficienti, ma più complicati da esprimere in questo contesto.}, perché didatticamente possono servire da esempio per capire concetti fondamentali della disciplina che verranno esplorati più nel dettaglio nei successivi volumi.
+
+\subsection{Da ``unplugged'' a ``plugged'' }\label{da-unpluggeda-plugged}
+
+Spesso è utile, per consolidare i concetti appresi attraverso attività senza computer, metterli in pratica usando il computer.
+
+Alle pagine \urloriginale{https://lodi.ml/gruccia/} e \urloriginale{https://lodi.ml/cannucce/} le alunne e gli alunni potranno sperimentare digitalmente quanto appreso durante le due attività proposte. I simulatori, con la loro natura multimodale e interattiva, possono costituire un supporto a una pratica didattica inclusiva. Dal punto di vista metodologico, potrebbero essere introdotti dopo aver concluso le rispettive attività senza computer, incoraggiando alunne e alunni a mettere in relazione significativa le due esperienze.
+
+Soprattutto per quanto riguarda l'attività con le cannucce, il simulatore costituisce anche un valido strumento per scoprire nuove strategie, potendole testare più velocemente (specialmente quando non è disponibile un adulto).
+
+\section{Relazione con l'informatica nelle Indicazioni Nazionali 2025 }\label{relazione-con-linformatica-nelle-indicazioni-nazionali-3}
+
+Relativamente alle Indicazioni Nazionali 2025, queste attività contribuiscono allo sviluppo delle seguenti competenze, obiettivi e conoscenze (queste ultime inserite nelle Indicazioni Nazionali 2025 a titolo di esempio, non prescrittive).
+
+
+\subsubsection{Competenze (alla fine della scuola primaria) nella disciplina Matematica}
+
+
+\begin{itemize}
+\item
+  \emph{Descrivere procedure per lo svolgimento di compiti pratici mediante algoritmi.} Questa competenza era già coperta dalle attività della sezione ``Algoritmi quotidiani''. Nelle attività proposte in questa sezione i compiti non sono più quelli della vita quotidiana, ma sono problemi che richiamano esplicitamente elaborazioni dell'informazione classiche come trovare il massimo o ordinare elementi.
+
+\item
+  \emph{Scrivere e comprendere semplici programmi, espressi in elementari linguaggi di programmazione a scopo didattico, e valutarne l'adeguatezza rispetto al compito che si vuole automatizzare.} Sebbene queste attività siano unplugged (senza computer), i linguaggi utilizzati mirano comunque ad essere rigorosi (Manuale delle istruzioni limitato e definito). Per questo sono una buona preparazione a questa competenza, poiché sono orientate alla progettazione e scrittura di programmi, e alla loro valutazione (controllo di correttezza, debug, \ldots).
+
+\end{itemize}
+
+
+
+
+
+
+\subsubsection{Obiettivi (alla fine della terza primaria) nella disciplina Matematica}
+
+Tenendo presenti le stesse specifiche appena fatte per le competenze, le attività proposte contribuiscono ai seguenti obiettivi.
+
+
+\begin{itemize}
+\item
+  \emph{Descrivere a parole attività della vita quotidiana tramite sequenze di passi precisi e non ambigui e saperle eseguire.}
+\item
+  \emph{Scrivere semplici programmi e verificare, mediante la loro esecuzione, se svolgono il compito previsto ed eventualmente correggerli.} In questo caso, l'esecutore è umano.
+\end{itemize}
+
+\subsubsection{Conoscenze (scuola primaria) nella disciplina Matematica}
+
+\begin{itemize}
+\item
+  \emph{concetto di algoritmo e sua esecuzione rigorosa;}
+\item
+  \emph{controllo di correttezza dei programmi.}
+\end{itemize}
+
+\section{Valore costruzionista }\label{valore-costruzionista-3}
+
+Queste attività funzionano particolarmente bene se:
+
+\begin{itemize}
+\item
+  si lascia spazio a tentativi, errori e correzioni;
+\item
+  si valorizza la discussione su come si è arrivati alla soluzione;
+\item
+  si confrontano strategie diverse.
+\end{itemize}
+
+Le attività unplugged (come quelle di questo capitolo) possono essere efficaci perché materializzano idee anche ``profonde'' dell'informatica, senza semplificarle troppo: le alunne e gli alunni le incontrano attraverso l'esperienza, non attraverso definizioni astratte \parencite{bell-lodi-2019}. In molti casi si lavora con corpo e oggetti (muoversi, manipolare, confrontare), e questo rende naturale parlare di procedure, confronti, eliminazioni e ripetizioni anche prima che i bambini abbiano strumenti formali per farlo.
+
+La lezione diventa uno spazio di gioco-esplorazione: gli alunni provano, sbagliano, correggono e imparano a dare un senso ai risultati dei loro tentativi. Il ruolo dell'insegnante è decisivo: non serve ``spiegare tutto subito'', ma guidare con domande mirate, esempi ben scelti e piccoli vincoli che rendono l'esplorazione produttiva. In pratica: si lascia libertà, ma con una traccia in mente (un percorso possibile) e con una buona impalcatura di domande che aiuta la classe a costruire significato passo dopo passo.
+
+Inoltre, come abbiamo già visto, in informatica spesso il problema da risolvere (l'obiettivo da raggiungere) è nuovo: non si tratta di applicare una procedura nota, ma, al contrario, esattamente di inventarne una nuova (almeno per chi non la conosce già) che risolve quel problema (o, idealmente, quella classe di problemi). Si tratta dunque di un importante modo di allenare le competenze, che richiedono appunto l'applicazione di conoscenze e abilità in contesti inediti e realistici.
+
+\section{Suggerimenti per ulteriori attività}\label{suggerimenti-per-ulteriori-attivituxe0-e-riferimenti-3}
+
+\printbibliography[heading=none,keyword={cap6},category={attivita}]
+
+\begin{rimandiquaderno}
+Se possiedi il volume studente \emph{Sulle orme di Milù -- Informatica}
+(Mondadori Education, 2026), puoi usare i rimandi seguenti per affiancarlo
+alle attività di questo capitolo.\par\smallskip
+
+\begin{itemize}[leftmargin=*,itemsep=5pt,topsep=4pt]
+\item \textbf{Trova il sacchetto più pesante (Attività 1).} La scheda TROVARE IL PIÙ PESANTE (pagg.~24--25) riassume quello che serve per svolgere l'attività in classe o a casa. A pag.~25 sono previsti proprio i 14 passi della strategia presentata nella guida.
+\item \textbf{Il barista ordinato (Attività 2).} La scheda IL BARISTA ORDINATO (pagg.~26--27) racconta la storia del barista e fornisce i dettagli per svolgere l'attività in classe o a casa (con l'aiuto di un adulto). A pag.~27 viene chiesto di contare gli scambi, ma in realtà per confrontare l'efficienza delle strategie è più efficace contare i confronti, cioè quante volte si indica una coppia di cannucce, indipendentemente dal fatto che venga poi effettuato uno scambio.
+\end{itemize}
+\end{rimandiquaderno}
+
+\section{Riferimenti}\label{riferimenti-cap6}
+
+\printbibliography[heading=none,keyword={cap6},notcategory={attivita}]

@@ -1,0 +1,85 @@
+% Capitolo non numerato, successivo alla Sitografia.
+\chapterimage{}
+\chapterspaceabove{2.4cm}
+\chapterspacebelow{0.4cm}
+\chapter*{Attribuzioni e licenze dei materiali}
+\addcontentsline{toc}{chapter}{Attribuzioni e licenze dei materiali}
+\markboth{\sffamily\normalsize\bfseries Attribuzioni e licenze}{}
+\label{attribuzioni-materiali}
+
+I materiali di terzi conservano le licenze e le condizioni indicate qui, distinte dalla licenza generale della guida.
+
+% Elimina i duplicati quando più immagini della stessa voce sono nella stessa pagina.
+\ExplSyntaxOn
+\seq_new:N \l_guida_crediti_pagine_seq
+\seq_new:N \l_guida_crediti_etichette_seq
+\tl_new:N \l_guida_crediti_pagina_tl
+\NewDocumentCommand{\creditopagine}{m}
+ {
+  \group_begin:
+  \seq_clear:N \l_guida_crediti_pagine_seq
+  \seq_clear:N \l_guida_crediti_etichette_seq
+  \clist_map_inline:nn {#1}
+   {
+    \tl_set:Nx \l_guida_crediti_pagina_tl {\getpagerefnumber{##1}}
+    \seq_if_in:NVF \l_guida_crediti_pagine_seq \l_guida_crediti_pagina_tl
+     {
+      \seq_put_right:NV \l_guida_crediti_pagine_seq \l_guida_crediti_pagina_tl
+      \seq_put_right:Nn \l_guida_crediti_etichette_seq {##1}
+     }
+   }
+  \int_compare:nNnTF {\seq_count:N \l_guida_crediti_etichette_seq} > {1}
+   {pp.\nobreakspace}{p.\nobreakspace}
+  \seq_map_indexed_inline:Nn \l_guida_crediti_etichette_seq
+   {
+    \int_compare:nNnT {##1}>{1}{,~}
+    \hyperlink{page.\getpagerefnumber{##2}}{\pageref*{##2}}
+   }
+  \group_end:
+ }
+\ExplSyntaxOff
+
+\begingroup
+\small
+
+\section*{Schermate Code.org}
+\textbf{Code.org (oggi CodeAI)}. I materiali curricolari e i tutorial sono distribuiti con licenza \hreforiginale{https://creativecommons.org/licenses/by-nc-sa/4.0/deed.it}{CC BY-NC-SA 4.0}.
+
+Personaggi, icone, adesivi e motivi conservano i diritti dei rispettivi titolari. Per gli elementi esclusi dalla licenza Creative Commons, si richiama l’uso illustrativo didattico e non commerciale ai sensi dell’art. 70 della legge 22 aprile 1941, n. 633.
+
+Le schermate provengono dalle seguenti fonti:
+\begin{itemize}[leftmargin=*,itemsep=3pt,topsep=3pt,parsep=0pt]
+\item \hrefbreve{codeEs}{Corso A (2021), lezione 4, livello 6} (\creditopagine{credito:codeorg-interfaccia-gioco-1,credito:codeorg-interfaccia-istruzioni-1,credito:codeorg-interfaccia-blocchi-1,credito:codeorg-interfaccia-lavoro-1,credito:codeorg-interfaccia-pulsanti-1,credito:codeorg-interfaccia-pulsanti-2,credito:codeorg-interfaccia-livelli-1}).
+\item \hrefbreve{artistaBase}{Laboratorio Artista pre-scolare, in italiano} (\creditopagine{credito:codeorg-artista-menu-schema-1,credito:codeorg-artista-velocita-1,credito:codeorg-artista-scaletta-disegno-1,credito:codeorg-artista-quadrato-diagonale-disegno-1,credito:codeorg-artista-casa-strisce-disegno-1,credito:codeorg-artista-casa-disegno-1,credito:codeorg-artista-trama-disegno-1}).
+\item \hreforiginale{https://studio.code.org/it/courses/coursec-2021/units/1/lessons/6/levels/2?lang=it&no_redirect=1}{Corso C (2021), lezione 6, livello 2} (\creditopagine{credito:codeorg-artista-selettore-angoli-1}).
+\end{itemize}
+
+\section*{Blocchi e programmi Code.org}
+\textbf{Code.org (oggi CodeAI)} per blocchi, traduzioni e risorse dell’ambiente; trascrizioni e composizioni preparate per la guida. I blocchi sono ricostruiti in italiano senza lo sfondo dell’interfaccia. Valgono la CC BY-NC-SA 4.0 dei materiali didattici e le esclusioni relative alla grafica indicate sopra.
+
+Il codice del motore è distribuito sotto \hreforiginale{https://github.com/code-dot-org/code-dot-org/blob/staging/LICENSE}{Apache 2.0}; questa licenza non si estende automaticamente all’intera figura. Il font incorporato \emph{Geist}, Copyright 2024 The Geist Project Authors, è distribuito sotto \hreforiginale{https://github.com/vercel/geist-font/blob/main/OFL.txt}{SIL Open Font License 1.1}.
+
+\section*{Schermate e materiali Scratch}
+\textbf{Scratch Foundation e partner.} Scratch is developed by the Scratch Foundation and its partners and affiliates. See \urloriginale{https://scratchfoundation.org/}. Secondo la \hreforiginale{https://mitscratch.freshdesk.com/en/support/solutions/articles/4000156890-can-i-use-screenshots-of-scratch-in-a-book-or-presentation-}{FAQ ufficiale}, le schermate di Scratch sono rilasciate con licenza Creative Commons Attribution-ShareAlike (\textbf{CC BY-SA}).
+
+Le risorse della libreria storica di Scratch / Lifelong Kindergarten Group, MIT Media Lab, fra cui Ball-a e lo sfondo \hreforiginale{https://assets.scratch.mit.edu/internalapi/asset/9838d02002d05f88dc54d96494fbc202.png/get/}{Xy-grid}, sono distribuite sotto \hreforiginale{https://creativecommons.org/licenses/by-sa/2.0/deed.it}{CC BY-SA 2.0}.
+
+\section*{Blocchi e composizioni Scratch}
+Le figure sono ricostruite con \hreforiginale{https://github.com/scratchblocks/scratchblocks}{scratchblocks 3.7.1}, Copyright 2013--2021 Tim Radvan e collaboratori, \hreforiginale{https://github.com/scratchblocks/scratchblocks/blob/master/LICENSE}{licenza MIT}. Le icone derivano da Scratch Blocks, sotto \hreforiginale{https://www.apache.org/licenses/LICENSE-2.0}{Apache 2.0}.
+
+\begin{itemize}[leftmargin=*,itemsep=3pt,topsep=3pt,parsep=0pt]
+\item \hrefbreve{scratch-beetle}{\textbf{Beetle}} (\creditopagine{credito:figure-rosa-venti-1,credito:figure-angoli-1}): Scratch / Lifelong Kindergarten Group, MIT Media Lab; ridimensionato e ruotato per le due composizioni. Sprite e adattamenti: \textbf{CC BY-SA 2.0}.
+\item \textbf{Arrow1-a, Basketball, Jellyfish-a, Convertible3 e Bat-a} (\creditopagine{credito:figure-sperimentare-programmi-1}): \hreforiginale{https://github.com/scratchfoundation/scratch-gui/blob/fa7ed724dd3070486ccf12424bd633f95572bdfd/src/lib/libraries/sprites.json}{libreria Scratch / Lifelong Kindergarten Group, MIT Media Lab}. Basketball e Bat: Alex Eben Meyer; Jellyfish: Daria Skrybchenko. Sprite ridimensionati; composizione per la guida in \textbf{CC BY-SA 2.0}.
+\end{itemize}
+
+\section*{Impaginazione e caratteri}
+\begin{itemize}[leftmargin=*,itemsep=3pt,topsep=3pt,parsep=0pt]
+\item \textbf{\hreforiginale{https://www.latextemplates.com/template/the-legrand-orange-book}{Legrand Orange Book 3.1}}, di Mathias Legrand e Vel / LaTeX Templates: modello adattato per questa edizione, CC BY-NC-SA 4.0.
+\item \textbf{TeX Gyre Heros e Latin Modern Mono}, di Bogusław Jackowski e Janusz M. Nowacki: \hreforiginale{https://ctan.org/license/gfl}{GUST Font License}.
+\item \textbf{Computer Modern}, di Donald E. Knuth, versioni Type 1 dell’American Mathematical Society: \hreforiginale{https://ctan.org/pkg/amsfonts}{SIL Open Font License 1.1}.
+\item \textbf{Source Sans Pro}, di Paul D. Hunt, Adobe: \hreforiginale{https://github.com/adobe-fonts/source-sans/blob/release/LICENSE.md}{SIL Open Font License 1.1}.
+\item \textbf{\hreforiginale{https://github.com/googlefonts/noto-emoji/blob/main/LICENSE}{Noto Color Emoji} e \hreforiginale{https://github.com/notofonts/noto-cjk/blob/main/Sans/LICENSE}{Noto Sans CJK SC}}, per emoji e caratteri cinesi: SIL Open Font License 1.1.
+\item \textbf{Caratteri già incorporati nelle figure}: Helvetica Neue (Linotype/Adobe), Arial (Monotype). Conservano le rispettive licenze proprietarie.
+\end{itemize}
+
+\endgroup

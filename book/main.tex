@@ -1,0 +1,143 @@
+% !TeX program = lualatex
+% !TeX root = main.tex 
+
+\documentclass[
+  italian,
+  11pt,
+  fleqn,
+  a4paper,
+]{LegrandOrangeBook}
+\input{version.tex}
+\input{utils.tex}
+
+\begin{document}
+
+\titlepage
+  {\includegraphics[width=\paperwidth]{cover-illustrazione-arancione-v2.png}}
+  {
+    \centering\sffamily
+    {\fontsize{34}{38}\selectfont\bfseries\color{ocre!72!black} Insegnare Informatica\par}
+    \vspace{10pt}
+    {\LARGE Una guida per docenti del primo ciclo\par}
+    \vspace{10pt}
+    {\Large Volume 1\par}
+    \vspace{10pt}
+    {\normalsize \guideversiondisplay\par}
+    \vspace{18pt}
+    {\LARGE\bfseries Michael Lodi, Agnese Del Zozzo,\par}
+    \vspace{2pt}
+    {\LARGE\bfseries Alberto Montresor, Giorgia Bissoli\par}
+  }
+
+\thispagestyle{empty}
+\begingroup
+\setlength{\parskip}{0pt}
+\vspace*{2cm}
+
+\noindent{\sffamily\Large\bfseries Autori e affiliazioni}\\[12pt]
+\noindent Michael Lodi, Professore a contratto, Dipartimento di Informatica - Scienza e Ingegneria, Alma Mater Studiorum - Università di Bologna\\[6pt]
+\noindent Agnese Del Zozzo, Ricercatrice, Dipartimento di Matematica, Università di Trento\\[6pt]
+\noindent Alberto Montresor, Professore ordinario, Dipartimento di Ingegneria e Scienza dell'Informazione, Università di Trento\\[6pt]
+\noindent Giorgia Bissoli, Presidente di Verona FabLab
+
+\vspace{18pt}
+\noindent
+\begin{minipage}[c]{0.43\linewidth}
+  {\sffamily\bfseries Versione}\\[4pt]
+  \guideversiondisplay
+\end{minipage}\hfill
+\begin{minipage}[c]{0.53\linewidth}
+  \setlength{\fboxsep}{8pt}
+  \hreforiginale{https://informaticainclasse.it/aggiornamenti/\#v=\guideversion}{%
+    \fcolorbox{ocre}{ocre!10}{%
+      \parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{%
+        \centering\sffamily\small\bfseries\color{black}
+        Verifica se hai l'ultima versione\\
+        di questo documento
+      }%
+    }%
+  }
+\end{minipage}\par
+
+\vspace{14pt}
+\noindent{\sffamily\bfseries Nota editoriale}\\[4pt]
+{\footnotesize
+\setlength{\parskip}{4pt}
+\noindent La versione originale di questa guida è pubblicata come: Bissoli, Del Zozzo, Lodi, Montresor, \textit{Sulle orme di Milù - Guida di Informatica} Mondadori Education, 2026; 120 pagine; ISBN 9791220419833. 
+
+\noindent La guida accompagna il volume studente: Bissoli, Del Zozzo, Lodi, Montresor, \textit{Sulle orme di Milù - Informatica} Mondadori Education, 2026; 48 pagine. \linkbreve{milu}.
+
+\noindent Gli autori hanno mantenuto i diritti necessari per pubblicare questa versione derivata della sola guida. Ringraziamo Mondadori Education per la collaborazione.
+
+\noindent Questa edizione è pensata per essere completa e utilizzabile anche da chi non possiede il volume studente.
+
+\noindent Per chi possiede comunque il volume studente Mondadori \textit{Sulle orme di Milù - Informatica}, alcuni consigli sono presenti nei box alla fine di ogni capitolo.
+
+\vspace{4pt}
+\noindent{\sffamily\bfseries Attribuzioni per piattaforme didattiche}\\[2pt]
+\noindent Scratch is developed by the Scratch Foundation and its partners and affiliates. See \urloriginale{https://scratchfoundation.org/}.
+
+\noindent I materiali didattici di Code.org (oggi CodeAI) qui richiamati sono attribuiti a CodeAI. I materiali curricolari e i tutorial sono disponibili con licenza \hreforiginale{https://creativecommons.org/licenses/by-nc-sa/4.0/deed.it}{CC BY-NC-SA 4.0} (\urloriginale{https://creativecommons.org/licenses/by-nc-sa/4.0/deed.it}), per finalità educative non commerciali di informatica, con esclusione dei video proprietari e delle immagini di terzi. Marchi e contenuti esclusi restano soggetti ai diritti dei rispettivi titolari. Condizioni d'uso: \urloriginale{https://code.org/terms-of-service}.
+
+\noindent Questa guida è indipendente e non è affiliata, sponsorizzata o approvata dalla Scratch Foundation o da CodeAI. I materiali di terzi conservano le rispettive licenze e condizioni di utilizzo, che non sono sostituite dalla licenza generale della guida.
+
+\par}
+
+\vfill
+
+\noindent\hreforiginale{https://creativecommons.org/licenses/by-nc-sa/4.0/deed.it}{\includegraphics[width=3.1cm]{cc-by-nc-sa-4.0.pdf}}\\[10pt]
+\noindent Quest'opera è distribuita con Licenza Creative Commons Attribuzione - Non commerciale - Condividi allo stesso modo 4.0 Internazionale.
+
+\noindent Puoi condividere e adattare il materiale citando correttamente gli autori, senza farne uso commerciale e distribuendo eventuali opere derivate con la stessa licenza.
+
+\noindent Testo completo della licenza: \urloriginale{https://creativecommons.org/licenses/by-nc-sa/4.0/deed.it}
+
+\vspace{12pt}
+{\raggedright
+\noindent Impaginazione basata su \hreforiginale{https://www.latextemplates.com/template/the-legrand-orange-book}{The Legrand Orange Book} (\urloriginale{https://www.latextemplates.com/template/the-legrand-orange-book}), di Mathias Legrand e Vel, distribuito con licenza CC BY-NC-SA 4.0.\par}
+
+\endgroup
+\newpage
+
+\frontmatter
+
+\setcounter{tocdepth}{2}
+\tableofcontents
+\mainmatter
+\nocite{*}
+
+
+% Capitoli: ogni file contiene anche le proprie schede.
+\input{cap1.tex}
+
+\input{cap2.tex}
+
+\input{cap3.tex}
+
+\input{cap4.tex}
+
+\input{cap5.tex}
+
+\input{cap6.tex}
+
+\input{cap7.tex}
+
+\input{cap8.tex}
+
+\input{cap9.tex}
+
+\backmatter
+\input{sitografia.tex}
+\input{crediti.tex}
+% L'illustrazione A4 è centrata e rifilata ai bordi del foglio, senza deformarla.
+\clearpage
+\thispagestyle{empty}
+\label{credito:chiusura}
+\null
+\begin{tikzpicture}[remember picture,overlay]
+  \clip (current page.south west) rectangle (current page.north east);
+  \node[inner sep=0pt] at (current page.center)
+    {\includegraphics[height=\paperheight]{img/chiusura-illustrazione-arancione.png}};
+\end{tikzpicture}
+\clearpage
+\end{document}

@@ -1,9 +1,14 @@
 # Sorgenti del libro
 
-Inserire qui, quando pronti, i sorgenti LaTeX e le immagini autorizzate.
+Questa cartella contiene i sorgenti LaTeX, le immagini e i font della guida
+*Insegnare Informatica — Una guida per docenti del primo ciclo, Volume 1*.
 
 Il file principale e' main.tex, compilato con LuaLaTeX.
 Il percorso e il motore sono modificabili in ../config/book.json.
+La cartella `font/` include i font Source Sans Pro e la relativa licenza;
+deve restare accanto a `main.tex`, insieme alla cartella `img/`.
+La configurazione locale `latexmkrc` non fa parte dei sorgenti pubblicati:
+il workflow del sito imposta esplicitamente LuaLaTeX.
 
 Prima della compilazione, `python scripts/book.py links` (dalla radice del sito)
 controlla i collegamenti e genera `sitografia.tex` dal registro in `mkdocs.yml`.
