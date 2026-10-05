@@ -129,3 +129,34 @@
   outline: 3px solid var(--md-primary-fg-color);
   outline-offset: 4px;
 }
+
+.md-typeset .book-update-result {
+  margin: 1.5rem 0;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-left: 0.25rem solid var(--md-primary-fg-color);
+  border-radius: 6px;
+  background: var(--md-code-bg-color);
+}
+
+.md-typeset .book-update-result h2 {
+  margin-top: 0;
+  font-size: 1.2em;
+  font-weight: 700;
+}
+
+.md-typeset .book-update-result p:last-child {
+  margin-bottom: 0;
+}
+
+.md-typeset .book-update-result[data-state="current"] {
+  border-left-color: #238636;
+}
+
+.md-typeset .book-update-result[data-state="outdated"] {
+  border-left-color: #c45a00;
+}
+
+.md-typeset .book-updates .md-button {
+  margin: 0.25rem 0 1rem;
+}
