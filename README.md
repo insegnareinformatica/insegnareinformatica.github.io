@@ -72,6 +72,17 @@ scompare al termine della pubblicazione del sito, non immediatamente. Per una
 release il cui tag non contiene questo workflow, oppure per aggiornare
 manualmente elenco e conteggi, avviare **Deploy site** da `main`.
 
+**Deploy site** aggiorna automaticamente il catalogo e ripubblica il sito
+anche al minuto 17 di ogni ora, senza creare commit, compilare il libro o
+pubblicare nuovi PDF. I conteggi mostrati sono quelli letti da GitHub durante
+l'ultima pubblicazione completata, non sono in tempo reale.
+
+La pianificazione può subire ritardi. Nei repository pubblici GitHub la
+disattiva dopo 60 giorni senza attività nel repository: in quel caso
+riabilitare **Deploy site** dalla scheda **Actions**. Per i limiti della
+pianificazione consultare la
+[documentazione di GitHub](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
+
 ## Verifica della versione dal PDF
 
 Il pulsante nella guida apre l'indirizzo permanente

@@ -34,6 +34,23 @@ class SiteWorkflowTests(unittest.TestCase):
         self.assertIn("workflow_dispatch", check["on"])
         self.assertNotIn("push", check["on"])
 
+    def test_hourly_refresh_updates_catalog_without_publishing_book(self):
+        deploy = self.workflow("deploy-site.yml")
+        self.assertEqual(deploy["on"]["schedule"], [{"cron": "17 * * * *"}])
+        steps = deploy["jobs"]["build"]["steps"]
+        commands = [step.get("run") for step in steps]
+        self.assertLess(commands.index("python scripts/book.py catalog"),
+                        commands.index("mkdocs build --strict"))
+        for name in ("deploy-site.yml", "check-site.yml"):
+            jobs = self.workflow(name)["jobs"]
+            for job in jobs.values():
+                self.assertNotIn("publish-book", job.get("uses", ""))
+                for step in job.get("steps", []):
+                    self.assertNotIn("latex-action", step.get("uses", ""))
+                    self.assertNotRegex(step.get("run", ""),
+                                        r"book\.py (prepare|stamp|package|publish)\b")
+        self.assertNotIn("schedule", self.workflow("publish-book.yml")["on"])
+
     def test_link_validation_precedes_site_tests_and_build(self):
         check = self.workflow("check-site.yml")
         steps = check["jobs"]["check"]["steps"]
